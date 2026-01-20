@@ -1,12 +1,12 @@
-# Theme Name
+# Flabbergasted
 
-![Theme preview](https://lexingtonthemes.com/OpenGraph/theme-name/twitter.png)
+![Theme preview](https://lexingtonthemes.com/OpenGraph/flabbergasted/twitter.png)
 
 
 ## Links
-- **Theme specs:** https://lexingtonthemes.com/templates/theme-name  
+- **Theme specs:** https://lexingtonthemes.com/templates/flabbergasted  
 - **Documentation:** https://lexingtonthemes.com/documentation  
-- **Changelog:** https://lexingtonthemes.com/changelog/theme-name  
+- **Changelog:** https://lexingtonthemes.com/changelog/flabbergasted 
 - **Support:** https://lexingtonthemes.com/legal/support/  
 - **Get the bundle:** https://lexingtonthemes.com  
 
