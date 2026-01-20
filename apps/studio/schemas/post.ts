@@ -53,6 +53,20 @@ export const post = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "team",
+      title: "Author",
+      type: "reference",
+      to: [{ type: "teamMember" }],
+      description: "The team member who wrote this post",
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "bgColor",
+      title: "Background Color",
+      type: "string",
+      description: "Tailwind CSS class for background color",
+    }),
+    defineField({
       name: "tags",
       title: "Tags",
       type: "array",

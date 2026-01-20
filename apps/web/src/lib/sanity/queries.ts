@@ -11,7 +11,9 @@ const postFields = groq`
   "slug": slug.current,
   description,
   pubDate,
+  bgColor,
   tags,
+  "team": team->slug.current,
   image {
     asset->,
     alt
@@ -42,8 +44,8 @@ export const postsByTagQuery = groq`
   }
 `;
 
-// All unique tags
-export const allTagsQuery = groq`
+// All unique tags from posts
+export const allPostTagsQuery = groq`
   array::unique(*[_type == "post" && defined(tags)].tags[])
 `;
 
@@ -65,14 +67,12 @@ const teamMemberFields = groq`
   "slug": slug.current,
   role,
   bio,
+  bgColor,
   image {
     asset->,
     alt
   },
-  socials[] {
-    label,
-    href
-  }
+  socials
 `;
 
 // All team members
@@ -91,30 +91,196 @@ export const teamMemberBySlugQuery = groq`
 `;
 
 // =============================================================================
-// LEGAL PAGES
+// CUSTOMERS
 // =============================================================================
 
-const legalPageFields = groq`
+const customerFields = groq`
+  _id,
+  customer,
+  "slug": slug.current,
+  bgColor,
+  ctaTitle,
+  testimonial,
+  partnership,
+  about,
+  challengesAndSolutions[] {
+    title,
+    content
+  },
+  results,
+  details[] {
+    key,
+    value
+  },
+  avatar {
+    asset->,
+    alt
+  },
+  logo {
+    asset->,
+    alt
+  }
+`;
+
+// All customers
+export const allCustomersQuery = groq`
+  *[_type == "customer"] {
+    ${customerFields}
+  }
+`;
+
+// Single customer by slug
+export const customerBySlugQuery = groq`
+  *[_type == "customer" && slug.current == $slug][0] {
+    ${customerFields},
+    body
+  }
+`;
+
+// =============================================================================
+// INTEGRATIONS
+// =============================================================================
+
+const integrationFields = groq`
+  _id,
+  integration,
+  "slug": slug.current,
+  email,
+  description,
+  permissions,
+  details[] {
+    title,
+    value,
+    url
+  },
+  logo {
+    asset->,
+    alt
+  },
+  tags
+`;
+
+// All integrations
+export const allIntegrationsQuery = groq`
+  *[_type == "integration"] | order(integration asc) {
+    ${integrationFields}
+  }
+`;
+
+// Single integration by slug
+export const integrationBySlugQuery = groq`
+  *[_type == "integration" && slug.current == $slug][0] {
+    ${integrationFields},
+    body
+  }
+`;
+
+// All unique tags from integrations
+export const allIntegrationTagsQuery = groq`
+  array::unique(*[_type == "integration" && defined(tags)].tags[])
+`;
+
+// Integrations by tag
+export const integrationsByTagQuery = groq`
+  *[_type == "integration" && $tag in tags] | order(integration asc) {
+    ${integrationFields}
+  }
+`;
+
+// =============================================================================
+// HELP CENTER
+// =============================================================================
+
+const helpcenterFields = groq`
+  _id,
+  page,
+  "slug": slug.current,
+  iconId,
+  description,
+  category,
+  keywords,
+  lastUpdated,
+  faq[] {
+    question,
+    answer
+  }
+`;
+
+// All help center articles
+export const allHelpcenterQuery = groq`
+  *[_type == "helpcenter"] {
+    ${helpcenterFields}
+  }
+`;
+
+// Single help center article by slug
+export const helpcenterBySlugQuery = groq`
+  *[_type == "helpcenter" && slug.current == $slug][0] {
+    ${helpcenterFields},
+    body
+  }
+`;
+
+// =============================================================================
+// CHANGELOG
+// =============================================================================
+
+const changelogFields = groq`
+  _id,
+  page,
+  "slug": slug.current,
+  bgColor,
+  description,
+  pubDate
+`;
+
+// All changelog entries
+export const allChangelogQuery = groq`
+  *[_type == "changelog"] | order(pubDate desc) {
+    ${changelogFields}
+  }
+`;
+
+// Single changelog entry by slug
+export const changelogBySlugQuery = groq`
+  *[_type == "changelog" && slug.current == $slug][0] {
+    ${changelogFields},
+    body
+  }
+`;
+
+// =============================================================================
+// INFO PAGES (Privacy, Terms, etc.)
+// =============================================================================
+
+const infopageFields = groq`
   _id,
   page,
   "slug": slug.current,
   pubDate
 `;
 
-// All legal pages
-export const allLegalPagesQuery = groq`
-  *[_type == "legalPage"] {
-    ${legalPageFields}
+// All info pages
+export const allInfopagesQuery = groq`
+  *[_type == "infopage"] {
+    ${infopageFields}
   }
 `;
 
-// Single legal page by slug
-export const legalPageBySlugQuery = groq`
-  *[_type == "legalPage" && slug.current == $slug][0] {
-    ${legalPageFields},
+// Single info page by slug
+export const infopageBySlugQuery = groq`
+  *[_type == "infopage" && slug.current == $slug][0] {
+    ${infopageFields},
     body
   }
 `;
+
+// =============================================================================
+// LEGACY QUERIES (kept for backward compatibility)
+// =============================================================================
+
+// Alias for post tags
+export const allTagsQuery = allPostTagsQuery;
 
 // =============================================================================
 // SITE SETTINGS

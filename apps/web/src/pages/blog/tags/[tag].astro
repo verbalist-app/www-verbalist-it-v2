@@ -1,62 +1,51 @@
 ---
+// Assets
+import Cross from "@/components/assets/Cross.astro";
 // Fundations
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 // Components
-import BlogEntry from "@/components/blog/BlogCard.astro";
-// Sanity
-import {
-  sanityFetch,
-  allTagsQuery,
-  postsByTagQuery,
-  transformPost,
-} from "@/lib/sanity";
-import type { SanityPost } from "@/lib/sanity";
-
+import BlogEntry2 from "@/components/blog/BlogEntry2.astro";
+// Content
+import { getAllPosts } from "@/lib/data";
 export async function getStaticPaths() {
-  const tags = await sanityFetch<string[]>(allTagsQuery);
-
-  const paths = await Promise.all(
-    tags.map(async (tag) => {
-      const sanityPosts = await sanityFetch<SanityPost[]>(postsByTagQuery, {
-        tag,
-      });
-      const posts = sanityPosts.map(transformPost);
-      return {
-        params: { tag },
-        props: { posts },
-      };
-    })
-  );
-
-  return paths;
+  const allPosts = await getAllPosts();
+  const uniqueTags = [
+    ...new Set(allPosts.map((post) => post.data.tags).flat()),
+  ];
+  return uniqueTags.map((tag) => {
+    const filteredPosts = allPosts.filter((post) =>
+      post.data.tags.includes(tag)
+    );
+    return {
+      params: { tag },
+      props: { posts: filteredPosts },
+    };
+  });
 }
-
 const { tag } = Astro.params;
 const { posts } = Astro.props;
 ---
-
 <BaseLayout pageTitle={tag}>
   <section>
-    <Wrapper variant="standard" class="py-24 lg:pt-48">
-      <Text
-        tag="h1"
-        variant="textBase"
-        class="font-medium capitalize text-base-900"
-      >
-        {tag}</Text
-      >
-
-      <div
-        class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-y-24 gap-4"
-      >
-        {
-          posts.map((post, index) => (
-            <BlogEntry post={post} index={index + 1} />
-          ))
-        }
+    <Wrapper variant="standard" class="relative pt-32 pb-12">
+      <!-- Top Right Plus -->
+      <Cross class="-top-[0.6rem] -right-[0.65rem] z-51" />
+      <!-- Top left Plus -->
+      <Cross class="-top-[0.6rem] -left-[0.65rem] z-51" />
+      <div class="max-w-xl text-balance">
+        <Text
+          tag="h1"
+          variant="displayMD"
+          class="tracking-tight text-white font-display"
+        >
+          All posts tagged about {tag}
+        </Text>
       </div>
     </Wrapper>
+    <div class="mt-8 flex flex-col">
+      {posts.map((post) => <BlogEntry2 post={post} />)}
+    </div>
   </section>
 </BaseLayout>

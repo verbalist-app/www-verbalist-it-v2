@@ -42,7 +42,7 @@ const client = createClient({
   projectId,
   dataset,
   apiVersion: "2024-01-01",
-  token: process.env.SANITY_TOKEN, // You need to set this
+  token: process.env.SANITY_WRITE_TOKEN || process.env.SANITY_TOKEN,
   useCdn: false,
 });
 
@@ -50,8 +50,16 @@ const WEB_PATH = path.join(__dirname, "../apps/web/src");
 const CONTENT_PATH = path.join(WEB_PATH, "content");
 const IMAGES_PATH = path.join(WEB_PATH, "images");
 
+// Track uploaded images to avoid duplicates
+const uploadedImages: Map<string, string> = new Map();
+
 // Helper to read markdown files from a directory
 function readMarkdownFiles(dir: string) {
+  if (!fs.existsSync(dir)) {
+    console.log(`  Directory not found: ${dir}, skipping...`);
+    return [];
+  }
+
   const files = fs.readdirSync(dir).filter((f) => f.endsWith(".md"));
   return files.map((file) => {
     const content = fs.readFileSync(path.join(dir, file), "utf-8");
@@ -63,12 +71,34 @@ function readMarkdownFiles(dir: string) {
 
 // Upload an image to Sanity and return the asset reference
 async function uploadImage(imagePath: string, altText: string = "") {
-  // Convert /src/images/... path to actual file path
-  const relativePath = imagePath.replace(/^\/src\/images\//, "");
+  // Handle different image path formats
+  let relativePath = imagePath;
+  if (imagePath.startsWith("/src/images/")) {
+    relativePath = imagePath.replace(/^\/src\/images\//, "");
+  } else if (imagePath.startsWith("@/images/")) {
+    relativePath = imagePath.replace(/^@\/images\//, "");
+  } else if (imagePath.startsWith("../images/")) {
+    relativePath = imagePath.replace(/^\.\.\/images\//, "");
+  } else if (imagePath.startsWith("../../images/")) {
+    relativePath = imagePath.replace(/^\.\.\/\.\.\/images\//, "");
+  }
+
   const fullPath = path.join(IMAGES_PATH, relativePath);
 
+  // Check if already uploaded
+  if (uploadedImages.has(fullPath)) {
+    return {
+      _type: "image",
+      asset: {
+        _type: "reference",
+        _ref: uploadedImages.get(fullPath),
+      },
+      alt: altText,
+    };
+  }
+
   if (!fs.existsSync(fullPath)) {
-    console.warn(`Image not found: ${fullPath}`);
+    console.warn(`    ⚠ Image not found: ${fullPath}`);
     return null;
   }
 
@@ -77,6 +107,8 @@ async function uploadImage(imagePath: string, altText: string = "") {
     const asset = await client.assets.upload("image", imageBuffer, {
       filename: path.basename(fullPath),
     });
+
+    uploadedImages.set(fullPath, asset._id);
 
     return {
       _type: "image",
@@ -87,16 +119,18 @@ async function uploadImage(imagePath: string, altText: string = "") {
       alt: altText,
     };
   } catch (error) {
-    console.error(`Failed to upload image: ${fullPath}`, error);
+    console.error(`    ✗ Failed to upload image: ${fullPath}`, error);
     return null;
   }
 }
 
-// Convert markdown to Portable Text blocks (simplified)
+// Convert markdown to Portable Text blocks
 function markdownToPortableText(markdown: string) {
   const blocks: any[] = [];
   const lines = markdown.split("\n");
   let currentParagraph: string[] = [];
+  let inList = false;
+  let listItems: string[] = [];
 
   const flushParagraph = () => {
     if (currentParagraph.length > 0) {
@@ -121,42 +155,35 @@ function markdownToPortableText(markdown: string) {
     }
   };
 
+  const flushList = (listType: "bullet" | "number") => {
+    if (listItems.length > 0) {
+      for (const item of listItems) {
+        blocks.push({
+          _type: "block",
+          _key: Math.random().toString(36).substr(2, 9),
+          style: "normal",
+          listItem: listType,
+          markDefs: [],
+          children: [
+            {
+              _type: "span",
+              _key: Math.random().toString(36).substr(2, 9),
+              text: item,
+              marks: [],
+            },
+          ],
+        });
+      }
+      listItems = [];
+      inList = false;
+    }
+  };
+
   for (const line of lines) {
     // Headers
-    if (line.startsWith("## ")) {
+    if (line.startsWith("#### ")) {
       flushParagraph();
-      blocks.push({
-        _type: "block",
-        _key: Math.random().toString(36).substr(2, 9),
-        style: "h2",
-        markDefs: [],
-        children: [
-          {
-            _type: "span",
-            _key: Math.random().toString(36).substr(2, 9),
-            text: line.replace(/^## /, ""),
-            marks: [],
-          },
-        ],
-      });
-    } else if (line.startsWith("### ")) {
-      flushParagraph();
-      blocks.push({
-        _type: "block",
-        _key: Math.random().toString(36).substr(2, 9),
-        style: "h3",
-        markDefs: [],
-        children: [
-          {
-            _type: "span",
-            _key: Math.random().toString(36).substr(2, 9),
-            text: line.replace(/^### /, ""),
-            marks: [],
-          },
-        ],
-      });
-    } else if (line.startsWith("#### ")) {
-      flushParagraph();
+      flushList("bullet");
       blocks.push({
         _type: "block",
         _key: Math.random().toString(36).substr(2, 9),
@@ -171,26 +198,121 @@ function markdownToPortableText(markdown: string) {
           },
         ],
       });
-    } else if (line.trim() === "") {
+    } else if (line.startsWith("### ")) {
       flushParagraph();
-    } else if (!line.startsWith("![") && !line.startsWith("|")) {
-      // Skip images and tables for now, add to paragraph
+      flushList("bullet");
+      blocks.push({
+        _type: "block",
+        _key: Math.random().toString(36).substr(2, 9),
+        style: "h3",
+        markDefs: [],
+        children: [
+          {
+            _type: "span",
+            _key: Math.random().toString(36).substr(2, 9),
+            text: line.replace(/^### /, ""),
+            marks: [],
+          },
+        ],
+      });
+    } else if (line.startsWith("## ")) {
+      flushParagraph();
+      flushList("bullet");
+      blocks.push({
+        _type: "block",
+        _key: Math.random().toString(36).substr(2, 9),
+        style: "h2",
+        markDefs: [],
+        children: [
+          {
+            _type: "span",
+            _key: Math.random().toString(36).substr(2, 9),
+            text: line.replace(/^## /, ""),
+            marks: [],
+          },
+        ],
+      });
+    } else if (line.startsWith("# ")) {
+      flushParagraph();
+      flushList("bullet");
+      blocks.push({
+        _type: "block",
+        _key: Math.random().toString(36).substr(2, 9),
+        style: "h1",
+        markDefs: [],
+        children: [
+          {
+            _type: "span",
+            _key: Math.random().toString(36).substr(2, 9),
+            text: line.replace(/^# /, ""),
+            marks: [],
+          },
+        ],
+      });
+    }
+    // Bullet list items
+    else if (line.match(/^[-*] /)) {
+      flushParagraph();
+      inList = true;
+      listItems.push(line.replace(/^[-*] /, ""));
+    }
+    // Numbered list items
+    else if (line.match(/^\d+\. /)) {
+      flushParagraph();
+      inList = true;
+      listItems.push(line.replace(/^\d+\. /, ""));
+    }
+    // Blockquote
+    else if (line.startsWith("> ")) {
+      flushParagraph();
+      flushList("bullet");
+      blocks.push({
+        _type: "block",
+        _key: Math.random().toString(36).substr(2, 9),
+        style: "blockquote",
+        markDefs: [],
+        children: [
+          {
+            _type: "span",
+            _key: Math.random().toString(36).substr(2, 9),
+            text: line.replace(/^> /, ""),
+            marks: [],
+          },
+        ],
+      });
+    }
+    // Empty line
+    else if (line.trim() === "") {
+      if (inList) {
+        flushList("bullet");
+      }
+      flushParagraph();
+    }
+    // Skip images, tables for now
+    else if (!line.startsWith("![") && !line.startsWith("|")) {
       currentParagraph.push(line);
     }
   }
 
+  if (inList) {
+    flushList("bullet");
+  }
   flushParagraph();
+
   return blocks;
 }
 
-// Migrate authors
-async function migrateAuthors() {
-  console.log("\n📝 Migrating Authors...");
-  const authors = readMarkdownFiles(path.join(CONTENT_PATH, "authors"));
-  const authorMap: Record<string, string> = {}; // slug -> _id
+// =============================================================================
+// MIGRATION FUNCTIONS
+// =============================================================================
 
-  for (const author of authors) {
-    const { slug, frontmatter } = author;
+async function migrateTeamMembers() {
+  console.log("\n👥 Migrating Team Members...");
+  const members = readMarkdownFiles(path.join(CONTENT_PATH, "team"));
+  const memberMap: Record<string, string> = {};
+
+  for (const member of members) {
+    const { slug, frontmatter, body } = member;
     console.log(`  - ${frontmatter.name} (${slug})`);
 
     // Upload image
@@ -199,51 +321,35 @@ async function migrateAuthors() {
       image = await uploadImage(frontmatter.image.url, frontmatter.image.alt);
     }
 
-    // Create or update author document
     const doc = {
-      _type: "author",
-      _id: `author-${slug}`,
+      _type: "teamMember",
+      _id: `team-${slug}`,
       name: frontmatter.name,
       slug: { _type: "slug", current: slug },
       role: frontmatter.role,
       bio: frontmatter.bio,
+      bgColor: frontmatter.bgColor,
       image,
-      socials: frontmatter.socials
-        ? {
-            twitter:
-              frontmatter.socials.twitter !== "#_"
-                ? frontmatter.socials.twitter
-                : undefined,
-            website:
-              frontmatter.socials.website !== "#_"
-                ? frontmatter.socials.website
-                : undefined,
-            linkedin:
-              frontmatter.socials.linkedin !== "#_"
-                ? frontmatter.socials.linkedin
-                : undefined,
-            email: frontmatter.socials.email,
-          }
-        : undefined,
+      socials: frontmatter.socials || undefined,
+      body: body ? markdownToPortableText(body) : undefined,
     };
 
     try {
       const result = await client.createOrReplace(doc);
-      authorMap[slug] = result._id;
-      console.log(`    ✓ Created author: ${frontmatter.name}`);
+      memberMap[slug] = result._id;
+      console.log(`    ✓ Created team member: ${frontmatter.name}`);
     } catch (error) {
       console.error(
-        `    ✗ Failed to create author: ${frontmatter.name}`,
+        `    ✗ Failed to create team member: ${frontmatter.name}`,
         error
       );
     }
   }
 
-  return authorMap;
+  return memberMap;
 }
 
-// Migrate posts
-async function migratePosts(authorMap: Record<string, string>) {
+async function migratePosts(teamMap: Record<string, string>) {
   console.log("\n📰 Migrating Posts...");
   const posts = readMarkdownFiles(path.join(CONTENT_PATH, "posts"));
 
@@ -257,14 +363,11 @@ async function migratePosts(authorMap: Record<string, string>) {
       image = await uploadImage(frontmatter.image.url, frontmatter.image.alt);
     }
 
-    // Get author reference
-    const authorRef =
-      frontmatter.author && authorMap[frontmatter.author]
-        ? { _type: "reference", _ref: authorMap[frontmatter.author] }
+    // Get team member reference
+    const teamRef =
+      frontmatter.team && teamMap[frontmatter.team]
+        ? { _type: "reference", _ref: teamMap[frontmatter.team] }
         : undefined;
-
-    // Convert body to Portable Text
-    const portableTextBody = markdownToPortableText(body);
 
     const doc = {
       _type: "post",
@@ -273,15 +376,11 @@ async function migratePosts(authorMap: Record<string, string>) {
       slug: { _type: "slug", current: slug },
       description: frontmatter.description,
       pubDate: new Date(frontmatter.pubDate).toISOString(),
+      bgColor: frontmatter.bgColor,
       image,
       tags: frontmatter.tags || [],
-      isBreaking: frontmatter.isBreaking || false,
-      isTopStory: frontmatter.isTopStory || false,
-      isFeatured: frontmatter.isFeatured || false,
-      isBrief: frontmatter.isBrief || false,
-      isLocked: frontmatter.isLocked || false,
-      author: authorRef,
-      body: portableTextBody,
+      team: teamRef,
+      body: markdownToPortableText(body),
     };
 
     try {
@@ -293,190 +392,260 @@ async function migratePosts(authorMap: Record<string, string>) {
   }
 }
 
-// Migrate podcasts
-async function migratePodcasts(authorMap: Record<string, string>) {
-  console.log("\n🎙️ Migrating Podcasts...");
-  const podcasts = readMarkdownFiles(path.join(CONTENT_PATH, "podcast"));
+async function migrateCustomers() {
+  console.log("\n🏢 Migrating Customers...");
+  const customers = readMarkdownFiles(path.join(CONTENT_PATH, "customers"));
 
-  for (const podcast of podcasts) {
-    const { slug, frontmatter, body } = podcast;
-    console.log(`  - ${frontmatter.title} (${slug})`);
+  for (const customer of customers) {
+    const { slug, frontmatter, body } = customer;
+    console.log(`  - ${frontmatter.customer} (${slug})`);
 
-    // Upload image
-    let image = null;
-    if (frontmatter.image?.url) {
-      image = await uploadImage(frontmatter.image.url, frontmatter.image.alt);
+    // Upload images
+    let avatar = null;
+    if (frontmatter.avatar?.url) {
+      avatar = await uploadImage(
+        frontmatter.avatar.url,
+        frontmatter.avatar.alt
+      );
     }
 
-    // Get author reference
-    const authorRef =
-      frontmatter.author && authorMap[frontmatter.author]
-        ? { _type: "reference", _ref: authorMap[frontmatter.author] }
-        : undefined;
+    let logo = null;
+    if (frontmatter.logo?.url) {
+      logo = await uploadImage(frontmatter.logo.url, frontmatter.logo.alt);
+    }
 
-    // Convert body to Portable Text
-    const portableTextBody = markdownToPortableText(body);
+    // Convert details object to array
+    const detailsArray = frontmatter.details
+      ? Object.entries(frontmatter.details).map(([key, value]) => ({
+          _key: Math.random().toString(36).substr(2, 9),
+          key,
+          value: value as string,
+        }))
+      : [];
 
     const doc = {
-      _type: "podcast",
-      _id: `podcast-${slug}`,
-      title: frontmatter.title,
+      _type: "customer",
+      _id: `customer-${slug}`,
+      customer: frontmatter.customer,
       slug: { _type: "slug", current: slug },
-      description: frontmatter.description,
-      pubDate: new Date(frontmatter.pubDate).toISOString(),
-      image,
-      episodeNumber: frontmatter.episodeNumber,
-      duration: frontmatter.duration,
-      audioSrc: frontmatter.audioSrc,
-      tags: frontmatter.tags || [],
-      isFeatured: frontmatter.isFeatured || false,
-      isGuest: frontmatter.isGuest || false,
-      isSeries: frontmatter.isSeries || false,
-      isLocked: frontmatter.isLocked || false,
-      author: authorRef,
-      body: portableTextBody,
+      bgColor: frontmatter.bgColor,
+      ctaTitle: frontmatter.ctaTitle,
+      testimonial: frontmatter.testimonial,
+      partnership: frontmatter.partnership,
+      about: frontmatter.about,
+      challengesAndSolutions: (frontmatter.challengesAndSolutions || []).map(
+        (item: any) => ({
+          _key: Math.random().toString(36).substr(2, 9),
+          title: item.title,
+          content: item.content,
+        })
+      ),
+      results: frontmatter.results || [],
+      details: detailsArray,
+      avatar,
+      logo,
+      body: body ? markdownToPortableText(body) : undefined,
     };
 
     try {
       await client.createOrReplace(doc);
-      console.log(`    ✓ Created podcast: ${frontmatter.title}`);
+      console.log(`    ✓ Created customer: ${frontmatter.customer}`);
     } catch (error) {
       console.error(
-        `    ✗ Failed to create podcast: ${frontmatter.title}`,
+        `    ✗ Failed to create customer: ${frontmatter.customer}`,
         error
       );
     }
   }
 }
 
-// Migrate jobs
-async function migrateJobs() {
-  console.log("\n💼 Migrating Jobs...");
-  const jobsDir = path.join(CONTENT_PATH, "jobs");
+async function migrateIntegrations() {
+  console.log("\n🔌 Migrating Integrations...");
+  const integrations = readMarkdownFiles(
+    path.join(CONTENT_PATH, "integrations")
+  );
 
-  if (!fs.existsSync(jobsDir)) {
-    console.log("  No jobs directory found, skipping...");
-    return;
-  }
+  for (const integration of integrations) {
+    const { slug, frontmatter, body } = integration;
+    console.log(`  - ${frontmatter.integration} (${slug})`);
 
-  const jobs = readMarkdownFiles(jobsDir);
-
-  for (const job of jobs) {
-    const { slug, frontmatter } = job;
-    console.log(`  - ${frontmatter.title} (${slug})`);
+    // Upload logo
+    let logo = null;
+    if (frontmatter.logo?.url) {
+      logo = await uploadImage(frontmatter.logo.url, frontmatter.logo.alt);
+    }
 
     const doc = {
-      _type: "job",
-      _id: `job-${slug}`,
-      title: frontmatter.title,
+      _type: "integration",
+      _id: `integration-${slug}`,
+      integration: frontmatter.integration,
       slug: { _type: "slug", current: slug },
-      pubDate: new Date(frontmatter.pubDate).toISOString(),
+      email: frontmatter.email,
       description: frontmatter.description,
-      jobType: frontmatter.jobType,
-      company: frontmatter.company,
-      location: frontmatter.location,
-      category: frontmatter.category,
-      jobLevel: frontmatter.jobLevel,
-      experience: frontmatter.experience,
-      salaryRange: frontmatter.salaryRange,
-      salaryType: frontmatter.salaryType,
-      employmentStatus: frontmatter.employmentStatus,
-      responsibilities: frontmatter.responsibilities || [],
-      requirements: frontmatter.requirements || [],
-      benefits: frontmatter.benefits || [],
-      applicationDeadline: frontmatter.applicationDeadline
-        ? new Date(frontmatter.applicationDeadline).toISOString()
-        : undefined,
-      skills: frontmatter.skills || [],
-      perks: frontmatter.perks || [],
-      contactEmail: frontmatter.contactEmail,
-      referenceId: frontmatter.referenceId,
-      workEnvironment: frontmatter.workEnvironment,
-      companyCulture: frontmatter.companyCulture,
-      hiringManager: frontmatter.hiringManager,
-      applicationInstructions: frontmatter.applicationInstructions,
+      permissions: frontmatter.permissions || [],
+      details: (frontmatter.details || []).map((item: any) => ({
+        _key: Math.random().toString(36).substr(2, 9),
+        title: item.title,
+        value: item.value,
+        url: item.url,
+      })),
+      logo,
+      tags: frontmatter.tags || [],
+      body: body ? markdownToPortableText(body) : undefined,
     };
 
     try {
       await client.createOrReplace(doc);
-      console.log(`    ✓ Created job: ${frontmatter.title}`);
+      console.log(`    ✓ Created integration: ${frontmatter.integration}`);
     } catch (error) {
-      console.error(`    ✗ Failed to create job: ${frontmatter.title}`, error);
+      console.error(
+        `    ✗ Failed to create integration: ${frontmatter.integration}`,
+        error
+      );
     }
   }
 }
 
-// Migrate help center articles
-async function migrateHelpCenter() {
+async function migrateHelpcenter() {
   console.log("\n❓ Migrating Help Center...");
-  const helpDir = path.join(CONTENT_PATH, "helpCenter");
-
-  if (!fs.existsSync(helpDir)) {
-    console.log("  No helpCenter directory found, skipping...");
-    return;
-  }
-
-  const articles = readMarkdownFiles(helpDir);
+  const articles = readMarkdownFiles(path.join(CONTENT_PATH, "helpcenter"));
 
   for (const article of articles) {
     const { slug, frontmatter, body } = article;
-    console.log(`  - ${frontmatter.title} (${slug})`);
-
-    // Convert body to Portable Text
-    const portableTextBody = markdownToPortableText(body);
+    console.log(`  - ${frontmatter.page} (${slug})`);
 
     const doc = {
-      _type: "helpCenter",
-      _id: `help-${slug}`,
-      title: frontmatter.title,
+      _type: "helpcenter",
+      _id: `helpcenter-${slug}`,
+      page: frontmatter.page,
       slug: { _type: "slug", current: slug },
-      pubDate: new Date(frontmatter.pubDate).toISOString(),
+      iconId: frontmatter.iconId,
       description: frontmatter.description,
-      body: portableTextBody,
+      category: frontmatter.category,
+      keywords: frontmatter.keywords || [],
+      lastUpdated: frontmatter.lastUpdated,
+      faq: (frontmatter.faq || []).map((item: any) => ({
+        _key: Math.random().toString(36).substr(2, 9),
+        question: item.question,
+        answer: item.answer,
+      })),
+      body: body ? markdownToPortableText(body) : undefined,
     };
 
     try {
       await client.createOrReplace(doc);
-      console.log(`    ✓ Created help article: ${frontmatter.title}`);
+      console.log(`    ✓ Created help article: ${frontmatter.page}`);
     } catch (error) {
       console.error(
-        `    ✗ Failed to create help article: ${frontmatter.title}`,
+        `    ✗ Failed to create help article: ${frontmatter.page}`,
         error
       );
     }
   }
 }
 
-// Main migration function
+async function migrateChangelog() {
+  console.log("\n📋 Migrating Changelog...");
+  const entries = readMarkdownFiles(path.join(CONTENT_PATH, "changelog"));
+
+  for (const entry of entries) {
+    const { slug, frontmatter, body } = entry;
+    console.log(`  - ${frontmatter.page} (${slug})`);
+
+    const doc = {
+      _type: "changelog",
+      _id: `changelog-${slug}`,
+      page: frontmatter.page,
+      slug: { _type: "slug", current: slug },
+      bgColor: frontmatter.bgColor,
+      description: frontmatter.description,
+      pubDate: new Date(frontmatter.pubDate).toISOString(),
+      body: body ? markdownToPortableText(body) : undefined,
+    };
+
+    try {
+      await client.createOrReplace(doc);
+      console.log(`    ✓ Created changelog entry: ${frontmatter.page}`);
+    } catch (error) {
+      console.error(
+        `    ✗ Failed to create changelog entry: ${frontmatter.page}`,
+        error
+      );
+    }
+  }
+}
+
+async function migrateInfopages() {
+  console.log("\n📄 Migrating Info Pages...");
+  const pages = readMarkdownFiles(path.join(CONTENT_PATH, "infopages"));
+
+  for (const page of pages) {
+    const { slug, frontmatter, body } = page;
+    console.log(`  - ${frontmatter.page} (${slug})`);
+
+    const doc = {
+      _type: "infopage",
+      _id: `infopage-${slug}`,
+      page: frontmatter.page,
+      slug: { _type: "slug", current: slug },
+      pubDate: new Date(frontmatter.pubDate).toISOString(),
+      body: body ? markdownToPortableText(body) : undefined,
+    };
+
+    try {
+      await client.createOrReplace(doc);
+      console.log(`    ✓ Created info page: ${frontmatter.page}`);
+    } catch (error) {
+      console.error(
+        `    ✗ Failed to create info page: ${frontmatter.page}`,
+        error
+      );
+    }
+  }
+}
+
+// =============================================================================
+// MAIN MIGRATION
+// =============================================================================
+
 async function migrate() {
   console.log("🚀 Starting migration to Sanity...\n");
   console.log("Project ID:", projectId);
   console.log("Dataset:", dataset);
+  console.log("Content Path:", CONTENT_PATH);
 
-  if (!process.env.SANITY_TOKEN) {
-    console.error("\n❌ Error: SANITY_TOKEN environment variable is required.");
+  if (!process.env.SANITY_WRITE_TOKEN && !process.env.SANITY_TOKEN) {
+    console.error(
+      "\n❌ Error: SANITY_WRITE_TOKEN or SANITY_TOKEN environment variable is required."
+    );
     console.log("\nTo get a token:");
     console.log("1. Go to https://www.sanity.io/manage → Your Project → API");
     console.log("2. Create a new token with 'Editor' permissions");
-    console.log(
-      "3. Run: SANITY_PROJECT_ID=your-project-id SANITY_TOKEN=your-token npx tsx migrate-to-sanity.ts"
-    );
+    console.log("3. Run: SANITY_TOKEN=your-token npx tsx migrate-to-sanity.ts");
     process.exit(1);
   }
 
   try {
-    // Migrate in order (authors first since posts reference them)
-    const authorMap = await migrateAuthors();
-    await migratePosts(authorMap);
-    await migratePodcasts(authorMap);
-    await migrateJobs();
-    await migrateHelpCenter();
+    // Migrate in dependency order
+    // 1. Team members first (posts reference them)
+    const teamMap = await migrateTeamMembers();
+
+    // 2. Posts (reference team members)
+    await migratePosts(teamMap);
+
+    // 3. Other collections (no dependencies)
+    await migrateCustomers();
+    await migrateIntegrations();
+    await migrateHelpcenter();
+    await migrateChangelog();
+    await migrateInfopages();
 
     console.log("\n✅ Migration complete!");
-    console.log("\nYou can now:");
+    console.log("\nNext steps:");
     console.log("1. Open Sanity Studio: cd apps/studio && pnpm dev");
     console.log("2. View your content at http://localhost:3333");
-    console.log("3. Run the site: cd apps/web && pnpm dev");
+    console.log("3. Set USE_SANITY=true in apps/web/.env to use Sanity data");
+    console.log("4. Run the site: cd apps/web && pnpm dev");
   } catch (error) {
     console.error("\n❌ Migration failed:", error);
     process.exit(1);

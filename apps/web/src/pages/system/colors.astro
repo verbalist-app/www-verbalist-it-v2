@@ -5,6 +5,28 @@ import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 const colors = [
   {
+    name: " Vertical and Horizontal Stripes",
+    shades: [
+      { name: "Base Vertical", class: "bg-base-vertical-stripes" },
+      { name: "Base Horizontal", class: "bg-base-horizontal-stripes" },
+      { name: "Accent Vertical", class: "bg-accent-vertical-stripes" },
+      { name: "Accent Horizontal", class: "bg-accent-horizontal-stripes" },
+      { name: "Light Vertical", class: "bg-light-vertical-stripes" },
+      { name: "Light Horizontal", class: "bg-light-horizontal-stripes" },
+    ],
+  },
+  {
+    name: "Mesh Gradients",
+    shades: [
+      { name: "Light Blue", class: "bg-meshLightBlue" },
+      { name: "Rainbow", class: "bg-meshRainbow" },
+      { name: "Purple", class: "bg-meshPurple" },
+      { name: "Yellow", class: "bg-meshYellow" },
+      { name: "Magenta", class: "bg-meshMagenta" },
+      { name: "Green", class: "bg-meshGreen" },
+    ],
+  },
+  {
     name: "Accent",
     shades: [
       { name: "Accent 50", class: "bg-accent-50" },
@@ -20,7 +42,6 @@ const colors = [
       { name: "Accent 950", class: "bg-accent-950 outline outline-accent-900" },
     ],
   },
-
   {
     name: "Base",
     shades: [
@@ -42,24 +63,22 @@ const colors = [
 
 <BaseLayout>
   <section>
-    <Wrapper variant="standard" class="py-12 lg:py-24">
-      <Text tag="h2" variant="displaySM" class="font-medium text-base-900">
+    <Wrapper variant="standard" class="relative pt-32 pb-12">
+      <Text tag="h1" variant="textBase" class="font-medium text-white">
         Colors
       </Text>
       <div class="flex flex-col mt-12 gap-12">
         {
           colors.map((color) => (
             <div class="flex flex-col gap-2">
-              <h3 class="text-xs font-semibold uppercase dark:text-white text-base-900">
+              <h3 class="text-xs font-semibold text-white uppercase dark:text-white">
                 {color.name}
               </h3>
-              <div class="mt-2 grid grid-cols-3 lg:grid-cols-11 gap-1 gap-y-8">
+              <div class="mt-2 grid grid-cols-2 lg:grid-cols-8 gap-1 gap-y-8">
                 {color.shades.map((shade) => (
                   <div class="flex flex-col gap-2">
-                    <div
-                      class={`size-full aspect-square rounded-md ${shade.class}`}
-                    />
-                    <span class="text-xs text-base-600">{shade.name}</span>
+                    <div class={`size-full aspect-square  ${shade.class}`} />
+                    <span class="text-xs text-base-500">{shade.name}</span>
                   </div>
                 ))}
               </div>

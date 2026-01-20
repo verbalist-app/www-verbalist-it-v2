@@ -1,0 +1,41 @@
+---
+// Fundations
+import Text from "@/components/fundations/elements/Text.astro";
+
+const features = [
+  {
+    bgClass: "bg-accent-vertical-stripes",
+    title: "Talk goes in. Magic comes out",
+    description:
+      "Powered by a brainy, low-latency model stack we built so you don’t have to Google what “state space” means",
+  },
+  {
+    bgClass: "bg-meshMagenta",
+    title: "Fully Private (like, actually)",
+    description:
+      "Your data stays locked down — nothing leaks, nothing leaves. Not even for “just a little training.",
+  },
+];
+---
+
+<section>
+  <div
+    class="relative text-center border-t grid grid-cols-1 md:grid-cols-2 gap-px text-balance border-base-800"
+  >
+    {
+      features.map((feature) => (
+        <div class="flex flex-col h-full overflow-hidden bg-base-900">
+          <div class="px-4 pt-24 pb-8 lg:pt-32 ">
+            <Text tag="h2" variant="displayMD" class="text-white font-display">
+              {feature.title}
+            </Text>
+            <Text tag="p" variant="textBase" class="mt-4 text-base-500">
+              {feature.description}
+            </Text>
+          </div>
+          <div class={`aspect-12/8 -mx-px p-4 ${feature.bgClass}`} />
+        </div>
+      ))
+    }
+  </div>
+</section>

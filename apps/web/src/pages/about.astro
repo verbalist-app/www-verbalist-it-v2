@@ -1,0 +1,140 @@
+---
+// Assets
+import { Image } from "astro:assets";
+import Team1 from "@/images/assets/team1.jpeg";
+import Team2 from "@/images/assets/team2.jpeg";
+import Team3 from "@/images/assets/team3.jpeg";
+import Team4 from "@/images/assets/team4.jpeg";
+// Assets
+
+// import the logos
+import investor1 from "@/images/investors/1.svg";
+import investor2 from "@/images/investors/2.svg";
+import investor3 from "@/images/investors/3.svg";
+import investor4 from "@/images/investors/4.svg";
+import investor5 from "@/images/investors/5.svg";
+import investor6 from "@/images/investors/6.svg";
+const logos = [
+  {
+    bgClass: "bg-accent-vertical-stripes",
+    src: investor1,
+    alt: "Investor 1",
+  },
+  { bgClass: "bg-meshGreen", src: investor2, alt: "Investor 2" },
+  {
+    bgClass: "bg-accent-vertical-stripes",
+    src: investor3,
+    alt: "Investor 3",
+  },
+  { bgClass: "bg-meshRainbow", src: investor4, alt: "Investor 4" },
+  { bgClass: "bg-light-vertical-stripes", src: investor5, alt: "Investor 5" },
+  { bgClass: "bg-meshPurple", src: investor6, alt: "Investor 6" },
+];
+
+import Cross from "@/components/assets/Cross.astro";
+import StripesBG from "@/components/assets/StripesBG.astro";
+// Fundations
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Text from "@/components/fundations/elements/Text.astro";
+import Button from "@/components/fundations/elements/Button.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+---
+
+<BaseLayout>
+  <section>
+    <Wrapper variant="standard" class="relative pt-32 pb-12">
+      <!-- Top Right Plus -->
+      <Cross class="-top-[0.6rem] -right-[0.65rem] z-51" />
+      <!-- Top left Plus -->
+      <Cross class="-top-[0.6rem] -left-[0.65rem] z-51" />
+      <StripesBG
+        variant="base"
+        class="absolute inset-0 p-20 mt-auto -mx-px border-t border-base-800 h-1/3"
+      />
+      <div class="relative max-w-md mx-auto">
+        <Text
+          tag="h1"
+          variant="displaySM"
+          class="tracking-tight text-white font-display text-balance"
+        >
+          Wanna help make AI less boring?
+        </Text>
+        <Text
+          tag="p"
+          variant="textBase"
+          class="max-w-xl mx-auto mt-4 text-base-400"
+        >
+          We’re cranking out the kind of intelligence that doesn’t hide in the
+          cloud — it runs right where you are, and actually responds like it’s
+          listening.
+        </Text>
+        <Button
+          href="#_"
+          isLink={true}
+          size="xs"
+          variant="alternative"
+          class="mt-8 w-fit">Work with us</Button
+        >
+      </div>
+      <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+        <div class="relative">
+          <div class="absolute inset-0 bg-meshLightBlue mix-blend-hard-light">
+          </div>
+          <Image src={Team1} alt="Team1" class="object-cover w-full h-full" />
+        </div>
+        <div class="relative">
+          <div class="absolute inset-0 bg-meshMagenta mix-blend-hard-light">
+          </div>
+          <Image src={Team2} alt="Team2" class="object-cover w-full h-full" />
+        </div>
+        <div class="relative">
+          <div class="absolute inset-0 bg-meshPurple mix-blend-hard-light">
+          </div>
+          <Image src={Team3} alt="Team3" class="object-cover w-full h-full" />
+        </div>
+        <div class="relative">
+          <div class="absolute inset-0 bg-meshGreen mix-blend-hard-light"></div>
+          <Image src={Team4} alt="Team4" class="object-cover w-full h-full" />
+        </div>
+      </div>
+    </Wrapper>
+  </section>
+  <section>
+    <Wrapper
+      variant="paddinglessDesktop"
+      class="relative overflow-hidden border-t border-base-800"
+    >
+      <div class="relative grid grid-cols-1 gap-8 lg:grid-cols-3">
+        <div class="px-4 py-8">
+          <Text tag="h2" variant="displayMD" class="text-white font-display">
+            Fueled by people with deep pockets and good taste
+          </Text>
+          <Text tag="p" variant="textBase" class="mt-4 text-base-500">
+            We’ve teamed up with top-tier VCs and product-obsessed founders who
+            know their stuff — and aren’t afraid to bet big on what’s next.
+          </Text>
+        </div>
+        <div
+          class="relative lg:col-span-2 grid grid-cols-1 gap-px lg:grid-cols-3"
+        >
+          {
+            logos.map((logo) => (
+              <div class="relative flex flex-col items-center justify-center p-8 aspect-square group bg-stripes">
+                <div
+                  class={`absolute inset-0 z-10 clip-rect-inset ${logo.bgClass}`}
+                />
+                <Image
+                  width={200}
+                  height={100}
+                  src={logo.src}
+                  alt={logo.alt}
+                  class="relative size-8 lg:size-20"
+                />
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </Wrapper>
+  </section>
+</BaseLayout>

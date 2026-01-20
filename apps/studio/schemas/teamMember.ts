@@ -35,6 +35,12 @@ export const teamMember = defineType({
       description: "Short biography",
     }),
     defineField({
+      name: "bgColor",
+      title: "Background Color",
+      type: "string",
+      description: "Tailwind CSS class for background color",
+    }),
+    defineField({
       name: "image",
       title: "Profile Image",
       type: "image",
@@ -54,34 +60,28 @@ export const teamMember = defineType({
     defineField({
       name: "socials",
       title: "Social Links",
-      type: "array",
-      of: [
-        {
-          type: "object",
-          fields: [
-            defineField({
-              name: "label",
-              title: "Label",
-              type: "string",
-              validation: (Rule) => Rule.required(),
-            }),
-            defineField({
-              name: "href",
-              title: "URL",
-              type: "url",
-              validation: (Rule) =>
-                Rule.uri({
-                  scheme: ["http", "https", "mailto"],
-                }),
-            }),
-          ],
-          preview: {
-            select: {
-              title: "label",
-              subtitle: "href",
-            },
-          },
-        },
+      type: "object",
+      fields: [
+        defineField({
+          name: "twitter",
+          title: "Twitter",
+          type: "string",
+        }),
+        defineField({
+          name: "website",
+          title: "Website",
+          type: "string",
+        }),
+        defineField({
+          name: "linkedin",
+          title: "LinkedIn",
+          type: "string",
+        }),
+        defineField({
+          name: "email",
+          title: "Email",
+          type: "string",
+        }),
       ],
     }),
     defineField({

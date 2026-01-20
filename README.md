@@ -53,10 +53,12 @@ Open http://localhost:4321 — your site is ready with sample content!
 Edit content in `apps/web/src/content/`:
 
 - `posts/` — Blog posts
-- `authors/` — Author profiles
-- `podcast/` — Podcast episodes
-- `jobs/` — Job listings
-- `helpCenter/` — Help articles
+- `team/` — Team member profiles
+- `customers/` — Customer case studies
+- `integrations/` — Integration pages
+- `helpcenter/` — Help center articles
+- `changelog/` — Changelog entries
+- `infopages/` — Info pages (Privacy, Terms, etc.)
 
 ---
 
@@ -115,10 +117,16 @@ SANITY_STUDIO_DATASET=production
 
 ### Step 4: Enable Sanity Mode
 
-Open `apps/web/src/lib/data.ts` and change:
+In `apps/web/.env`, set:
+
+```env
+USE_SANITY=true
+```
+
+Or open `apps/web/src/lib/data.ts` and change the default:
 
 ```typescript
-export const USE_SANITY = true;
+export const USE_SANITY = import.meta.env.USE_SANITY === "true";
 ```
 
 ### Step 5: Migrate Your Content (Optional)
@@ -131,14 +139,19 @@ Want to use the existing sample content? Run the migration script:
    - Name it "Migration" with **Editor** permissions
    - Copy the token
 
-2. Run the migration:
+2. Add the token to `apps/web/.env`:
 
-```bash
-cd scripts
-SANITY_TOKEN=your-token-here npx tsx migrate-to-sanity.ts
+```env
+SANITY_WRITE_TOKEN=your-token-here
 ```
 
-The script automatically reads `SANITY_PROJECT_ID` from `apps/web/.env`.
+3. Run the migration:
+
+```bash
+pnpm migrate
+```
+
+The script automatically reads `SANITY_PROJECT_ID` and `SANITY_WRITE_TOKEN` from `apps/web/.env`.
 
 This uploads all content from `apps/web/src/content/` to your Sanity project, including images.
 
@@ -163,17 +176,26 @@ This starts:
 
 ## Switching Between Data Sources
 
-The `USE_SANITY` flag in `apps/web/src/lib/data.ts` controls the data source:
+The `USE_SANITY` environment variable controls the data source:
 
-```typescript
-// Use Sanity CMS
-export const USE_SANITY = true;
+**In `apps/web/.env`:**
 
-// Use Content Collections (markdown files)
-export const USE_SANITY = false;
+```env
+# Use Sanity CMS
+USE_SANITY=true
+
+# Use Content Collections (markdown files)
+USE_SANITY=false
 ```
 
 Both options use the same components and layouts — just different data sources.
+
+**Key features:**
+
+- `USE_SANITY=false` (default): Works with zero Sanity configuration
+- `USE_SANITY=true`: Uses Sanity CMS for content
+- Components remain unchanged regardless of data source
+- Data shape is normalized in `apps/web/src/lib/data.ts`
 
 ---
 
@@ -208,42 +230,54 @@ Both options use the same components and layouts — just different data sources
 
 - Title, slug, description
 - Cover image with alt text
-- Publish date and author
+- Publish date and team member (author)
 - Tags for categorization
+- Background color
 - Rich text body content
-- Flags: Breaking, Featured, Top Story, Brief, Locked
 
-### Authors
+### Team Members
 
 - Name, role, bio
 - Profile image
+- Background color
 - Social media links (Twitter, LinkedIn, Website, Email)
 
-### Podcasts
+### Customers
 
-- Title, description
-- Episode number and duration
-- Cover image
-- Audio file source
-- Tags and author
-- Flags: Featured, Guest, Series, Locked
+- Customer name, about
+- Avatar and logo images
+- CTA title, testimonial, partnership
+- Challenges and solutions
+- Results and details
+- Background color
 
-### Jobs
+### Integrations
 
-- Title, company, location
-- Job type, level, experience
-- Salary range
-- Requirements, responsibilities, benefits
+- Integration name, email
+- Description, permissions
+- Details with URLs
+- Logo image
+- Tags
 
 ### Help Center
 
-- Title and description
+- Page title, description
+- Icon ID, category
+- Keywords, last updated
+- FAQ items
 - Rich text content
 
-### Legal Pages
+### Changelog
+
+- Page title, description
+- Publish date
+- Background color
+- Rich text content
+
+### Info Pages
 
 - Page title (Privacy, Terms, etc.)
-- Last updated date
+- Publish date
 - Rich text content
 
 ### Site Settings
@@ -257,25 +291,25 @@ Both options use the same components and layouts — just different data sources
 
 ## Website Routes
 
-| URL                   | Page            |
-| --------------------- | --------------- |
-| `/`                   | Homepage        |
-| `/blog`               | Blog listing    |
-| `/blog/posts/[slug]`  | Blog post       |
-| `/blog/tags`          | All tags        |
-| `/blog/tags/[tag]`    | Posts by tag    |
-| `/authors`            | Authors listing |
-| `/authors/[slug]`     | Author profile  |
-| `/podcast`            | Podcast listing |
-| `/podcast/[slug]`     | Podcast episode |
-| `/podcast/tags`       | Podcast tags    |
-| `/podcast/tags/[tag]` | Episodes by tag |
-| `/jobs`               | Job listings    |
-| `/jobs/[slug]`        | Job details     |
-| `/helpcenter`         | Help center     |
-| `/helpcenter/[slug]`  | Help article    |
-| `/legal/[slug]`       | Legal pages     |
-| `/rss.xml`            | RSS feed        |
+| URL                       | Page               |
+| ------------------------- | ------------------ |
+| `/`                       | Homepage           |
+| `/about`                  | About page         |
+| `/blog/home`              | Blog listing       |
+| `/blog/posts/[slug]`      | Blog post          |
+| `/blog/tags`              | All tags           |
+| `/blog/tags/[tag]`        | Posts by tag       |
+| `/team/home`              | Team listing       |
+| `/team/[slug]`            | Team member        |
+| `/customers/home`         | Customers listing  |
+| `/customers/[slug]`       | Customer case      |
+| `/integrations/home`      | Integrations       |
+| `/integrations/[slug]`    | Integration page   |
+| `/helpcenter/home`        | Help center        |
+| `/helpcenter/[slug]`      | Help article       |
+| `/changelog/home`         | Changelog listing  |
+| `/changelog/[slug]`       | Changelog entry    |
+| `/infopages/[slug]`       | Info pages         |
 
 ---
 
@@ -299,9 +333,10 @@ npx netlify deploy --prod
 
 Add these environment variables in your hosting dashboard:
 
-- `SANITY_PROJECT_ID`
-- `SANITY_DATASET`
-- `SANITY_API_VERSION`
+- `USE_SANITY` (set to `true` to use Sanity, omit or `false` for Content Collections)
+- `SANITY_PROJECT_ID` (only if USE_SANITY=true)
+- `SANITY_DATASET` (only if USE_SANITY=true)
+- `SANITY_API_VERSION` (only if USE_SANITY=true)
 
 ### Deploy the CMS
 
@@ -371,6 +406,7 @@ Run `pnpm install` in the project root to reinstall dependencies.
 | `pnpm dev:web`    | Start website only                             |
 | `pnpm dev:studio` | Start CMS only                                 |
 | `pnpm build`      | Build both for production                      |
+| `pnpm migrate`    | Migrate content to Sanity (requires token)     |
 | `pnpm clean`      | Remove node_modules/.env/dist before packaging |
 
 ---

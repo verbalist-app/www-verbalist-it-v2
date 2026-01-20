@@ -1,0 +1,29 @@
+---
+// Assets
+import { Image } from "astro:assets";
+
+// Content
+const { integration, url, logo } = {
+  url: "/integrations/" + Astro.props.post.slug,
+  integration: Astro.props.post.data.integration,
+  logo: Astro.props.post.data.logo.url,
+};
+---
+
+<div
+  class="relative flex flex-col items-center justify-center p-8 bg-base-900  aspect-square group bg-stripes"
+>
+  <a
+    class="absolute inset-0 z-10"
+    href={url}
+    title={`View details for ${integration}`}
+    aria-label={`View details for ${integration}`}></a>
+
+  <Image
+    src={logo}
+    alt={integration}
+    width={300}
+    height={300}
+    class="size-8 lg:size-12 grayscale group-hover:grayscale-0 duration-300"
+  />
+</div>

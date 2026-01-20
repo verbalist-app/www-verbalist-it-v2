@@ -1,23 +1,25 @@
+@import "./gradients.css";
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 @plugin "@tailwindcss/forms";
 @plugin "tailwind-scrollbar-hide";
 @theme {
   /* Typography */
+  --font-display: "InterDisplay", sans-serif;
   --font-sans: "Inter", sans-serif;
-  /* Accent */
-  --color-accent-50: oklch(92.98% 0.035 285.7);
-  --color-accent-100: oklch(86.22% 0.07 284.83);
-  --color-accent-200: oklch(72.58% 0.146 282.13);
-  --color-accent-300: oklch(59.81% 0.221 277.36);
-  --color-accent-400: oklch(49.73% 0.283 269.85);
-  --color-accent-500: oklch(45.2% 0.313 264.05);
-  --color-accent-600: oklch(38.21% 0.265 264.05);
-  --color-accent-700: oklch(30.87% 0.214 264.05);
-  --color-accent-800: oklch(23.07% 0.16 264.05);
-  --color-accent-900: oklch(14.51% 0.101 264.05);
-  --color-accent-950: oklch(9.65% 0.067 264.05);
-  /* Base */
+  --font-mono: "Geist Mono", monospace;
+  /* Colors */
+  --color-accent-50: oklch(94.4% 0.025 301.07);
+  --color-accent-100: oklch(90.08% 0.045 301.16);
+  --color-accent-200: oklch(79.89% 0.095 299.55);
+  --color-accent-300: oklch(69% 0.147 297.95);
+  --color-accent-400: oklch(59.34% 0.196 295.11);
+  --color-accent-500: oklch(50.89% 0.233 290.96);
+  --color-accent-600: oklch(44.26% 0.225 288.6);
+  --color-accent-700: oklch(36.36% 0.181 289.01);
+  --color-accent-800: oklch(27.39% 0.129 290.51);
+  --color-accent-900: oklch(18.44% 0.075 292.49);
+  --color-accent-950: oklch(13.92% 0.049 298.54);
   --color-base-50: oklch(0.985 0 0);
   --color-base-100: oklch(0.97 0 0);
   --color-base-200: oklch(0.922 0 0);
@@ -29,4 +31,125 @@
   --color-base-800: oklch(0.269 0 0);
   --color-base-900: oklch(0.205 0 0);
   --color-base-950: oklch(0.145 0 0);
+  /* Gradients stripes vertical */
+  --background-image-base-vertical-stripes: 
+  repeating-linear-gradient(
+    to right,
+    oklch(0.269 0 0) 0px,
+    oklch(0.269 0 0) 1px,
+    transparent 1px,
+    transparent 8px
+  );
+ 
+  --background-image-accent-vertical-stripes: 
+  repeating-linear-gradient(
+    to right,
+    oklch(50.89% 0.233 290.96) 0px,
+    oklch(50.89% 0.233 290.96) 1px,
+    transparent 1px,
+    transparent 8px
+  );
+  --background-image-light-vertical-stripes: 
+  repeating-linear-gradient(
+    to right,
+    oklch(0.985 0 0) 0px,
+    oklch(0.985 0 0) 1px,
+    transparent 1px,
+    transparent 8px
+  );
+  /* Gradients stripes horizontal */
+--background-image-base-horizontal-stripes: 
+  repeating-linear-gradient(
+    to bottom,
+    oklch(0.269 0 0) 0px,
+    oklch(0.269 0 0) 1px,
+    transparent 1px,
+    transparent 8px
+  );
+
+--background-image-pink-horizontal-stripes: 
+  repeating-linear-gradient(
+    to bottom,
+    hsla(5, 84%, 78%, 1) 0px,
+    hsla(5, 84%, 78%, 1) 1px,
+    transparent 1px,
+    transparent 8px
+  );
+
+--background-image-accent-horizontal-stripes: 
+  repeating-linear-gradient(
+    to bottom,
+    oklch(50.89% 0.233 290.96) 0px,
+    oklch(50.89% 0.233 290.96) 1px,
+    transparent 1px,
+    transparent 8px
+  );
+
+--background-image-light-horizontal-stripes: 
+  repeating-linear-gradient(
+    to bottom,
+    oklch(0.985 0 0) 0px,
+    oklch(0.985 0 0) 1px,
+    transparent 1px,
+    transparent 8px
+  );
+
+  /* Shadows */
+  --shadow-dimensional:
+    inset 0 0 0.5px 1px hsla(0, 0%, 100%, 0.1), 0 0 0 1px hsla(0, 0%, 0%, 0.08),
+    0 0.3px 0.4px hsla(0, 0%, 0%, 0.05), 0 0.9px 1.5px hsla(0, 0%, 0%, 0.08),
+    0 3.5px 6px hsla(0, 0%, 0%, 0.18);
+  /* Keyframes */
+  --animate-marquee: marquee 12s linear infinite;
+  --animate-rightMarquee: rightMarquee 300s linear infinite;
+  --animate-slowMarquee: marquee 300s linear infinite;
+  @keyframes marquee {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+  @keyframes rightMarquee {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+}
+ .pause-on-hover:hover {
+    animation-play-state: paused;
+  }
+:root {
+  font-family: Inter, sans-serif;
+  font-feature-settings:
+    "liga" 1,
+    "calt" 1; /* fix for Chrome */
+}
+@supports (font-variation-settings: normal) {
+  :root {
+    font-family: InterVariable, sans-serif;
+  }
+ }
+  
+  
+
+/* Clip path */
+
+.clip-rect-inset {
+  clip-path: polygon(
+    0% 0%,
+    0% 100%,
+    25% 100%,
+    25% 25%,
+    75% 25%,
+    75% 75%,
+    25% 75%,
+    25% 100%,
+    100% 100%,
+    100% 0%
+  );
 }

@@ -1,0 +1,80 @@
+---
+// Assets
+import Cross from "@/components/assets/Cross.astro";
+import StripesBG from "@/components/assets/StripesBG.astro";
+// Fundations
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Text from "@/components/fundations/elements/Text.astro";
+import Button from "@/components/fundations/elements/Button.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+// Component
+import BlogEntry from "@/components/blog/BlogEntry.astro";
+import BlogSearch from "@/components/blog/BlogSearch.astro";
+// Sections
+import Subscribe from "@/components/blog/Subscribe.astro";
+// Content
+import { getAllPosts, getAllPostTags } from "@/lib/data";
+const allPostsUnsorted = await getAllPosts();
+// Sort the posts in descending order by publication date (newest to oldest)
+const allPosts = allPostsUnsorted.sort(
+  (a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()
+);
+// Tags
+const tags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
+---
+
+<BaseLayout>
+  <section>
+    <Wrapper variant="standard" class="pt-32 pb-12 relative">
+      <!-- Top Right Plus -->
+      <Cross class="-top-[0.6rem] -right-[0.65rem] z-51" />
+      <!-- Top left Plus -->
+      <Cross class="-top-[0.6rem] -left-[0.65rem] z-51" />
+      <StripesBG
+        variant="accent"
+        class="hidden lg:block absolute inset-0 h-full -mx-px lg:w-[50%] ml-auto clip-rect-inset"
+      />
+      <div class="text-balance max-w-xl relative">
+        <Text
+          tag="h1"
+          variant="displayMD"
+          class="font-medium tracking-tight text-white"
+        >
+          The Blog, because opinions need a home...
+        </Text>
+        <Text tag="p" variant="textBase" class="mt-4 text-base-500">
+          Hot takes, lukewarm insights, and the occasional actually useful post
+          — scroll at your own risk.
+        </Text>
+      </div>
+    </Wrapper>
+    <div class="flex items-center gap-2 border-t border-base-800 px-8 py-4">
+      <BlogSearch />
+      <div
+        class="relative flex h-full overflow-x-scroll gap-2 py-2 scrollable-content snap-x snap-proximity scrollbar-hide"
+      >
+        {
+          tags.map((tag) => (
+            <Button
+              isLink={true}
+              size="xs"
+              variant="muted"
+              title={tag}
+              aria-label={tag}
+              href={`/blog/tags/${tag}`}
+              class="capitalize text-base-500"
+            >
+              {tag}
+            </Button>
+          ))
+        }
+      </div>
+    </div>
+    <div
+      class="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px border-t border-base-800"
+    >
+      {allPosts.slice(0, 9).map((post) => <BlogEntry post={post} />)}
+    </div>
+  </section>
+  <Subscribe />
+</BaseLayout>

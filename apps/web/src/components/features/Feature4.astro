@@ -1,0 +1,91 @@
+---
+// Assets
+import Cross from "@/components/assets/Cross.astro";
+// Fundations
+import Text from "@/components/fundations/elements/Text.astro";
+import Button from "@/components/fundations/elements/Button.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+const features = [
+  {
+    bgClass: "bg-meshMagenta",
+    title: "Memory? Minimal.",
+    description:
+      "Big brains, tiny footprints. Runs like a champ even on devices with commitment issues.",
+  },
+  {
+    bgClass: "bg-base-vertical-stripes",
+    title: "One Model. Many Minions.",
+    description:
+      "Spin up a whole army of apps using a single model. No sweat, no slowdown.",
+  },
+  {
+    bgClass: "bg-meshGreen",
+    title: "Zero Lag. Zero Excuses.",
+    description: "Streams in real time. Blinks slower than it responds.",
+  },
+  {
+    bgClass: "bg-light-vertical-stripes",
+    title: "Goldfish? Not Here.",
+    description:
+      "Remembers the long stuff — perfect for apps that think past their next sentence.",
+  },
+  {
+    bgClass: "bg-accent-vertical-stripes",
+    title: "Battery-Friendly Brilliance.",
+    description:
+      "Smarter doesn't have to mean hungrier. Runs lean, even on the go.",
+  },
+  {
+    bgClass: "bg-meshLightBlue",
+    title: "Memory That Sticks.",
+    description:
+      "Remembers what happened last time — across sessions, devices, and your existential crises.",
+  },
+];
+---
+
+<section>
+  <Wrapper
+    variant="standard"
+    class="relative pt-24 pb-8 border-t lg:pt-32 border-base-800"
+  >
+    <!-- Top Right Plus -->
+    <Cross class="-top-[0.6rem] -right-[0.65rem]" />
+    <!-- Top left Plus -->
+    <Cross class="-top-[0.6rem] -left-[0.65rem]" />
+    <div class="relative max-w-2xl text-balance">
+      <Text tag="h2" variant="displayMD" class="text-white font-display">
+        Brainwaves in a Box
+      </Text>
+      <Text tag="p" variant="textBase" class="mt-4 text-base-500">
+        Real-time, on-device intelligence without the PhD. We did the hard math
+        so your app doesn’t have to.
+      </Text>
+      <div class="flex flex-wrap items-center w-full mt-8 gap-2">
+        <Button href="#_" isLink={true} size="xs" variant="alternative"
+          >Get started</Button
+        >
+        <Button size="xs" variant="muted" isLink={true} href="#_"
+          >Read the docs</Button
+        >
+      </div>
+    </div>
+  </Wrapper>
+  <div class="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px">
+    {
+      features.map((feature) => (
+        <div class="flex flex-col justify-between h-full overflow-hidden">
+          <div class=" h-full flex flex-col p-4 pt-24 bg-base-900">
+            <Text tag="h3" variant="textBase" class="text-white ">
+              {feature.title}
+            </Text>
+            <Text tag="p" variant="textSM" class=" text-base-400">
+              {feature.description}
+            </Text>
+          </div>
+          <div class={`aspect-12/8 p-4 -mx-px ${feature.bgClass}`} />
+        </div>
+      ))
+    }
+  </div>
+</section>

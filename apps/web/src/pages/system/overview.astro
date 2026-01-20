@@ -3,69 +3,168 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
-const pageSections = [
+// Data array
+const pageData = [
   {
-    title: "Static",
-    columns: [
+    categoryTitle: "Static",
+    links: [
       {
-        category: " Pages",
+        sectionTitle: "Landing Pages",
         links: [
-          { text: "Home", href: "/" },
-          { text: "404", href: "/404" },
-        ],
-
-        
-      },
-      {
-        category: "System",
-        links: [
-          { text: "Colors", href: "/system/colors" },
-          { text: "Links", href: "/system/link" },
-          { text: "Buttons", href: "/system/buttons" },
-          { text: "Typography", href: "/system/typography" },
-        ],
-      },
-      {
-        category: "Resources",
-        links: [
-          { text: "Social", href: "https://x.com/lexingtonthemes" },
           {
-            text: "License",
-            href: "https://lexingtonthemes.com/legal/license",
+            title: "Home",
+            url: "/",
+          },
+
+          {
+            title: "About",
+            url: "/about",
+          },
+          { title: "404", url: "/404" },
+        ],
+      },
+      {
+        sectionTitle: "Forms ",
+        links: [
+          {
+            title: "Contact",
+            url: "/forms/contact",
           },
           {
-            text: "Documentation",
-            href: "https://lexingtonthemes.com/documentation/",
+            title: "Signin",
+            url: "/forms/sign-in",
+          },
+          {
+            title: "Sign up",
+            url: "/forms/sign-up",
+          },
+        ],
+      },
+      {
+        sectionTitle: "System Pages",
+        links: [
+          { title: "Links", url: "/system/links" },
+          { title: "Buttons", url: "/system/buttons" },
+          { title: "Colors", url: "/system/colors" },
+          { title: "Typography", url: "/system/typography" },
+          {
+            title: "License",
+            url: "https://lexingtonthemes.com/legal/license",
+          },
+          {
+            title: "Docs",
+            url: "https://lexingtonthemes.com/documentation",
           },
         ],
       },
     ],
   },
   {
-    title: "Content Collections",
-    columns: [
+    categoryTitle: "Content Collection",
+    links: [
       {
-        category: "Blog Pages",
+        sectionTitle: "Blog Pages",
         links: [
-          { text: "Home ", href: "/blog/" },
-          { text: "Post", href: "/blog/posts/1" },
-          { text: "Tag Index", href: "/blog/tags" },
-          { text: "Tag Category", href: "/blog/tags/photography" },
-          { text: "RSS", href: "/rss.xml" },
+          {
+            title: "Blog Home",
+            url: "/blog/home",
+          },
+          {
+            title: "Blog Post",
+            url: "/blog/posts/1",
+          },
+          { title: "Tag index", url: "/blog/tags" },
+          {
+            title: "Tag Category",
+            url: "/blog/tags/health",
+          },
+          { title: "RSS", url: "/rss.xml" },
         ],
       },
       {
-        category: "Team",
+        sectionTitle: "Help Center",
         links: [
-          { text: "Home", href: "/team/" },
-          { text: "Details", href: "/team/jordan-wells" },
+          {
+            title: "Home",
+            url: "/helpcenter/home",
+          },
+          {
+            title: "Details",
+            url: "/helpcenter/1",
+          },
         ],
       },
       {
-        category: "Legal",
+        sectionTitle: "Utility Pages",
         links: [
-          { text: "Terms", href: "/legal/terms" },
-          { text: "Privacy", href: "/legal/privacy" },
+          {
+            title: "Terms Of Use",
+            url: "/infopages/terms",
+          },
+          {
+            title: "Privacy Policy",
+            url: "/infopages/privacy",
+          },
+        ],
+      },
+      {
+        sectionTitle: "Integrations",
+        links: [
+          {
+            title: "Home",
+            url: "/integrations/home",
+            ariaLabel: "link to integrations home",
+          },
+          {
+            title: "Details",
+            url: "/integrations/1",
+            ariaLabel: "link to integrations details",
+          },
+        ],
+      },
+      {
+        sectionTitle: "Changelog",
+        links: [
+          {
+            title: "Home",
+            url: "/changelog/home",
+            ariaLabel: "link to changelog home",
+          },
+          {
+            title: "Details",
+            url: "/changelog/1",
+            ariaLabel: "link to changelog details",
+          },
+        ],
+      },
+      {
+        sectionTitle: "Team",
+        links: [
+          {
+            title: "Home",
+            url: "/team/home",
+            ariaLabel: "link to team home",
+          },
+          {
+            title: "Details",
+            url: "/team/jordan-wells",
+            ariaLabel: "link to team details",
+          },
+        ],
+      },
+      {
+        sectionTitle: "Customers",
+        links: [
+          {
+            title: "Home",
+            url: "/customers/home",
+            ariaLabel: "link to customers home",
+          },
+          {
+            title: "Details",
+            url: "/customers/1",
+            ariaLabel: "link to customers details",
+          },
         ],
       },
     ],
@@ -75,49 +174,40 @@ const pageSections = [
 
 <BaseLayout>
   <section>
-    <Wrapper variant="standard" class="py-12 lg:py-24">
-      <Text tag="h2" variant="displaySM" class="font-medium text-base-900">
+    <Wrapper variant="standard" class="py-12">
+      <Text tag="h1" variant="textBase" class="font-medium text-white">
         Overview
       </Text>
       <div class="flex flex-col mt-12 gap-12">
         {
-          pageSections.map((section) => (
-            <div>
-              <Text
-                tag="h3"
-                variant="textBase"
-                class="font-medium text-base-900"
-              >
-                {section.title}
-              </Text>
-              <div class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 xl:grid-cols-4">
-                {section.columns.map((column) => (
-                  <div>
-                    <Text
-                      tag="p"
-                      variant="textBase"
-                      class="font-medium text-base-900"
-                    >
-                      {column.category}
-                    </Text>
-                    <ul role="list" class="mt-2 ">
-                      {column.links.map((link) => (
-                        <li>
-                          <Text
-                            tag="a"
-                            variant="textSM"
-                            href={link.href}
-                            class="text-base-500 hover:text-base-900 duration-300"
+          pageData.map((category) => (
+            <>
+              <div>
+                <Text tag="h2" variant="textLG" class="font-medium text-white ">
+                  {category.categoryTitle}
+                </Text>
+                <div class="mt-4 gap-y-8 gap-x-4 grid grid-cols-2 lg:grid-cols-5 md:grid-cols-3 ">
+                  {category.links.map((section) => (
+                    <div>
+                      <Text tag="h3" variant="textBase" class="text-white">
+                        {section.sectionTitle}
+                      </Text>
+                      <div class="flex flex-col mt-4 text-sm gap-1 text-base-500">
+                        {section.links.map((link) => (
+                          <a
+                            class="hover:text-white"
+                            title={link.ariaLabel}
+                            href={link.url}
                           >
-                            {link.text}
-                          </Text>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+                            {link.title}
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            </>
           ))
         }
       </div>

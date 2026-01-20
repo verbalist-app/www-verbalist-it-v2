@@ -10,21 +10,18 @@ import Plus from "@/components/fundations/icons/Plus.astro";
 
 <BaseLayout>
   <section>
-    <Wrapper variant="standard" class="py-12 lg:py-24">
-      <Text tag="h2" variant="displaySM" class="font-medium text-base-900">
-Buttons
+    <Wrapper variant="standard" class="relative pt-32 pb-12">
+      <Text tag="h1" variant="textBase" class="font-medium text-white">
+        Buttons
       </Text>
-
-      <div
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 text-base-400 mt-12"
-      >
+      <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-12 text-base-400">
         <!-- Default -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
             <Text
               tag="p"
               variant="textXS"
-              class="font-medium uppercase text-base-900"
+              class="font-medium text-white uppercase"
             >
               Default text
             </Text>
@@ -42,7 +39,7 @@ Buttons
             <Text
               tag="p"
               variant="textXS"
-              class="font-medium uppercase text-base-900"
+              class="font-medium text-white uppercase"
             >
               Icon
             </Text>
@@ -77,7 +74,7 @@ Buttons
             <Text
               tag="p"
               variant="textXS"
-              class="font-medium uppercase text-base-900"
+              class="font-medium text-white uppercase"
             >
               Accent text
             </Text>
@@ -95,7 +92,7 @@ Buttons
             <Text
               tag="p"
               variant="textXS"
-              class="font-medium uppercase text-base-900"
+              class="font-medium text-white uppercase"
             >
               Icon
             </Text>
@@ -130,7 +127,7 @@ Buttons
             <Text
               tag="p"
               variant="textXS"
-              class="font-medium uppercase text-base-900"
+              class="font-medium text-white uppercase"
             >
               Muted text
             </Text>
@@ -148,7 +145,7 @@ Buttons
             <Text
               tag="p"
               variant="textXS"
-              class="font-medium uppercase text-base-900"
+              class="font-medium text-white uppercase"
             >
               Icon
             </Text>
@@ -174,6 +171,63 @@ Buttons
               <Button size="xl" variant="muted" iconOnly
                 ><Plus slot="icon" size="xl" /></Button
               >
+            </div>
+          </div>
+        </div>
+        <!-- Alternative -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <Text
+              tag="p"
+              variant="textXS"
+              class="font-medium text-white uppercase"
+            >
+              Alternative text
+            </Text>
+            <div class="flex flex-col mt-2 gap-4">
+              <Button size="xxs" variant="alternative">
+                Alternative XXS
+              </Button>
+              <Button size="xs" variant="alternative"> Alternative XS </Button>
+              <Button size="sm" variant="alternative"> Alternative SM </Button>
+              <Button size="base" variant="alternative">
+                Alternative Base
+              </Button>
+              <Button size="md" variant="alternative"> Alternative MD </Button>
+              <Button size="lg" variant="alternative"> Alternative LG </Button>
+              <Button size="xl" variant="alternative"> Alternative XL </Button>
+            </div>
+          </div>
+          <div>
+            <Text
+              tag="p"
+              variant="textXS"
+              class="font-medium text-white uppercase"
+            >
+              Icon
+            </Text>
+            <div class="flex flex-col mt-2 gap-4">
+              <Button size="xxs" variant="alternative" iconOnly>
+                <Plus slot="icon" size="sm" />
+              </Button>
+              <Button size="xs" variant="alternative" iconOnly>
+                <Plus slot="icon" size="sm" />
+              </Button>
+              <Button size="sm" variant="alternative" iconOnly>
+                <Plus slot="icon" size="base" />
+              </Button>
+              <Button size="base" variant="alternative" iconOnly>
+                <Plus slot="icon" size="base" />
+              </Button>
+              <Button size="md" variant="alternative" iconOnly>
+                <Plus slot="icon" size="lg" />
+              </Button>
+              <Button size="lg" variant="alternative" iconOnly>
+                <Plus slot="icon" size="xl" />
+              </Button>
+              <Button size="xl" variant="alternative" iconOnly>
+                <Plus slot="icon" size="xl" />
+              </Button>
             </div>
           </div>
         </div>

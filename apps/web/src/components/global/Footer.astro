@@ -1,16 +1,102 @@
 ---
-// Fundations
+// Assets
+import Logo from "@/components/assets/Logo.astro";
+
+// Fundatons
 import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+const footerLinks = [
+  {
+    heading: "Navigation",
+    links: [
+      { label: "Overview", href: "/system/overview" },
+      { label: "Buttons", href: "/system/buttons" },
+      { label: "Links", href: "/system/links" },
+      { label: "Colors", href: "/system/colors" },
+      { label: "Typography", href: "/system/typography" },
+    ],
+  },
+  {
+    heading: "Stay updated",
+    links: [
+      {
+        label: "License",
+        href: "https://www.lexingtonthemes.com/legal/license",
+      },
+      {
+        label: "Documentation",
+        href: "https://www.lexingtonthemes.com/documentation",
+      },
+    ],
+  },
+  {
+    heading: "Socials",
+    links: [
+      {
+        label: "@lexingtonthemes",
+        href: "https://twitter.com/lexingtonthemes",
+      },
+      {
+        label: "@Mike_Andreuzza",
+        href: "https://twitter.com/Mike_Andreuzza",
+      },
+    ],
+  },
+  {
+    heading: "More Themes",
+    links: [
+      {
+        label: "Lexington Themes",
+        href: "https://lexingtonthemes.com/",
+      },
+    ],
+  },
+];
 ---
 
 <footer>
-  <Wrapper variant="standard" class="py-12">
-    <div class="flex items-center justify-between py-2">
-      <Text tag="p" variant="textBase">Footer</Text>
-      <Text tag="p" variant="textXS">
-        © {new Date().getFullYear()} Lexington Themes. All rights reserved.
-      </Text>
+  <Wrapper
+    variant="paddinglessDesktop"
+    class="relative py-12 overflow-hidden border-white borderb"
+  >
+    <div class="relative pb-24 gap-8 grid grid-cols-1 lg:grid-cols-3">
+      <div class="text-white">
+        <a href="/" class="flex items-center text-sm text-white gap-2">
+          <span class="sr-only">Go to homepage</span>
+          <Logo class="h-6" />
+          Flabbergasted
+        </a>
+        <p class="mt-1 text-sm font-normal text-base-500 text-balance">
+          Premium multipage themes crafted with Astro and Tailwind CSS
+        </p>
+      </div>
+      <div class="grid grid-cols-2 gap-8 xl:col-span-2 xl:col-start-3">
+        {
+          footerLinks.map((section) => (
+            <div>
+              <Text tag="h3" variant="textBase" class="text-white font-display">
+                {section.heading}
+              </Text>
+              <ul role="list" class="mt-2 text-sm space-y-1 text-base-600">
+                {section.links.map((link) => (
+                  <li>
+                    <a
+                      title="Button to your page"
+                      aria-label="your label"
+                      href={link.href}
+                      class="hover:text-white"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
     </div>
+    
+    <div aria-hidden="true" class="bg-light-vertical-stripes p-20 clip-rect-inset lg:py-62 mt-12"></div>
   </Wrapper>
 </footer>

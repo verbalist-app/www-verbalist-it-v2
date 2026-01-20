@@ -1,0 +1,82 @@
+---
+// Assets
+import Cross from "@/components/assets/Cross.astro";
+import StripesBG from "@/components/assets/StripesBG.astro";
+// Fundations
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+const features = [
+  {
+    bgClass: "bg-accent-horizontal-stripes",
+    title: "Poop Mode (aka Smelly Chaos)",
+    description:
+      "Blow things up without consequences. Simulate everything, send nothing.",
+  },
+  {
+    bgClass: "bg-base-horizontal-stripes",
+    title: "Webhooks That Actually Work",
+    description:
+      "We ping your server the second something happens — delivery, open, click, bounce, interpretive dance.",
+  },
+  {
+    bgClass: "bg-light-horizontal-stripes",
+    title: "Blink-and-yo'll-miss-it speed",
+    description:
+      "Flabbergasted responds faster than you can regret your last input. ",
+  },
+  {
+    bgClass: "bg-meshPurple",
+    title: "Doesn't butcher your address",
+    description:
+      "From “4B Elm St.” to international phone numbers, it nails the details like it's been stalking your mailbox.",
+  },
+];
+---
+
+<section>
+  <Wrapper
+    variant="standard"
+    class="relative pt-24 pb-8 border-t lg:pt-32 border-base-800"
+  >
+    <!-- Top Right Plus -->
+    <Cross class="-top-[0.6rem] -right-[0.65rem]" />
+    <!-- Top left Plus -->
+    <Cross class="-top-[0.6rem] -left-[0.65rem]" />
+    <StripesBG
+      variant="base"
+      class="absolute inset-0 mt-auto -mx-px border-t border-base-800 h-1/5"
+    />
+    <div class="relative max-w-2xl mx-auto text-center text-balance">
+      <Text tag="h2" variant="displayMD" class="text-white font-display">
+        Actually understands you in real time, no awkward pauses, no blank
+        stares
+      </Text>
+      <Text tag="p" variant="textBase" class="mt-4 text-base-500">
+        It doesn’t just keep up — it dominates. Complex addresses? Weird phone
+        numbers? Random acronyms no one should be saying out loud? All handled
+        without flinching. You talk, it listens, and responds like it actually
+        paid attention.
+      </Text>
+    </div>
+    <div
+      class="relative mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px"
+    >
+      {
+        features.map((feature) => (
+          <div class="flex flex-col justify-between h-full">
+            <div class={`aspect-12/8  ${feature.bgClass}`} />
+            <div class="h-full p-4 pb-24  bg-base-900">
+              <Text tag="h3" variant="textBase" class="text-white ">
+                {feature.title}
+              </Text>
+              <Text tag="p" variant="textSM" class="mt-2  text-base-400">
+                {feature.description}
+              </Text>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </Wrapper>
+</section>

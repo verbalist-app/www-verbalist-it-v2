@@ -1,12 +1,21 @@
 import { post } from "./post";
 import { teamMember } from "./teamMember";
-import { legalPage } from "./legalPage";
 import { siteSettings } from "./siteSettings";
+import { customer } from "./customer";
+import { integration } from "./integration";
+import { helpcenter } from "./helpcenter";
+import { changelog } from "./changelog";
+import { infopage } from "./infopage";
 
 export const schemaTypes = [
-  // Documents
+  // Content Documents
   post,
   teamMember,
-  legalPage,
+  customer,
+  integration,
+  helpcenter,
+  changelog,
+  infopage,
+  // Singleton
   siteSettings,
 ];

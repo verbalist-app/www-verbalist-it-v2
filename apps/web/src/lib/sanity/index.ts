@@ -18,5 +18,9 @@ export type * from "./types";
 export {
   transformPost,
   transformTeamMember,
-  transformLegalPage,
+  transformCustomer,
+  transformIntegration,
+  transformHelpcenter,
+  transformChangelog,
+  transformInfopage,
 } from "./transforms";

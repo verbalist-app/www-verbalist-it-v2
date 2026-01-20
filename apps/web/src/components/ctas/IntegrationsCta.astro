@@ -1,0 +1,58 @@
+---
+// Assets
+import Cross from "@/components/assets/Cross.astro";
+import StripesBG from "@/components/assets/StripesBG.astro";
+// Fundations
+import Text from "@/components/fundations/elements/Text.astro";
+import Button from "@/components/fundations/elements/Button.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+// Components
+import IntegrationsEntries2 from "@/components/integrations/IntegrationsEntries2.astro";
+// Integrations Content
+import { getCollection } from "astro:content";
+const allIntegrations = (await getCollection("integrations")).sort((a, b) =>
+  a.data.integration.localeCompare(b.data.integration)
+);
+---
+
+<Wrapper variant="paddinglessDesktop" class="relative border-t border-base-800">
+  <!-- Top Right Plus -->
+  <Cross class="-top-[0.7rem] -right-[0.65rem]" />
+  <!-- Top left Plus -->
+  <Cross class="-top-[0.7rem] -left-[0.65rem]" />
+  <StripesBG
+    aria-hidden="true"
+    variant="base"
+    direction="horizontal"
+    class="absolute inset-0 mt-auto -mx-px lg:w-1/2 lg:ml-auto lg:border-l lg:border-base-800"
+  />
+
+  <div class="relative items-center grid grid-cols-1 lg:grid-cols-2">
+    <div class="p-8 text-balance">
+      <Text
+        tag="h2"
+        variant="displayMD"
+        class="max-w-md text-white font-display"
+      >
+        Integration, minus the headache
+      </Text>
+
+      <Button
+        isLink={true}
+        size="xs"
+        variant="accent"
+        href="/integrations/home"
+        class="mt-8 w-fit"
+      >
+        See all integrations
+      </Button>
+    </div>
+    <div class="p-8 grid grid-cols-3 gap-4">
+      {
+        allIntegrations
+          .slice(0, 6)
+          .map((post) => <IntegrationsEntries2 post={post} />)
+      }
+    </div>
+  </div>
+</Wrapper>

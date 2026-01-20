@@ -1,0 +1,64 @@
+---
+// Assets
+import StripesBG from "@/components/assets/StripesBG.astro";
+// Fundations
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import Button from "@/components/fundations/elements/Button.astro";
+---
+
+<section class="overflow-hidden">
+  <Wrapper
+    variant="standard"
+    class="border-t py-24 lg:pb-80 border-base-800 relative overflow-hidden"
+  >
+    <div
+      aria-hidden="true"
+      class="pointer-events-none hidden lg:block absolute -bottom-30 left-8 h-100 w-full bg-base-horizontal-stripes"
+    >
+    </div>
+
+    <StripesBG variant="base" class="absolute inset-0 mt-auto -mx-px h-full" />
+    <div class="relative grid grid-cols-1 gap-8 lg:grid-cols-3 items-end">
+      <div class="text-balance lg:col-span-2">
+        <Text
+          tag="h2"
+          variant="displayMD"
+          class="font-medium tracking-tight text-white"
+        >
+          Subscribe, unless you hate fun
+        </Text>
+        <Text tag="p" variant="textLG" class="mt-4 text-base-300">
+          Get the latest posts, updates, and half-decent advice — straight to
+          your inbox. No spam. Just vibes.
+        </Text>
+      </div>
+
+      <form class="space-y-2 lg:ml-auto lg:w-full">
+        <div class="w-full">
+          <label for="email" class="sr-only">Email Address</label>
+          <div class="relative z-0 focus-within:z-10">
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="you@example.com"
+              class="block w-full px-4 py-2 text-xs leading-tight align-middle border border-transparent bg-base-900 transition duration-300 ease-in-out focus:z-10 h-9 rounded-md text-base-500 ring-1 ring-base-800 placeholder-base-400 focus:border-accent-500 focus:ring-accent-600 focus:ring-2 focus:outline-none shadow-sm"
+              inputmode="email"
+            />
+          </div>
+        </div>
+
+        <Button
+          size="xs"
+          variant="accent"
+          gap="sm"
+          type="submit"
+          class="w-full"
+        >
+          Send Message
+        </Button>
+      </form>
+    </div>
+  </Wrapper>
+</section>

@@ -1,0 +1,143 @@
+---
+// Fundations
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Text from "@/components/fundations/elements/Text.astro";
+import Button from "@/components/fundations/elements/Button.astro";
+// Sections
+import LogoCloud2 from "@/components/testimonials/LogoCloud2.astro";
+// Icons
+import GoogleColor from "@/components/fundations/icons/GoogleColor.astro";
+const backgrounds = [
+  "bg-meshMagenta",
+  "bg-base-vertical-stripes",
+  "bg-accent-horizontal-stripes",
+  "bg-base-900",
+  "bg-base-horizontal-stripes",
+  "bg-meshGreen",
+  "bg-light-vertical-stripes",
+  "bg-base-900",
+  "bg-base-vertical-stripes",
+  "bg-meshMagenta",
+  "bg-accent-horizontal-stripes",
+  "bg-base-900",
+  "bg-base-900",
+  "bg-base-horizontal-stripes",
+  "bg-meshGreen",
+  "bg-light-vertical-stripes",
+  "bg-base-900",
+  "bg-accent-horizontal-stripes",
+];
+---
+
+<BaseLayout>
+  <div class="flex overflow-hidden border-t border-base-800 bg-base-900">
+    <div
+      class="relative flex flex-col items-center justify-center w-full py-8 lg:w-2/3"
+    >
+      <div class="relative w-full max-w-md pt-12">
+        <div>
+          <Text
+            tag="h1"
+            variant="displayMD"
+            class="font-medium tracking-tight text-white"
+          >
+            Sign in
+          </Text>
+          <Text
+            tag="p"
+            variant="textBase"
+            class="max-w-xl mx-auto mt-4 text-base-500"
+          >
+            Welcome back. Enter your email and password like you haven’t
+            forgotten them for the 12th time this week.
+          </Text>
+        </div>
+        <form class="mt-10 space-y-4">
+          <div class="w-full">
+            <div class="flex items-baseline justify-between mb-1">
+              <label for="email" class="text-sm font-medium text-base-500"
+                >Email Address</label
+              >
+            </div>
+            <div class="relative z-0 focus-within:z-10">
+              <input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="you@example.com"
+                class="block w-full px-4 py-2 text-xs leading-tight align-middle border border-transparent bg-base-900 transition duration-300 ease-in-out focus:z-10 h-9 rounded-md text-base-500 ring-1 ring-base-800 placeholder-base-400 focus:border-accent-500 focus:ring-accent-600 focus:ring-2 focus:outline-none shadow-sm"
+                inputmode="email"
+              />
+            </div>
+          </div>
+          <div class="w-full">
+            <div class="flex items-baseline justify-between mb-1">
+              <label for="password" class="text-sm font-medium text-base-500"
+                >Password</label
+              >
+            </div>
+            <div class="relative z-0 focus-within:z-10">
+              <input
+                required
+                id="password"
+                name="password"
+                placeholder="••••••••"
+                class="block w-full px-4 py-2 text-xs leading-tight align-middle border border-transparent bg-base-900 transition duration-300 ease-in-out focus:z-10 h-9 rounded-md text-base-500 ring-1 ring-base-800 placeholder-base-400 focus:border-accent-500 focus:ring-accent-600 focus:ring-2 focus:outline-none shadow-sm"
+                aria-required="true"
+              />
+            </div>
+          </div>
+          <div class="flex items-center">
+            <input
+              type="checkbox"
+              id="login-remember"
+              name="login-remember"
+              class="rounded shadow border-base-800 bg-base-900 text-accent-600 focus:ring-accent-500 focus:ring-offset-2 focus:ring-2 size-4"
+            />
+            <label
+              for="login-remember"
+              class="ml-2 text-sm font-medium text-base-500"
+            >
+              Remember me for 30 days
+            </label>
+          </div>
+          <div class="flex flex-col gap-2">
+            <Button size="base" variant="accent" gap="sm" type="submit">
+              Sign in with email
+            </Button>
+            <Button size="base" variant="muted" gap="sm" type="submit">
+              <GoogleColor />
+              Sign in with Google
+            </Button>
+          </div>
+        </form>
+        <p class="mt-4 text-xs font-medium text-base-500">
+          Dont' have an account?
+          <a
+            href="/forms/sign-up"
+            class="font-medium text-accent-500 hover:text-base-500"
+          >
+            Sign up
+          </a>
+        </p>
+      </div>
+      <div class="flex items-center justify-center w-full mt-24 gap-8 invert">
+        <LogoCloud2 />
+      </div>
+    </div>
+    <div
+      class="relative hidden overflow-hidden border-r lg:block lg:w-1/3 lg:order-first border-base-800"
+    >
+      <div class="grid grid-cols-3">
+        {
+          backgrounds.map((bg) => (
+            <div
+              aria-hidden="true"
+              class={`pointer-events-none ${bg} size-full aspect-square`}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</BaseLayout>

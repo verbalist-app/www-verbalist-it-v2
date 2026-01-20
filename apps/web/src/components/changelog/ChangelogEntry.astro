@@ -1,0 +1,52 @@
+---
+// Fundations
+import Text from "@/components/fundations/elements/Text.astro";
+import Button from "@/components/fundations/elements/Button.astro";
+// Icons
+import ChevronRight from "@/components/fundations/icons/ChevronRight.astro";
+
+// Content
+const { page, description, pubDate, bgColor, url } = {
+  url: "/changelog/" + Astro.props.post.slug,
+  page: Astro.props.post.data.page,
+  bgColor: Astro.props.post.data.bgColor,
+  description: Astro.props.post.data.description,
+  pubDate: new Date(Astro.props.post.data.pubDate).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "2-digit",
+  }),
+};
+---
+
+<article
+  class="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 overflow-hidden"
+>
+  <div class="flex flex-col h-full justify-between p-4 pt-24 bg-base-900">
+    <div class="text-balance">
+      <Text tag="p" variant="textXS" class="text-base-500">
+        {pubDate}
+      </Text>
+      <Text tag="h3" variant="displaySM" class="text-white mt-8">
+        {page}
+      </Text>
+      <Text tag="p" variant="textSM" class="text-base-400 mt-2">
+        {description}
+      </Text>
+    </div>
+    <Button
+      iconOnly
+      size="xs"
+      variant="muted"
+      href={url}
+      default
+      isLink={true}
+      title={`Read help article: ${page}`}
+      aria-label={`Read help article: ${page}`}
+      class="mt-8"
+    >
+      <ChevronRight slot="icon" size="sm" />
+    </Button>
+  </div>
+  <div class={`aspect-12/8 p-4 -my-px lg:col-span-2  ${bgColor} h-full`}></div>
+</article>

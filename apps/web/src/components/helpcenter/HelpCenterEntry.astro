@@ -1,0 +1,55 @@
+---
+// Fundations
+import Text from "@/components/fundations/elements/Text.astro";
+import Button from "@/components/fundations/elements/Button.astro";
+// Icons
+import User from "@/components/fundations/icons/User.astro";
+import Shield from "@/components/fundations/icons/Shield.astro";
+import Settings from "@/components/fundations/icons/Settings.astro";
+import InfoCircle from "@/components/fundations/icons/InfoCircle.astro";
+import CreditCard from "@/components/fundations/icons/CreditCard.astro";
+import ChevronRight from "@/components/fundations/icons/ChevronRight.astro";
+// Content
+const { page, description, url, iconId } = {
+  url: "/helpcenter/" + Astro.props.post.slug,
+  page: Astro.props.post.data.page,
+  description: Astro.props.post.data.description,
+  iconId: Astro.props.post.data.iconId || "info-circle", // Default icon if not provided
+};
+// Map iconId values to actual icon components
+const iconMap = {
+  user: User,
+  settings: Settings,
+  shield: Shield,
+  creditCard: CreditCard,
+};
+// Select the correct icon component
+const IconComponent = iconMap[iconId] || InfoCircle; // Default to InfoCircle if not found
+---
+
+<div class="flex flex-col h-full justify-between p-4 bg-base-900">
+  <div>
+    <IconComponent size="sm" class="text-white" />
+    <div class="pt-24 bg-base-900">
+      <Text tag="h3" variant="textSM" class="mt-12 font-medium text-white">
+        {page}
+      </Text>
+      <Text tag="p" variant="textSM" class="mt-2 text-base-500"
+        >{description}</Text
+      >
+    </div>
+  </div>
+  <Button
+    iconOnly
+    size="xs"
+    variant="muted"
+    href={url}
+    default
+    isLink={true}
+    title={`Read help article: ${page}`}
+    aria-label={`Read help article: ${page}`}
+    class="mt-8"
+  >
+    <ChevronRight slot="icon" size="sm" />
+  </Button>
+</div>

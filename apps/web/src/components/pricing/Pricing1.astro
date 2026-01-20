@@ -1,0 +1,439 @@
+---
+// Assets
+import StripesBG from "@/components/assets/StripesBG.astro";
+// Components
+import Text from "@/components/fundations/elements/Text.astro";
+import Button from "@/components/fundations/elements/Button.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+// Icons (import all used ones)
+import Check from "@/components/fundations/icons/Check.astro";
+import X from "@/components/fundations/icons/X.astro";
+import Minus from "@/components/fundations/icons/Minus.astro";
+const pricingOptions = [
+  {
+    id: "Play",
+    cardClass: "bg-base-900",
+    primaryTextColor: "text-white",
+    secondaryTextColor: "text-base-500",
+    featuresBorderColor: "bg-meshLightBlue ",
+    title: "Play",
+    monthly: "$0",
+    annual: "$0",
+    description: "For testing. Or trolling. Up to you.",
+    button: {
+      text: "Try it free",
+      variant: "muted",
+    },
+    features: [
+      { text: "500 voice runs" },
+      { text: "1 sample voice" },
+      { text: "No support" },
+    ],
+  },
+  {
+    id: "Solo",
+    cardClass: "bg-base-900",
+    primaryTextColor: "text-white",
+    secondaryTextColor: "text-base-500",
+    featuresBorderColor: "bg-meshRainbow ",
+    title: "Solo",
+    monthly: "$19.00",
+    annual: "$14.00",
+    description: "For indie devs who want voices that don’t suck.",
+    button: {
+      text: "Get started",
+      variant: "muted",
+    },
+    features: [
+      { text: "5,000 runs" },
+      { text: "1 custom voice" },
+      { text: "API access" },
+      { text: "Email support" },
+    ],
+  },
+  {
+    id: "Pro",
+    cardClass: "bg-base-900",
+    primaryTextColor: "text-white",
+    secondaryTextColor: "text-base-500",
+    featuresBorderColor: "bg-meshPurple",
+    title: "Pro",
+    monthly: "$49.00",
+    annual: "$39.00",
+    description: "For builders shipping voice-first things.",
+    button: {
+      text: "Level up",
+      variant: "muted",
+    },
+    features: [
+      { text: "25,000 runs" },
+      { text: "5 voices" },
+      { text: "Real-time stream" },
+      { text: "Webhooks" },
+      { text: "Priority chat" },
+    ],
+  },
+  {
+    id: "Studio",
+    cardClass: "bg-base-800",
+    primaryTextColor: "text-white",
+    secondaryTextColor: "text-base-400",
+    featuresBorderColor: "bg-meshYellow",
+    title: "Studio",
+    monthly: "$99.00",
+    annual: "$79.00",
+    description: "For teams building legit voice apps.",
+    button: {
+      text: "Start building",
+      variant: "alternative",
+    },
+    features: [
+      { text: "100,000+ runs" },
+      { text: "Unlimited voices" },
+      { text: "Team access" },
+      { text: "Multi-region" },
+      { text: "SSO & audit logs" },
+    ],
+  },
+  {
+    id: "Blackbox",
+    cardClass: "bg-base-900 text-white",
+    primaryTextColor: "text-white",
+    secondaryTextColor: "text-base-400",
+    featuresBorderColor: "bg-meshMagenta",
+    title: "Blackbox",
+    monthly: "Custom",
+    annual: "Custom",
+    description: "For teams too big to fail. Or explain.",
+    button: {
+      text: "Contact sales",
+      variant: "muted",
+    },
+    features: [
+      { text: "Private infra" },
+      { text: "Custom models" },
+      { text: "Guaranteed latency" },
+      { text: "Dedicated support" },
+      { text: "Confidential onboarding" },
+    ],
+  },
+];
+// TAble
+export const pricingFeatures = [
+  {
+    category: "Voice Generation",
+    features: [
+      {
+        label: "Monthly Limit",
+        values: ["500", "5,000", "25,000", "100,000+", "Unlimited"],
+      },
+      {
+        label: "Real-Time Streaming",
+        values: ["no", "no", "yes", "yes", "yes"],
+      },
+      {
+        label: "Custom Voices",
+        values: ["none", "1", "5", "Unlimited", "Unlimited"],
+      },
+      { label: "Multi-language", values: ["no", "no", "yes", "yes", "yes"] },
+      {
+        label: "Audio Format Options",
+        values: ["mp3", "mp3", "mp3/wav", "all", "all"],
+      },
+    ],
+  },
+  {
+    category: "Integrations & API",
+    features: [
+      {
+        label: "API Access",
+        values: ["basic", "basic", "full", "full", "custom"],
+      },
+      { label: "Webhooks", values: ["no", "no", "yes", "yes", "yes"] },
+      { label: "Voice Switching", values: ["no", "no", "yes", "yes", "yes"] },
+      {
+        label: "Latency Control",
+        values: ["no", "no", "basic", "tuned", "dedicated"],
+      },
+      { label: "SDKs", values: ["no", "no", "yes", "yes", "custom"] },
+    ],
+  },
+  {
+    category: "Security & Access",
+    features: [
+      { label: "SSO", values: ["no", "no", "no", "yes", "yes"] },
+      { label: "Team Access", values: ["no", "no", "yes", "yes", "yes"] },
+      { label: "Audit Logs", values: ["no", "no", "no", "yes", "yes"] },
+      { label: "Private Models", values: ["no", "no", "no", "no", "yes"] },
+      {
+        label: "Data Region Control",
+        values: ["no", "no", "no", "yes", "yes"],
+      },
+    ],
+  },
+  {
+    category: "Support & Extras",
+    features: [
+      {
+        label: "Docs & Guides",
+        values: ["yes", "yes", "yes", "yes", "custom"],
+      },
+      {
+        label: "Email Support",
+        values: ["no", "yes", "yes", "yes", "dedicated"],
+      },
+      { label: "Chat Support", values: ["no", "no", "yes", "yes", "VIP"] },
+      {
+        label: "Onboarding Help",
+        values: ["no", "no", "no", "yes", "white-glove"],
+      },
+      { label: "Custom Contracts", values: ["no", "no", "no", "no", "yes"] },
+    ],
+  },
+];
+---
+
+<section>
+  <Wrapper
+    variant="standard"
+    class="relative pt-24 pb-8 border-t lg:pt-32 border-base-800"
+  >
+    <StripesBG
+      variant="accent"
+      class="absolute inset-0 hidden h-full p-20 mt-auto -mx-px lg:block lg:w-1/2 lg:ml-auto clip-rect-inset"
+    />
+    <div class="max-w-md text-balance">
+      <Text tag="h2" variant="displayMD" class="text-white font-display">
+        Pricing for whatever stage you’re pretending to be at
+      </Text>
+      <Text tag="p" variant="textBase" class="mt-4 text-base-500">
+        Free if you’re just tinkering. Paid when things get accidentally
+        serious.
+      </Text>
+      <div
+        aria-labelledby="pricing-toggle"
+        class="relative z-0 inline-flex justify-center p-1.5 mx-auto mt-8 ring ring-base-800 overflow-hidden bg-base-800 gap-4 lg:mx-0 rounded-full w-fit"
+      >
+        <div
+          id="toggle-slider"
+          class="absolute inset-0 w-1/2 rounded-full bg-base-900 transition-transform duration-200 ease-in-out"
+        >
+        </div>
+        <button
+          id="monthly-btn"
+          class="relative z-10 flex items-center justify-center w-full h-6 px-2 text-xs font-medium text-white focus:outline-none transition-colors duration-300"
+          type="button"
+          aria-pressed="true"
+        >
+          Monthly
+        </button>
+        <button
+          id="annual-btn"
+          class="relative z-10 flex items-center justify-center w-full h-6 px-2 text-xs font-medium focus:outline-none transition-colors duration-300 text-base-200 hover:text-white focus:text-white"
+          type="button"
+          aria-pressed="false"
+        >
+          Annual
+        </button>
+      </div>
+    </div>
+  </Wrapper>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+    {
+      pricingOptions.map((tier) => (
+        <div class={`flex flex-col p-4 ${tier.cardClass}`}>
+          <div
+            class={`lg:sticky lg:top-25 lg:z-50 bg-base-800 ${tier.cardClass}`}
+          >
+            <Text
+              tag="h3"
+              variant="textBase"
+              class={` font-medium mt-5 ${tier.primaryTextColor}`}
+            >
+              {tier.title}
+            </Text>
+            <Text
+              variant="textXL"
+              class={`font-medium flex items-baseline tracking-tighter mt-8   ${tier.primaryTextColor}`}
+            >
+              <span
+                class="pricing-amount"
+                data-monthly={tier.monthly}
+                data-annual={tier.annual}
+              >
+                {tier.monthly}
+              </span>
+              <span
+                class={`text-sm ml-1 font-normal tracking-normal ${tier.secondaryTextColor}`}
+              >
+                <span class="monthly-text">/month</span>
+                <span class="annual-text" style="display: none;">
+                  /annually
+                </span>
+              </span>
+            </Text>
+            <Text
+              tag="p"
+              variant="textSM"
+              class={`mt-2 text-balance ${tier.secondaryTextColor}`}
+            >
+              {tier.description}
+            </Text>
+            <div class={`h-1 mt-4 -mx-4 ${tier.featuresBorderColor}`} />
+            <Button class="w-full mt-8" variant={tier.button.variant} size="sm">
+              {tier.button.text}
+            </Button>
+          </div>
+          <div class="flex flex-col justify-between flex-1 ">
+            <div class="mt-4">
+              <Text
+                tag="p"
+                variant="textXS"
+                class={`font-mono uppercase ${tier.secondaryTextColor}`}
+              >
+                This plan includes
+              </Text>
+              <ul
+                class={`flex flex-col mt-4 text-sm  gap-y-3 ${tier.primaryTextColor}`}
+                role="list"
+              >
+                {tier.features.map((feature, index) => (
+                  <li class="flex items-start gap-2">
+                    <Check
+                      size="sm"
+                      class={`shrink-0 ${tier.secondaryTextColor}`}
+                    />
+                    <span>{feature.text}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+  <div class="relative z-0 w-full overflow-x-auto scrollbar-hide">
+    <div class="min-w-[768px] overflow-hidden">
+      <table class="w-full text-sm">
+        <thead class="text-center border-b border-base-900">
+          <tr>
+            <th class="px-4 pt-8 pb-2 font-medium text-left text-white"
+              >Features</th
+            >
+            <th class="px-4 py-2 font-medium text-white">Play</th>
+            <th class="px-4 py-2 font-medium text-white">Solo</th>
+            <th class="px-4 py-2 font-medium text-white">Pro</th>
+            <th class="px-4 py-2 font-medium text-white">Studio</th>
+            <th class="px-4 py-2 font-medium text-white">Blackbox</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            pricingFeatures.map(({ category, features }) => (
+              <>
+                <tr>
+                  <td
+                    colspan="5"
+                    class="px-4 py-12 text-base font-medium text-white border-b border-base-900"
+                  >
+                    {category}
+                  </td>
+                </tr>
+                {features.map(({ label, values }) => (
+                  <tr class="border-b border-base-900 even:bg-white/2">
+                    <td class="px-4 py-2 text-base-400">{label}</td>
+                    {values.map((value, i) => (
+                      <td class="px-4 py-4 text-center text-base-50">
+                        {value === "yes" ? (
+                          <X size="sm" class="mx-auto " />
+                        ) : value === "no" ? (
+                          <Minus size="sm" class="mx-auto " />
+                        ) : (
+                          value
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script type="module">
+    // Initialize vanilla JS pricing toggle functionality
+    document.addEventListener("DOMContentLoaded", function () {
+      const monthlyBtn = document.getElementById("monthly-btn");
+      const annualBtn = document.getElementById("annual-btn");
+      const toggleSlider = document.getElementById("toggle-slider");
+      const pricingAmounts = document.querySelectorAll(".pricing-amount");
+      const monthlyTexts = document.querySelectorAll(".monthly-text");
+      const annualTexts = document.querySelectorAll(".annual-text");
+      // accent state is monthly
+      let currentDuration = "monthly";
+      // Function to update UI based on selected duration
+      function updatePricingUI(duration) {
+        // Update toggle slider position
+        if (duration === "monthly") {
+          toggleSlider.style.transform = "translateX(0)";
+          monthlyBtn.classList.add("text-white");
+          monthlyBtn.classList.remove(
+            "focus:text-base-200",
+            "hover:text-base-200"
+          );
+          annualBtn.classList.remove("text-white");
+          annualBtn.classList.add(
+            "text-base-200",
+            "hover:text-white",
+            "focus:text-white"
+          );
+          monthlyBtn.setAttribute("aria-pressed", "true");
+          annualBtn.setAttribute("aria-pressed", "false");
+        } else {
+          toggleSlider.style.transform = "translateX(100%)";
+          annualBtn.classList.add("text-white");
+          annualBtn.classList.remove(
+            "focus:text-base-200",
+            "hover:text-base-200"
+          );
+          monthlyBtn.classList.remove("text-white");
+          monthlyBtn.classList.add(
+            "text-base-200",
+            "hover:text-white",
+            "focus:text-white"
+          );
+          monthlyBtn.setAttribute("aria-pressed", "false");
+          annualBtn.setAttribute("aria-pressed", "true");
+        }
+        // Update pricing text
+        pricingAmounts.forEach((amount) => {
+          amount.textContent = amount.dataset[duration];
+        });
+        // Show/hide appropriate text
+        if (duration === "monthly") {
+          monthlyTexts.forEach((text) => (text.style.display = "inline"));
+          annualTexts.forEach((text) => (text.style.display = "none"));
+        } else {
+          monthlyTexts.forEach((text) => (text.style.display = "none"));
+          annualTexts.forEach((text) => (text.style.display = "inline"));
+        }
+        // Update current duration
+        currentDuration = duration;
+      }
+      // Add event listeners to buttons
+      monthlyBtn.addEventListener("click", function () {
+        updatePricingUI("monthly");
+      });
+      annualBtn.addEventListener("click", function () {
+        updatePricingUI("annual");
+      });
+      // Initialize UI
+      updatePricingUI(currentDuration);
+    });
+  </script>
+</section>

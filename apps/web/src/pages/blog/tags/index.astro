@@ -1,38 +1,83 @@
 ---
+// Assets
+import Cross from "@/components/assets/Cross.astro";
 // Fundations
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
-// Sanity
-import { sanityFetch, allTagsQuery } from "@/lib/sanity";
-
-const tags = await sanityFetch<string[]>(allTagsQuery);
+// Content
+import { getAllPosts } from "@/lib/data";
 const pageTitle = "Tag Index";
+// Get all posts
+const allPosts = await getAllPosts();
+// Extract tags from all posts and count occurrences
+const tagCounts = allPosts.reduce((acc, post) => {
+  post.data.tags.forEach((tag) => {
+    acc[tag] = (acc[tag] || 0) + 1; // Count each tag per post
+  });
+  return acc;
+}, {});
+// Extract unique tags for display
+const tags = Object.keys(tagCounts);
+// Function to get the bgColor for a specific tag
+function getTagBgColor(tag) {
+  const filteredPosts = allPosts.filter((post) => post.data.tags.includes(tag));
+  if (filteredPosts.length > 0) {
+    return filteredPosts[0].data.bgColor || "bg-base-900"; // fallback
+  }
+  return "bg-base-900"; // default if none found
+}
 ---
 
 <BaseLayout pageTitle={pageTitle}>
-  <section>
-    <Wrapper variant="standard" class="py-24 lg:pt-48">
-      <Text tag="h1" variant="textBase" class="font-medium text-base-900">
-        Tag directory</Text
-      >
+  <Wrapper variant="standard" class="relative pt-32 pb-12">
+    <!-- Top Right Plus -->
+    <Cross class="-top-[0.6rem] -right-[0.65rem] z-51" />
+    <!-- Top left Plus -->
+    <Cross class="-top-[0.6rem] -left-[0.65rem] z-51" />
 
-      <ol role="list" class="flex flex-col mt-8 gap-1">
-        {
-          tags.map((tag, index) => (
-            <li>
-              <Text
-                tag="a"
-                variant="textSM"
-                class="capitalize  text-base-500 hover:text-base-900 border-black/20 duration-300"
-                href={`/blog/tags/${tag}`}
-              >
-                {tag}
+    <div class="max-w-xl text-balance">
+      <Text
+        tag="h1"
+        variant="displayMD"
+        class="tracking-tight text-white font-display"
+      >
+        Explore all our tags
+      </Text>
+      <Text
+        tag="p"
+        variant="textBase"
+        class="max-w-xl mx-auto mt-4 text-base-400"
+      >
+        Every post, neatly labeled so you don’t have to guess what’s behind the
+        click. It’s like email, but organized.
+      </Text>
+    </div>
+  </Wrapper>
+  <div
+    class="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px border-t border-base-800"
+  >
+    {
+      tags.map((tag) => (
+        <div class="relative flex flex-col group">
+          <a href={`/blog/tags/${tag}`} class="absolute inset-0 z-10" />
+          {/* Display the image next to the tag */}
+          <div class={`aspect-12/8 p-4 ${getTagBgColor(tag)}`} />
+
+          <div class="p-4 bg-base-900">
+            <Text
+              tag="h3"
+              variant="textBase"
+              class="flex items-start justify-between mt-1 font-medium capitalize gap-4 text-white  font-display"
+            >
+              {tag}
+              <Text tag="span" variant="textXS" class="text-base-500">
+                ({tagCounts[tag]})
               </Text>
-            </li>
-          ))
-        }
-      </ol>
-    </Wrapper>
-  </section>
+            </Text>
+          </div>
+        </div>
+      ))
+    }
+  </div>
 </BaseLayout>

@@ -2,8 +2,12 @@ import type { StructureBuilder } from "sanity/structure";
 import {
   DocumentIcon,
   UsersIcon,
-  DocumentTextIcon,
   CogIcon,
+  PackageIcon,
+  HelpCircleIcon,
+  CalendarIcon,
+  DocumentsIcon,
+  ComposeIcon,
 } from "@sanity/icons";
 
 // Singleton document IDs
@@ -27,12 +31,44 @@ export const structure = (S: StructureBuilder) =>
         .schemaType("teamMember")
         .child(S.documentTypeList("teamMember").title("Team Members")),
 
-      // Legal Pages
+      // Customers
       S.listItem()
-        .title("Legal Pages")
-        .icon(DocumentTextIcon)
-        .schemaType("legalPage")
-        .child(S.documentTypeList("legalPage").title("Legal Pages")),
+        .title("Customers")
+        .icon(ComposeIcon)
+        .schemaType("customer")
+        .child(S.documentTypeList("customer").title("Customers")),
+
+      // Integrations
+      S.listItem()
+        .title("Integrations")
+        .icon(PackageIcon)
+        .schemaType("integration")
+        .child(S.documentTypeList("integration").title("Integrations")),
+
+      S.divider(),
+
+      // Help Center
+      S.listItem()
+        .title("Help Center")
+        .icon(HelpCircleIcon)
+        .schemaType("helpcenter")
+        .child(S.documentTypeList("helpcenter").title("Help Center Articles")),
+
+      // Changelog
+      S.listItem()
+        .title("Changelog")
+        .icon(CalendarIcon)
+        .schemaType("changelog")
+        .child(S.documentTypeList("changelog").title("Changelog Entries")),
+
+      S.divider(),
+
+      // Info Pages (Privacy, Terms, etc.)
+      S.listItem()
+        .title("Info Pages")
+        .icon(DocumentsIcon)
+        .schemaType("infopage")
+        .child(S.documentTypeList("infopage").title("Info Pages")),
 
       S.divider(),
 
