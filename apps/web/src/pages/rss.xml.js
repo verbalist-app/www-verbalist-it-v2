@@ -1,9 +1,8 @@
 import rss from "@astrojs/rss";
-import { sanityFetch, allPostsQuery, transformPost } from "../lib/sanity";
+import { getAllPosts } from "../lib/data";
 
 export async function GET(context) {
-  const sanityPosts = await sanityFetch(allPostsQuery);
-  const posts = sanityPosts.map(transformPost);
+  const posts = await getAllPosts();
 
   return rss({
     title: "Lexington Themes",

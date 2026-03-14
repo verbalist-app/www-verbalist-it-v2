@@ -9,7 +9,8 @@
     "build:web": "pnpm --filter @lexington/web build",
     "build:studio": "pnpm --filter @lexington/studio build",
     "clean": "bash scripts/clean.sh",
-    "migrate": "cd scripts && npx tsx migrate-to-sanity.ts"
+    "migrate": "cd scripts && npx tsx migrate-to-sanity.ts",
+    "seed:all": "cd scripts && npx tsx migrate-to-sanity.ts --full"
   },
   "packageManager": "pnpm@9.15.0",
   "devDependencies": {

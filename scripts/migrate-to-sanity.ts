@@ -605,10 +605,95 @@ async function migrateInfopages() {
 }
 
 // =============================================================================
+// FULL SEED: DELETE ALL THEN CREATE (one document per content type)
+// =============================================================================
+
+const CONTENT_TYPES = [
+  "post",
+  "teamMember",
+  "customer",
+  "integration",
+  "helpcenter",
+  "changelog",
+  "infopage",
+] as const;
+
+const BATCH_SIZE = 25;
+const DELAY_MS = 2500;
+
+/** Fetch all document ids for a given _type */
+async function fetchIdsByType(type: string): Promise<string[]> {
+  const ids = await client.fetch<string[]>(
+    `*[_type == $type]._id`,
+    { type }
+  );
+  return ids;
+}
+
+/** Delete documents by id in batches of 25 */
+async function deleteByIds(ids: string[]): Promise<void> {
+  for (let i = 0; i < ids.length; i += BATCH_SIZE) {
+    const batch = ids.slice(i, i + BATCH_SIZE);
+    const transaction = client.transaction();
+    for (const id of batch) {
+      transaction.delete(id);
+    }
+    await transaction.commit();
+  }
+}
+
+/** Document ids that will be created from current content dirs (one per type) */
+function getIdsToCreate(): string[] {
+  const posts = readMarkdownFiles(path.join(CONTENT_PATH, "posts"));
+  const team = readMarkdownFiles(path.join(CONTENT_PATH, "team"));
+  const customers = readMarkdownFiles(path.join(CONTENT_PATH, "customers"));
+  const integrations = readMarkdownFiles(
+    path.join(CONTENT_PATH, "integrations")
+  );
+  const helpcenter = readMarkdownFiles(path.join(CONTENT_PATH, "helpcenter"));
+  const changelog = readMarkdownFiles(path.join(CONTENT_PATH, "changelog"));
+  const infopages = readMarkdownFiles(path.join(CONTENT_PATH, "infopages"));
+
+  const ids: string[] = [];
+  posts.forEach((p) => ids.push(`post-${p.slug}`));
+  team.forEach((t) => ids.push(`team-${t.slug}`));
+  customers.forEach((c) => ids.push(`customer-${c.slug}`));
+  integrations.forEach((i) => ids.push(`integration-${i.slug}`));
+  helpcenter.forEach((h) => ids.push(`helpcenter-${h.slug}`));
+  changelog.forEach((c) => ids.push(`changelog-${c.slug}`));
+  infopages.forEach((p) => ids.push(`infopage-${p.slug}`));
+  return ids;
+}
+
+/** Full seed: delete all documents of each type, then by exact ids, wait, then create */
+async function runFullSeed() {
+  console.log("\n🗑️  Full seed: deleting all existing documents...\n");
+
+  for (const type of CONTENT_TYPES) {
+    const ids = await fetchIdsByType(type);
+    if (ids.length === 0) {
+      console.log(`  ${type}: none found`);
+      continue;
+    }
+    console.log(`  ${type}: deleting ${ids.length} document(s) in batches of ${BATCH_SIZE}`);
+    await deleteByIds(ids);
+  }
+
+  const idsToCreate = getIdsToCreate();
+  if (idsToCreate.length > 0) {
+    console.log(`\n  Id-based cleanup: deleting ${idsToCreate.length} id(s) that will be re-created`);
+    await deleteByIds(idsToCreate);
+  }
+
+  console.log(`\n  Waiting ${DELAY_MS / 1000}s for Sanity to apply mutations...\n`);
+  await new Promise((resolve) => setTimeout(resolve, DELAY_MS));
+}
+
+// =============================================================================
 // MAIN MIGRATION
 // =============================================================================
 
-async function migrate() {
+async function migrate(fullSeed: boolean = false) {
   console.log("🚀 Starting migration to Sanity...\n");
   console.log("Project ID:", projectId);
   console.log("Dataset:", dataset);
@@ -626,6 +711,10 @@ async function migrate() {
   }
 
   try {
+    if (fullSeed) {
+      await runFullSeed();
+    }
+
     // Migrate in dependency order
     // 1. Team members first (posts reference them)
     const teamMap = await migrateTeamMembers();
@@ -652,4 +741,5 @@ async function migrate() {
   }
 }
 
-migrate();
+const fullSeed = process.argv.includes("--full") || process.env.SEED_ALL === "true";
+migrate(fullSeed);

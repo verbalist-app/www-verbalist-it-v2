@@ -8,7 +8,7 @@ import Button from "@/components/fundations/elements/Button.astro";
 import ChevronRight from "@/components/fundations/icons/ChevronRight.astro";
 // Content
 const { integration, description, url, logo } = {
-  url: "/integrations/" + Astro.props.post.slug,
+  url: "/integrations/" + Astro.props.post.id,
   integration: Astro.props.post.data.integration,
   description: Astro.props.post.data.description,
   logo: Astro.props.post.data.logo.url,

@@ -151,9 +151,13 @@ SANITY_WRITE_TOKEN=your-token-here
 pnpm migrate
 ```
 
-The script automatically reads `SANITY_PROJECT_ID` and `SANITY_WRITE_TOKEN` from `apps/web/.env`.
+**Full seed (one document per content type in Studio):** To clear all existing Sanity documents and re-seed exactly the content from `apps/web/src/content/` (one post, one team member, one customer, etc.), run:
 
-This uploads all content from `apps/web/src/content/` to your Sanity project, including images.
+```bash
+pnpm run seed:all
+```
+
+This deletes all documents of each content type (in batches), then removes any documents with the same ids that will be created (to avoid "immutable attribute _type may not be modified" errors), waits 2–3 seconds for Sanity to apply mutations, then creates one document per collection. The script reads `SANITY_PROJECT_ID` and `SANITY_WRITE_TOKEN` from `apps/web/.env`.
 
 ### Step 6: Start Development
 
@@ -407,6 +411,7 @@ Run `pnpm install` in the project root to reinstall dependencies.
 | `pnpm dev:studio` | Start CMS only                                 |
 | `pnpm build`      | Build both for production                      |
 | `pnpm migrate`    | Migrate content to Sanity (requires token)     |
+| `pnpm run seed:all` | Full seed: clear then create one doc per content type (requires token) |
 | `pnpm clean`      | Remove node_modules/.env/dist before packaging |
 
 ---

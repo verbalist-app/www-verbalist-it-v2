@@ -9,7 +9,7 @@
  * The data shape is identical regardless of the source.
  */
 
-import { getCollection, getEntry } from "astro:content";
+import { getCollection, getEntry, render } from "astro:content";
 
 // Import types statically (these don't affect runtime)
 import type {
@@ -64,10 +64,10 @@ export async function getAllPosts() {
 
   const posts = await getCollection("posts");
   return posts.map((post) => ({
-    slug: post.slug,
+    slug: post.id,
     data: post.data,
     body: post.body,
-    render: post.render.bind(post),
+    render: async () => render(post),
   }));
 }
 
@@ -84,10 +84,10 @@ export async function getPostBySlug(slug: string) {
   const post = await getEntry("posts", slug);
   if (!post) return null;
   return {
-    slug: post.slug,
+    slug: post.id,
     data: post.data,
     body: post.body,
-    render: post.render.bind(post),
+    render: async () => render(post),
   };
 }
 
@@ -104,10 +104,10 @@ export async function getPostsByTag(tag: string) {
   const allPosts = await getCollection("posts");
   const filteredPosts = allPosts.filter((post) => post.data.tags.includes(tag));
   return filteredPosts.map((post) => ({
-    slug: post.slug,
+    slug: post.id,
     data: post.data,
     body: post.body,
-    render: post.render.bind(post),
+    render: async () => render(post),
   }));
 }
 
@@ -142,9 +142,9 @@ export async function getAllTeamMembers() {
 
   const members = await getCollection("team");
   return members.map((member) => ({
-    slug: member.slug,
+    slug: member.id,
     data: member.data,
-    render: member.render.bind(member),
+    render: async () => render(member),
   }));
 }
 
@@ -162,9 +162,9 @@ export async function getTeamMemberBySlug(slug: string) {
   const member = await getEntry("team", slug);
   if (!member) return null;
   return {
-    slug: member.slug,
+    slug: member.id,
     data: member.data,
-    render: member.render.bind(member),
+    render: async () => render(member),
   };
 }
 
@@ -183,9 +183,9 @@ export async function getAllCustomers() {
 
   const customers = await getCollection("customers");
   return customers.map((customer) => ({
-    slug: customer.slug,
+    slug: customer.id,
     data: customer.data,
-    render: customer.render.bind(customer),
+    render: async () => render(customer),
   }));
 }
 
@@ -203,9 +203,9 @@ export async function getCustomerBySlug(slug: string) {
   const customer = await getEntry("customers", slug);
   if (!customer) return null;
   return {
-    slug: customer.slug,
+    slug: customer.id,
     data: customer.data,
-    render: customer.render.bind(customer),
+    render: async () => render(customer),
   };
 }
 
@@ -224,9 +224,9 @@ export async function getAllIntegrations() {
 
   const integrations = await getCollection("integrations");
   return integrations.map((integration) => ({
-    slug: integration.slug,
+    slug: integration.id,
     data: integration.data,
-    render: integration.render.bind(integration),
+    render: async () => render(integration),
   }));
 }
 
@@ -244,9 +244,9 @@ export async function getIntegrationBySlug(slug: string) {
   const integration = await getEntry("integrations", slug);
   if (!integration) return null;
   return {
-    slug: integration.slug,
+    slug: integration.id,
     data: integration.data,
-    render: integration.render.bind(integration),
+    render: async () => render(integration),
   };
 }
 
@@ -281,9 +281,9 @@ export async function getAllHelpcenter() {
 
   const articles = await getCollection("helpcenter");
   return articles.map((article) => ({
-    slug: article.slug,
+    slug: article.id,
     data: article.data,
-    render: article.render.bind(article),
+    render: async () => render(article),
   }));
 }
 
@@ -301,9 +301,9 @@ export async function getHelpcenterBySlug(slug: string) {
   const article = await getEntry("helpcenter", slug);
   if (!article) return null;
   return {
-    slug: article.slug,
+    slug: article.id,
     data: article.data,
-    render: article.render.bind(article),
+    render: async () => render(article),
   };
 }
 
@@ -322,9 +322,9 @@ export async function getAllChangelog() {
 
   const entries = await getCollection("changelog");
   return entries.map((entry) => ({
-    slug: entry.slug,
+    slug: entry.id,
     data: entry.data,
-    render: entry.render.bind(entry),
+    render: async () => render(entry),
   }));
 }
 
@@ -342,9 +342,9 @@ export async function getChangelogBySlug(slug: string) {
   const entry = await getEntry("changelog", slug);
   if (!entry) return null;
   return {
-    slug: entry.slug,
+    slug: entry.id,
     data: entry.data,
-    render: entry.render.bind(entry),
+    render: async () => render(entry),
   };
 }
 
@@ -363,9 +363,9 @@ export async function getAllInfopages() {
 
   const pages = await getCollection("infopages");
   return pages.map((page) => ({
-    slug: page.slug,
+    slug: page.id,
     data: page.data,
-    render: page.render.bind(page),
+    render: async () => render(page),
   }));
 }
 
@@ -383,9 +383,9 @@ export async function getInfopageBySlug(slug: string) {
   const page = await getEntry("infopages", slug);
   if (!page) return null;
   return {
-    slug: page.slug,
+    slug: page.id,
     data: page.data,
-    render: page.render.bind(page),
+    render: async () => render(page),
   };
 }
 

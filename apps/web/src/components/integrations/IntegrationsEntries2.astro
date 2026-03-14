@@ -4,7 +4,7 @@ import { Image } from "astro:assets";
 
 // Content
 const { integration, url, logo } = {
-  url: "/integrations/" + Astro.props.post.slug,
+  url: "/integrations/" + Astro.props.post.id,
   integration: Astro.props.post.data.integration,
   logo: Astro.props.post.data.logo.url,
 };

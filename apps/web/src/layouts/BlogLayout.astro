@@ -79,7 +79,7 @@ const relatedPosts = allPosts.filter((post) =>
             team && (
               <div class="grid grid-cols-2 md:grid-cols-2">
                 <div>
-                  <a href={`/team/${team.slug}`}>
+                  <a href={`/team/${team.id}`}>
                     {team?.data?.image?.url && (
                       <Image
                         width={800}
