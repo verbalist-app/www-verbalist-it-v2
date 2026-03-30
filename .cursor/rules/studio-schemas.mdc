@@ -1,0 +1,14 @@
+---
+description: Sanity Studio schemas — coordinate with web queries, transforms, and migration
+globs:
+  - apps/studio/schemas/**/*
+  - apps/studio/structure.ts
+  - scripts/**/*
+---
+
+# Studio (`apps/studio/schemas/` + migration)
+
+- **Document types:** `post`, `teamMember`, `customer`, `integration`, `helpcenter`, `changelog`, `infopage`, singleton `siteSettings` — registered in `schemas/index.ts`.
+- **Any schema change** requires matching updates in `apps/web/src/lib/sanity/queries.ts`, `transforms.ts`, `types.ts`, and often `apps/web/src/content.config.ts` / sample markdown if parity is required.
+- **`scripts/migrate-to-sanity.ts`:** Maps markdown + `apps/web/src/images/` into Sanity documents; uses `SANITY_PROJECT_ID` from `apps/web/.env` and `SANITY_WRITE_TOKEN` or `SANITY_TOKEN`. `--full` / `pnpm seed:all` deletes listed content types then re-imports — reread the script before relying on deletion behavior.
+- **`structure.ts`:** Desk structure; add new types there when you add schemas.

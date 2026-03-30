@@ -1,0 +1,12 @@
+---
+description: Astro pages — routing, layouts, data from lib/data only
+globs:
+  - apps/web/src/pages/**/*
+---
+
+# Pages (`apps/web/src/pages/`)
+
+- **Data:** Import getters from **`@/lib/data`** (`getAllPosts`, `getPostBySlug`, etc.). Do not bypass with `getCollection` in pages unless you are intentionally working only on the collections layer (prefer `data.ts` for consistency with `USE_SANITY`).
+- **Dynamic segments:** Several routes use **`[...slug]`** (`blog/posts`, `team`, `customers`, `integrations`, `helpcenter`, `changelog`, `infopages`). Blog tags use **`[tag]`**.
+- **Layouts:** Prefer `BaseLayout` from `@/layouts/BaseLayout.astro` and pass `seo` props when needed; head stack lives under `@/components/fundations/head/`.
+- **RSS:** `rss.xml.js` uses `getAllPosts` from data — keep post shape stable (`slug`, `data.title`, `data.description`, `data.pubDate`).

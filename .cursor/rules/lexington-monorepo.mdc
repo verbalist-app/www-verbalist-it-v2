@@ -1,0 +1,13 @@
+---
+description: Lexington Flabbergasted monorepo — pnpm workspaces, web vs studio, minimal diffs
+alwaysApply: true
+---
+
+# Lexington Themes — this monorepo
+
+- **Publisher:** Lexington Themes. This repo is the **Flabbergasted** Astro + Sanity starter (`lexington-sanity-starter`): `apps/web` = site (`@lexington/web`), `apps/studio` = Sanity Studio (`@lexington/studio`).
+- **Run commands from repo root** with pnpm: `pnpm dev:web` for Astro-only work; `pnpm dev` for web + Studio; use `--filter @lexington/web` / `@lexington/studio` when scripting (see root `package.json`).
+- **Imports** in the web app use the `@/*` → `src/*` alias (`apps/web/tsconfig.json`). Match existing file style and component patterns.
+- **Minimal diffs:** change only what the task requires; do not rename `fundations` (intentional spelling in this theme).
+- **Content switch:** `USE_SANITY` in `apps/web/.env` toggles `apps/web/src/lib/data.ts` between Content Collections and Sanity. Pages should consume **`@/lib/data`** (or `~/lib/data` if the file uses that) — not duplicate fetch logic ad hoc.
+- **Accuracy:** Do not claim dependencies or Astro integrations that are not in `apps/web/package.json` / `astro.config.mjs` (e.g. MDX is not a declared web dependency here). Studio plugins are only what `sanity.config.ts` imports.

@@ -1,0 +1,14 @@
+---
+description: Sanity client, GROQ, transforms, Portable Text — keep unified output aligned with data.ts
+globs:
+  - apps/web/src/lib/sanity/**/*
+  - apps/web/src/lib/data.ts
+---
+
+# Sanity integration (`apps/web/src/lib/sanity/` + `data.ts`)
+
+- **`data.ts`** is the public API: it switches on `USE_SANITY` and must expose the same logical shapes for pages whether source is markdown or Sanity.
+- **Modules:** `client.ts` (env: `SANITY_PROJECT_ID`, `SANITY_DATASET`, `SANITY_API_VERSION`, optional `SANITY_READ_TOKEN`), `fetch.ts`, `queries.ts` (GROQ), `transforms.ts`, `types.ts`, `image.ts` (`urlFor`, `getImageUrl`), `portableText.ts` (`portableTextToHtml`, `portableTextToPlainText`), barrel `index.ts`.
+- **When changing queries or projections**, update **`transforms.ts`** and **`types.ts`** together so components do not receive partial or renamed fields.
+- **Portable Text:** Use the existing helpers for HTML/plain text; keep block/mark assumptions aligned with Studio schemas.
+- **Images:** Use `@sanity/image-url` via the project’s `image.ts` helpers for Sanity assets; markdown mode uses static paths — transforms bridge the gap.

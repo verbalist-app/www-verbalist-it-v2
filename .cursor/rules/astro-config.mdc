@@ -1,0 +1,12 @@
+---
+description: Astro config — site URL, integrations; Tailwind via Vite only
+globs:
+  - apps/web/astro.config.*
+---
+
+# `apps/web/astro.config.mjs`
+
+- **Integrations:** `@astrojs/sitemap` only. **Tailwind** is applied via **`@tailwindcss/vite`** inside `vite.plugins` — not via `@astrojs/tailwind`.
+- **`site`:** Set to the production origin for canonical URLs and `context.site` (e.g. RSS). Replace the default `https://yourwebsite.com` when shipping.
+- **`markdown` / `shikiConfig`:** Theme `css-variables`, drafts enabled — preserve if adjusting markdown unless you update all code blocks relying on it.
+- **`experimental.svgo`:** Do not document or depend on extra integrations in prose unless they are added here and in `package.json`.

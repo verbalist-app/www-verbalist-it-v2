@@ -1,0 +1,14 @@
+---
+description: Content Collections — Zod schemas, frontmatter, images under src/content and src/images
+globs:
+  - apps/web/src/content/**/*
+  - apps/web/src/content.config.ts
+---
+
+# Content Collections (`apps/web/src/content.config.ts`)
+
+- Collections are defined with **`defineCollection`**, **`glob` loaders**, and **`z` from `astro/zod`**. Collection keys: `posts`, `team`, `customers`, `integrations`, `helpcenter`, `changelog`, `infopages`.
+- **Do not** loosen or rename frontmatter fields without updating every consumer (`data.ts` shapes are assumed downstream; Sanity `transforms.ts` must stay parallel when editing CMS).
+- **Images:** Frontmatter uses `{ url: string, alt: string }` pointing at repo paths such as `/src/images/...` (files live under `apps/web/src/images/`). There is no shared `imageSchema` helper in this repo — mirror the existing inline objects if you add fields.
+- **Slug:** Entry id is the markdown filename without `.md`; keep filenames URL-safe and consistent with Sanity slugs when using migration.
+- **Examples:** Copy structure from `apps/web/src/content/posts/1.md`, `team/david-lee.md`, `customers/1.md`, etc.
