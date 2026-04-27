@@ -1,0 +1,196 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* ─────────────────────────────────────────────────────────────────────
+   Mesh gradients — port from apps/web/src/styles/gradients.css.
+   Used by the brand "alternative" button variant to keep visual
+   identity coherent between marketing site and dashboard.
+   ───────────────────────────────────────────────────────────────────── */
+.bg-meshLightBlue {
+  background-color: hsla(161, 77%, 83%, 1);
+  background-image:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 2000 2000' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"),
+    radial-gradient(circle at 7% 81%, hsla(213.08823529411774, 91%, 80%, 1) 16%, transparent 53%),
+    radial-gradient(circle at 5% 1%, hsla(238, 76%, 61%, 1) 7%, transparent 84%),
+    radial-gradient(circle at 39% 52%, hsla(187.9411764705882, 93%, 64%, 1) 6%, transparent 68%),
+    radial-gradient(circle at 11% 29%, hsla(201, 97%, 75%, 1) 8%, transparent 74%),
+    radial-gradient(circle at 90% 50%, hsla(182.64705882352945, 94%, 89%, 1) 2%, transparent 85%);
+  background-blend-mode: overlay, normal, normal, normal, normal, normal;
+}
+
+.bg-meshYellow {
+  background-color: hsla(250.1470588235294, 44%, 63%, 1);
+  background-image:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 1227 1227' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"),
+    radial-gradient(circle at 98% 97%, hsla(59, 85%, 86%, 1) 15%, transparent 50.28756377877879%),
+    radial-gradient(circle at 43% 92%, hsla(238, 38%, 78%, 1) 30.780839988590987%, transparent 69%),
+    radial-gradient(circle at 95% 18%, hsla(1.0000000000000089, 81%, 89%, 1) 20%, transparent 80%),
+    radial-gradient(circle at 72% 71%, hsla(197, 79%, 67%, 1) 11%, transparent 69%);
+  background-blend-mode: overlay, normal, normal, normal, normal;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Verbalist Dashboard — palette aligned with apps/web (Astro site).
+   Base = grayscale OKLCH (matches --color-base-*).
+   Accent = purple OKLCH (matches --color-accent-*).
+   ───────────────────────────────────────────────────────────────────── */
+:root {
+  /* Surfaces */
+  --background: oklch(0.985 0 0);            /* base-50  */
+  --foreground: oklch(0.145 0 0);            /* base-950 */
+  --card: oklch(1 0 0);                      /* white    */
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+
+  /* Brand accent (purple) */
+  --primary: oklch(0.5089 0.233 290.96);     /* accent-500 */
+  --primary-foreground: oklch(1 0 0);
+
+  /* Subtle surfaces */
+  --secondary: oklch(0.97 0 0);              /* base-100 */
+  --secondary-foreground: oklch(0.145 0 0);
+  --muted: oklch(0.97 0 0);                  /* base-100 */
+  --muted-foreground: oklch(0.439 0 0);      /* base-600 */
+  --accent: oklch(0.97 0 0);                 /* base-100 — UI hover */
+  --accent-foreground: oklch(0.145 0 0);
+
+  /* Feedback */
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(1 0 0);
+
+  /* Borders / focus ring (neutral — avoids heavy purple on inputs/selects) */
+  --border: oklch(0.922 0 0);                /* base-200 */
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.439 0 0);                  /* base-600, achromatic */
+
+  /* Charts (recharts) — accent + base + neutrals */
+  --chart-1: oklch(0.5089 0.233 290.96);     /* accent-500 */
+  --chart-2: oklch(0.69 0.147 297.95);       /* accent-300 */
+  --chart-3: oklch(0.439 0 0);               /* base-600 */
+  --chart-4: oklch(0.708 0 0);               /* base-400 */
+  --chart-5: oklch(0.18 0.075 292.49);       /* accent-900 */
+
+  /* Sidebar */
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.5089 0.233 290.96);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.145 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.439 0 0);
+
+  /* Status (used by lib/status.ts) */
+  --status-success: oklch(0.62 0.16 152);
+  --status-warning: oklch(0.78 0.15 80);
+  --status-error: oklch(0.577 0.245 27.325);
+
+  --radius: 0.5rem;
+}
+
+@keyframes progress-indeterminate {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(350%); }
+}
+
+@theme inline {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "InterDisplay", "Inter", system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", "Menlo", monospace;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-status-success: var(--status-success);
+  --color-status-warning: var(--status-warning);
+  --color-status-error: var(--status-error);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --tracking-tighter: -0.05em;
+  --tracking-tight: -0.025em;
+
+  /* Animations used by shadcn primitives */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from { height: 0; }
+    to { height: var(--radix-accordion-content-height); }
+  }
+  @keyframes accordion-up {
+    from { height: var(--radix-accordion-content-height); }
+    to { height: 0; }
+  }
+}
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 2rem;
+}
+
+@layer components {
+  button {
+    cursor: pointer;
+  }
+}
+
+@layer base {
+  /* Do not @apply border-border on * — in Tailwind v4 it can resolve to a visible 1px border on every node. */
+  * {
+    @apply outline-none;
+  }
+  *,
+  ::before,
+  ::after {
+    border-color: var(--border);
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "cv01" 1, "ss03" 1, "rlig" 1, "calt" 1;
+    scrollbar-gutter: stable;
+  }
+}
+
+/* Radix remove-scroll sets inline styles on body[data-scroll-locked].
+   Inline styles can only be overridden with !important. */
+html body[data-scroll-locked] {
+  overflow-y: scroll !important;
+  --removed-body-scroll-bar-size: 0 !important;
+  margin-right: 0 !important;
+}

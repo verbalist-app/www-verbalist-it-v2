@@ -21,7 +21,7 @@ const breadcrumbs = [
     <Wrapper variant="standard" class="relative pt-32 pb-12 overflow-hidden">
       <div class="max-w-xl mx-auto text-balance">
         <nav aria-label="Breadcrumb">
-          <ol class="flex items-center text-sm gap-x-2 text-base-400">
+          <ol class="flex items-center text-sm gap-x-2 text-base-600">
             {
               breadcrumbs.map((item, index) => (
                 <>
@@ -29,16 +29,16 @@ const breadcrumbs = [
                     {index < breadcrumbs.length - 1 ? (
                       <a
                         href={item.href}
-                        class="text-xs  hover:text-accent-300"
+                        class="text-xs  hover:text-accent-600"
                       >
                         {item.label}
                       </a>
                     ) : (
-                      <span class="text-xs  text-accent-300">{item.label}</span>
+                      <span class="text-xs  text-accent-600">{item.label}</span>
                     )}
                   </li>
                   {index < breadcrumbs.length - 1 && (
-                    <li class="text-base-400">
+                    <li class="text-base-600">
                       <ChevronRight size="sm" />
                     </li>
                   )}
@@ -47,10 +47,10 @@ const breadcrumbs = [
             }
           </ol>
         </nav>
-        <Text tag="h1" variant="displayMD" class="mt-12 text-white">
+        <Text tag="h1" variant="displayMD" class="mt-12 text-base-950">
           {frontmatter.page}
         </Text>
-        <Text variant="textBase" class="mt-4 text-base-500">
+        <Text variant="textBase" class="mt-4 text-base-600">
           Published on <span>
             <time
               datetime={new Date(frontmatter.pubDate).toLocaleDateString(

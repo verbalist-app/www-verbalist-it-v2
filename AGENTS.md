@@ -1,190 +1,153 @@
-# AGENTS.md — Flabbergasted (Lexington Themes + Sanity)
+# AGENTS.md — Verbalist (Astro + Lexington Flabbergasted theme)
 
-**Flabbergasted** is a Lexington Themes Astro starter oriented toward **SaaS and product marketing**: the homepage composes hero, logo cloud, feature grids, integrations CTA, pricing, and testimonials (`apps/web/src/pages/index.astro`), with supporting areas for **blog**, **team**, **customers**, **integrations**, **help center**, **changelog**, **about**, **auth-style forms**, and a small **design system** under `/system/`. Content can run entirely from git-backed markdown (Content Collections) or from **Sanity Studio**, switched via `USE_SANITY` and unified in `apps/web/src/lib/data.ts`.
+**Verbalist** è il marketing site della piattaforma Verbalist (SaaS B2B per la generazione di contenuti SEO assistita da AI). La home compone hero, logo cloud, feature grids, CTA verso le funzionalità, pricing e testimonial (`apps/web/src/pages/index.astro`); aree supportate: **blog**, **team**, **customers**, **funzionalità**, **help center**, **changelog**, **about**, **forms**, e un piccolo **design system** sotto `/system/`.
 
-**Publisher:** [Lexington Themes](https://lexingtonthemes.com/) — theme: [Flabbergasted](https://lexingtonthemes.com/templates/flabbergasted). **Support / docs (same pattern as README):** [Documentation](https://lexingtonthemes.com/documentation), [Support](https://lexingtonthemes.com/legal/support/), [Sanity manage](https://sanity.io/manage) (for project API settings when using CMS), [Sanity docs](https://www.sanity.io/docs) (linked from README).
+Il sito è interamente **statico** (Astro static build, niente SSR) e i contenuti vivono come **markdown nei Content Collections** in `apps/web/src/content/`. Niente CMS esterno: tutto via repo + git.
+
+**Theme di base:** [Lexington Flabbergasted](https://lexingtonthemes.com/templates/flabbergasted) — variant senza Sanity (originale: `/Users/filippo/Downloads/flabbergasted_v6_A`).
 
 ---
 
-## Tech stack (from manifests only)
+## Tech stack (dai manifesti)
 
-### Root `package.json` (`lexington-sanity-starter`)
+### Root `package.json` (`verbalist-web-monorepo`)
 
-- **pnpm** `9.15.0` (`packageManager`). **Scripts:** `dev` (parallel `-r dev`), `dev:web` / `dev:studio` (`--filter`), `build` / `build:web` / `build:studio`, `clean`, `migrate`, `seed:all`.
-- **devDependencies:** `@sanity/client`, `dotenv`, `gray-matter`, `tsx` (migration script tooling).
+- **pnpm** `9.15.0`. Scripts: `dev` (parallelo `-r dev`), `dev:web` / `dev:dashboard` (`--filter`), `build` / `build:web` / `build:dashboard`, `clean`.
+- **devDependencies:** `gray-matter` (per script utility).
 
 ### `apps/web/package.json` (`@lexington/web`)
 
-- **Astro** `^6.0.0`.
-- **Tailwind CSS** `^4.1.18` with **`@tailwindcss/vite`** `^4.1.18` (Vite plugin — not `@astrojs/tailwind`).
-- **Integrations / content:** `@astrojs/rss`, `@astrojs/sitemap`; `@lexingtonthemes/seo`.
-- **Sanity / portable text:** `@sanity/client`, `@sanity/image-url`, `@portabletext/to-html`, `@portabletext/types`, `groq`.
-- **Images / UX:** `sharp`; `@tailwindcss/forms`, `@tailwindcss/typography`, `tailwind-scrollbar-hide`; `reading-time`.
-- **Not present in `apps/web/package.json`:** `@astrojs/mdx` (no MDX integration dependency listed).
+- **Astro** `^6.1.9`.
+- **Tailwind CSS** `^4.1.18` con **`@tailwindcss/vite`** (Vite plugin — non `@astrojs/tailwind`).
+- **Integrazioni / content:** `@astrojs/rss`, `@astrojs/sitemap`; `@lexingtonthemes/seo` (per `AstroSeo`).
+- **Immagini / UX:** `sharp`, `@tailwindcss/forms`, `@tailwindcss/typography`, `tailwind-scrollbar-hide`, `reading-time`.
+- **NON presenti:** nessuna dipendenza Sanity, nessun `@astrojs/mdx`.
 
 ### `apps/web/astro.config.mjs`
 
-- **Vite:** `tailwindcss()` from `@tailwindcss/vite`.
-- **Integrations:** `@astrojs/sitemap` only.
-- **`site`:** `https://yourwebsite.com` (replace for production).
-- **Markdown:** `drafts: true`; `shikiConfig.theme` `"css-variables"` under `markdown.shikiConfig`; top-level `shikiConfig` with `wrap`, `skipInline`, `drafts`.
+- **Vite:** `tailwindcss()` da `@tailwindcss/vite`.
+- **Integrations:** `@astrojs/sitemap`.
+- **`site`:** `https://verbalist.it`.
+- **Markdown:** `drafts: true`; `shikiConfig.theme = "css-variables"`.
 - **experimental:** `svgo: true`.
 
-### `apps/studio/package.json` + `apps/studio/sanity.config.ts`
+### `apps/dashboard/`
 
-- **sanity** `^5.12.0`; **React** `^19.x` for Studio; **styled-components** `^6.x`; **@sanity/icons**, **@sanity/vision** `^5.4.0`.
-- **`sanity.config.ts` plugins:** `structureTool({ structure })` (from `./structure.ts`), `visionTool()`. **Schema:** `schemaTypes` from `./schemas`. **Project:** `SANITY_STUDIO_PROJECT_ID`, `SANITY_STUDIO_DATASET` (default `production`). No other plugins declared in that file.
+App **Next.js** indipendente per l'area applicativa post-login. Parla direttamente al backend Python via API HTTP — **zero dipendenze dal marketing site** o dai content. Linkata in `Navigation.astro` via `PUBLIC_DASHBOARD_URL` (env).
 
 ---
 
-## Monorepo layout (actual paths)
+## Monorepo layout
 
 | Area | Path |
 |------|------|
-| Site entry | `apps/web/` |
+| Marketing site | `apps/web/` |
 | Pages | `apps/web/src/pages/` |
 | Layouts | `apps/web/src/layouts/` |
-| Components | `apps/web/src/components/` (includes **`fundations/`** — keep this spelling) |
+| Components | `apps/web/src/components/` (include **`fundations/`** — typo preservato dal theme) |
 | Markdown content | `apps/web/src/content/` |
-| Content config | `apps/web/src/content.config.ts` |
-| Global CSS | `apps/web/src/styles/global.css` |
-| Unified data API | `apps/web/src/lib/data.ts` |
-| Sanity client, queries, transforms | `apps/web/src/lib/sanity/` (`client.ts`, `fetch.ts`, `queries.ts`, `transforms.ts`, `types.ts`, `image.ts`, `portableText.ts`, `index.ts`) |
-| Static assets | `apps/web/public/` |
-| Local images (referenced from frontmatter) | `apps/web/src/images/` |
-| Studio schemas | `apps/studio/schemas/` |
-| Studio desk structure | `apps/studio/structure.ts` |
-| Migration | `scripts/migrate-to-sanity.ts` |
+| Content config (Zod schemas) | `apps/web/src/content.config.ts` |
+| Global CSS (Tailwind v4) | `apps/web/src/styles/global.css` |
+| Data layer (thin wrapper su `astro:content`) | `apps/web/src/lib/data.ts` |
+| Asset locali | `apps/web/src/images/` |
+| Asset statici (logos, favicon) | `apps/web/public/` |
+| Dashboard Next.js | `apps/dashboard/` |
+| Script utility | `scripts/` (solo `clean.sh`) |
 
-`pnpm-workspace.yaml` includes `apps/*` and `packages/*`; a root `packages/` directory is **not present** in this repo.
+`pnpm-workspace.yaml` include `apps/*` e `packages/*`; cartella `packages/` non presente.
 
 ---
 
-## Dual content model
+## Content model (Astro Content Collections)
 
-### A) Astro Content Collections (`apps/web/src/content.config.ts`)
+`apps/web/src/content.config.ts` definisce gli schemi Zod. Loader: `glob` per ogni cartella sotto `apps/web/src/content/`.
 
-Loader: `glob` + **`astro/zod`** (not a shared `imageSchema` helper — image fields are inline `z.object({ url, alt })`).
+| Collection | Folder | Campi notevoli (Zod) |
+|------------|--------|----------------------|
+| `posts` | `posts/**/*.md` | `title`, `pubDate`, `description`, `team` (id), `image {url, alt}`, `tags` |
+| `team` | `team/**/*.md` | `name`, `image {url, alt}`, `bio`, `role`, `bgColor`, `socials` |
+| `customers` | `customers/**/*.md` | `customer`, `avatar`, `logo`, `bgColor`, `testimonial`, `ctaTitle`, `about`, `challengesAndSolutions[]`, `results[]`, `details {}` |
+| `features` | `features/**/*.md` | `name`, `description`, `permissions[]`, `details[]`, `logo`, `tags` |
+| `helpcenter` | `helpcenter/**/*.md` | `page`, `description`, `iconId?`, `category?`, `keywords[]?`, `lastUpdated?`, `faq[]?` |
+| `changelog` | `changelog/**/*.md` | `page`, `description`, `pubDate`, `bgColor?` |
+| `infopages` | `infopages/**/*.md` | `page`, `pubDate` |
 
-| Collection key | Folder | Required / notable Zod fields | Images |
-|----------------|--------|-------------------------------|--------|
-| `posts` | `apps/web/src/content/posts/**/*.md` | `title`, `pubDate`, `description`, `team` (string id), `image` `{ url, alt }`, `tags` | URLs in frontmatter, typically `/src/images/...` (resolved from `apps/web/src/images/` at build; migration maps these to Sanity assets) |
-| `team` | `apps/web/src/content/team/**/*.md` | `name`, `image` `{ url, alt }`; optional `bio`, `role`, `bgColor`, `socials` | Same pattern |
-| `customers` | `apps/web/src/content/customers/**/*.md` | `customer`, `avatar`, `logo`, `challengesAndSolutions`, `results`, `about`, `details` | Same pattern |
-| `integrations` | `apps/web/src/content/integrations/**/*.md` | `email`, `integration`, `description`, `permissions`, `details`, `logo`, `tags` | Same pattern |
-| `helpcenter` | `apps/web/src/content/helpcenter/**/*.md` | `page`, `description`; optional `iconId`, `category`, `keywords`, `lastUpdated`, `faq` | No cover image in schema |
-| `changelog` | `apps/web/src/content/changelog/**/*.md` | `page`, `description`, `pubDate`; optional `bgColor` | No cover image in schema |
-| `infopages` | `apps/web/src/content/infopages/**/*.md` | `page`, `pubDate` | No cover image in schema |
-
-**Copy-this-entry examples (real files):**
-
+**Esempi reali:**
 - `posts` → `apps/web/src/content/posts/1.md`
 - `team` → `apps/web/src/content/team/david-lee.md`
-- `customers` → `apps/web/src/content/customers/1.md`
-- `integrations` → `apps/web/src/content/integrations/1.md`
+- `customers` → `apps/web/src/content/customers/rentokil.md`
+- `features` → `apps/web/src/content/features/analisi-serp.md`
 - `helpcenter` → `apps/web/src/content/helpcenter/1.md`
 - `changelog` → `apps/web/src/content/changelog/1.md`
 - `infopages` → `apps/web/src/content/infopages/privacy.md`
 
-### B) Sanity CMS (`apps/studio/schemas/`)
+### Data layer
 
-Document types registered in `apps/studio/schemas/index.ts`:
-
-| `_type` | File | Aligns with collection |
-|---------|------|------------------------|
-| `post` | `post.ts` | `posts` |
-| `teamMember` | `teamMember.ts` | `team` |
-| `customer` | `customer.ts` | `customers` |
-| `integration` | `integration.ts` | `integrations` |
-| `helpcenter` | `helpcenter.ts` | `helpcenter` |
-| `changelog` | `changelog.ts` | `changelog` |
-| `infopage` | `infopage.ts` | `infopages` |
-| `siteSettings` | `siteSettings.ts` | **Singleton** — nav, footer, socials, site title/description/URL, OG image (not a markdown collection) |
-
-Rich bodies in Sanity are Portable Text (`body` arrays where defined). `post` includes `team` as **reference** to `teamMember`. Slugs exist on Sanity documents; markdown uses filename as id/slug.
-
-### Unified API
-
-- **Toggle:** `USE_SANITY` in `apps/web/src/lib/data.ts` (`import.meta.env.USE_SANITY === "true"`).
-- **When `false`:** `getCollection` / `getEntry` / `render` from `astro:content`.
-- **When `true`:** dynamic `import("./sanity")` then `sanityFetch` + **GROQ** from `queries.ts` and **transforms** in `transforms.ts` to match the same shapes consumers expect.
-
-**Env (`apps/web/.env` / `.env.example`):**
-
-- **All modes:** optional `SANITY_READ_TOKEN` (commented in example; used in `client.ts` / `previewClient` for token-aware fetches).
-- **Sanity content mode:** `USE_SANITY=true`, `SANITY_PROJECT_ID`, `SANITY_DATASET`, `SANITY_API_VERSION`.
-- **Collections-only for page data:** `USE_SANITY=false` (or omit); **no Sanity credentials required** for `data.ts` content paths.
-- **Studio (`apps/studio/.env`):** `SANITY_STUDIO_PROJECT_ID`, `SANITY_STUDIO_DATASET` (per README).
-
-`apps/web/src/components/fundations/head/Seo.astro` still calls `sanityFetch(siteSettingsQuery)` for default SEO (title, description, canonical base, OG/Twitter). Without a working project + `siteSettings` document, queries may fail gracefully to fallbacks in that component; for production SEO defaults, configure Sanity and the singleton.
-
-**Preview token:** README documents optional `SANITY_READ_TOKEN` for draft/preview; it does not document a separate preview secret name.
-
-### Seeding / migration (`scripts/migrate-to-sanity.ts`)
-
-- Reads **`SANITY_PROJECT_ID`** (and dataset) from **`apps/web/.env`**; requires **`SANITY_WRITE_TOKEN`** or **`SANITY_TOKEN`** (Editor-capable).
-- **`pnpm migrate`:** runs migration (optional full seed prelude below).
-- **`pnpm seed:all`:** runs the same script with `--full` — per README: deletes documents per content type (`post`, `teamMember`, `customer`, `integration`, `helpcenter`, `changelog`, `infopage`), cleans ids to be recreated, waits ~2–3s, then creates content from markdown in dependency order (team → posts → others). **Does not** list `siteSettings` in `CONTENT_TYPES` deletion list.
-- Uploads local images under `apps/web/src/images/` when frontmatter uses paths the script understands (`/src/images/`, `@/images/`, relative `../images/` variants).
+`apps/web/src/lib/data.ts` è un thin wrapper su `astro:content` che espone `{ slug, data, render }` uniforme. Pages/components importano da qui (`@/lib/data`), non da `astro:content` direttamente. Funzioni: `getAllPosts/getPostBySlug/getPostsByTag/getAllPostTags`, `getAllTeamMembers/getTeamMemberBySlug`, `getAllCustomers/getCustomerBySlug`, `getAllFeatures/getFeatureBySlug/getAllFeatureTags`, `getAllHelpcenter/getHelpcenterBySlug`, `getAllChangelog/getChangelogBySlug`, `getAllInfopages/getInfopageBySlug`.
 
 ---
 
 ## Routing (`apps/web/src/pages/`)
 
-| Pattern | File(s) | Notes |
+| Pattern | File(s) | Note |
 |---------|---------|------|
-| `/` | `index.astro` | Marketing homepage |
+| `/` | `index.astro` | Home marketing |
 | `/about` | `about.astro` | |
 | `/blog/home` | `blog/home.astro` | Listing |
-| `/blog/posts/*` | `blog/posts/[...slug].astro` | **rest param** |
+| `/blog/posts/*` | `blog/posts/[...slug].astro` | rest param |
 | `/blog/tags` | `blog/tags/index.astro` | |
 | `/blog/tags/:tag` | `blog/tags/[tag].astro` | |
 | `/team/home` | `team/home.astro` | |
-| `/team/*` | `team/[...slug].astro` | **rest param** |
+| `/team/*` | `team/[...slug].astro` | rest param |
 | `/customers/home` | `customers/home.astro` | |
-| `/customers/*` | `customers/[...slug].astro` | **rest param** |
-| `/integrations/home` | `integrations/home.astro` | Tags are in-page anchors, no `/tags/[tag]` route |
-| `/integrations/*` | `integrations/[...slug].astro` | **rest param** |
+| `/customers/*` | `customers/[...slug].astro` | rest param |
+| `/funzionalita/home` | `funzionalita/home.astro` | (rinominato da `/integrations/home`) |
+| `/funzionalita/*` | `funzionalita/[...slug].astro` | rest param |
 | `/helpcenter/home` | `helpcenter/home.astro` | |
-| `/helpcenter/*` | `helpcenter/[...slug].astro` | **rest param** |
+| `/helpcenter/*` | `helpcenter/[...slug].astro` | rest param |
 | `/changelog/home` | `changelog/home.astro` | |
-| `/changelog/*` | `changelog/[...slug].astro` | **rest param** |
-| `/infopages/*` | `infopages/[...slug].astro` | **rest param** |
+| `/changelog/*` | `changelog/[...slug].astro` | rest param |
+| `/infopages/*` | `infopages/[...slug].astro` | rest param |
 | `/forms/sign-up`, `sign-in`, `contact` | `forms/*.astro` | |
-| `/system/*` | `system/*.astro` | Typography, colors, buttons, etc. |
-| `/rss.xml` | `rss.xml.js` | Uses `getAllPosts` from `@/lib/data` |
+| `/system/*` | `system/*.astro` | Design system: typography, colors, buttons, ecc. |
+| `/rss.xml` | `rss.xml.js` | Usa `getAllPosts` da `@/lib/data` |
+| `/sitemap-index.xml` | auto-generato | `@astrojs/sitemap` |
 | 404 | `404.astro` | |
 
 ---
 
-## Customization (real files)
+## SEO
 
-- **Site URL:** `apps/web/astro.config.mjs` → `site`; RSS uses `context.site`. **`Seo.astro`** uses `siteSettings.siteUrl` from Sanity when available, else fallback URL in component.
-- **SEO / head:** `apps/web/src/components/fundations/head/BaseHead.astro` (composes `Seo`, `Meta`, `Fonts`, `Favicons`, scripts); `Seo.astro` uses `@lexingtonthemes/seo` (`AstroSeo`).
-- **Global look (Tailwind v4):** `apps/web/src/styles/global.css`.
-- **Nav / footer:** `apps/web/src/components/global/Navigation.astro`, `Footer.astro`; Sanity `siteSettings` drives nav/footer/socials when edited in Studio.
-- **Page shell:** `apps/web/src/layouts/BaseLayout.astro` imports `BaseHead` and global CSS.
+- `apps/web/src/components/fundations/head/Seo.astro` — usa `AstroSeo` da `@lexingtonthemes/seo`. Defaults Verbalist hardcoded: `SITE_TITLE`, `SITE_DESCRIPTION`, `SITE_URL = "https://verbalist.it"`, `locale = "it_IT"`.
+- `apps/web/src/components/fundations/head/Meta.astro` — charset, viewport, theme-color, robots.
+- `apps/web/src/components/fundations/head/Favicons.astro` — favicon/manifest references (asset attesi in `apps/web/public/`).
+- `apps/web/src/components/fundations/head/Fonts.astro` — preload font.
+- `<html lang="it">` in `BaseLayout.astro`.
+
+Per aggiungere SEO custom a una pagina, passa `seo` prop a `BaseLayout`:
+
+```astro
+<BaseLayout seo={{ title: "Titolo pagina", description: "...", image: { url: "...", alt: "..." } }}>
+```
 
 ---
 
-## Commands (prefer root scripts)
+## Comandi
 
-| Command | Role |
+| Command | Ruolo |
 |---------|------|
-| `pnpm install` | Workspace deps |
-| `pnpm dev` | Parallel dev (web + studio) |
+| `pnpm install` | Install workspace deps |
+| `pnpm dev` | Dev parallelo (web + dashboard) |
 | `pnpm dev:web` | **Day-to-day site** → Astro dev (`apps/web`) |
-| `pnpm dev:studio` | Sanity Studio |
-| `pnpm build` / `pnpm build:web` / `pnpm build:studio` | Production builds |
-| `pnpm migrate` | Markdown → Sanity (needs write token) |
-| `pnpm seed:all` | Full reset + seed per README |
+| `pnpm dev:dashboard` | Dashboard Next.js |
+| `pnpm build` / `pnpm build:web` / `pnpm build:dashboard` | Build production |
 | `pnpm clean` | Cleanup script |
 
 ---
 
 ## Guardrails
 
-- Do **not** rename **`fundations`** (typo preserved across the theme).
-- Do not widen **Zod** collection schemas or **Sanity** schemas without updating **`data.ts`**, **`transforms.ts`**, **`types.ts`**, **`queries.ts`**, and consuming **pages/components**.
-- Keep **markdown-normalized** and **Sanity-normalized** shapes aligned in the unified layer.
-- List **only** integrations/deps that exist in `package.json` / `astro.config.mjs` / `sanity.config.ts` — do not assume MDX or other Astro integrations unless added.
+- Non rinominare **`fundations`** (typo preservato dal theme).
+- Non aggiungere dipendenze Sanity / `@portabletext/*` / `groq`: il setup è puro Content Collections.
+- Quando aggiungi/modifichi una collection, aggiorna `apps/web/src/content.config.ts` (Zod schema) e le funzioni in `apps/web/src/lib/data.ts`.
+- **Fedeltà al template:** in dubbio sulla struttura/markup di una pagina, confronta con il template originale in `/Users/filippo/Downloads/flabbergasted_v6_A` e replica.

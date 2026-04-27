@@ -8,23 +8,23 @@ import ChevronRight from "@/components/fundations/icons/ChevronRight.astro";
 // Components
 import CustomerEntry1 from "@/components/customers/CustomerEntry1.astro";
 // Content
-import { getCollection } from "astro:content";
-const allCustomers = await getCollection("customers");
+import { getAllCustomers } from "@/lib/data";
+const allCustomers = await getAllCustomers();
 ---
 
 <section>
-  <div class="pt-8 overflow-hidden border-t border-base-800">
+  <div class="pt-8 overflow-hidden border-t border-base-200">
     <div class="items-end px-4 grid grid-cols-1 gap-8 lg:grid-cols-2">
       <div>
-        <Text tag="h2" variant="displayMD" class="text-white font-display">
-          Our customers
+        <Text tag="h2" variant="displayMD" class="text-base-950 font-display">
+          I nostri clienti
         </Text>
         <Text
           tag="p"
           variant="textBase"
-          class="mt-4 text-base-500 text-balance"
+          class="mt-4 text-base-600 text-balance"
         >
-          Don’t take our word for it — here’s what the people paying us think.
+          Non fidarti delle nostre parole — leggi cosa pensa chi usa Verbalist ogni giorno.
         </Text>
       </div>
       <div

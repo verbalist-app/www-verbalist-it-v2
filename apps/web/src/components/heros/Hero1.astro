@@ -7,7 +7,7 @@ import Text from "@/components/fundations/elements/Text.astro";
 import Button from "@/components/fundations/elements/Button.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 // Icons
-import Play from "@/components/fundations/icons/Play.astro";
+import ArrowRight from "@/components/fundations/icons/ArrowRight.astro";
 ---
 
 <section>
@@ -18,30 +18,30 @@ import Play from "@/components/fundations/icons/Play.astro";
     <Cross class="-top-[0.6rem] -left-[0.65rem] z-51" />
     <StripesBG
       variant="base"
-      class="absolute inset-0 h-24 p-20 mt-auto -mx-px border-t border-base-800"
+      class="absolute inset-0 h-24 p-20 mt-auto -mx-px border-t border-base-200"
     />
     <div class="relative text-center text-balance">
       <Text
         tag="h1"
         variant="displayXL"
-        class="tracking-tight text-white font-display"
+        class="tracking-tight text-base-950 font-display"
       >
-        Because you're too smart for slow, Fake-Sounding AI
+        Crea contenuti<br>a partire dai dati di ricerca
       </Text>
       <Text
         tag="p"
         variant="textBase"
-        class="max-w-xl mx-auto mt-4 text-base-400"
+        class="max-w-xl mx-auto mt-4 text-base-600"
       >
-        Runs on brain-melting math you’ll never have to touch. Built for devs
-        who ship, not just talk.
+        Verbalist trasforma keyword, risultati Google e competitor in contenuti SEO strutturati, 
+        completi e pronti anche per la ricerca con AI.
       </Text>
       <div class="flex flex-wrap items-center justify-center w-full mt-8 gap-2">
-        <Button href="#_" isLink={true} size="xs" variant="alternative"
-          >Get started</Button
+        <Button href="/forms/contact" isLink={true} size="xs" variant="alternative"
+          >Prenota demo</Button
         >
-        <Button size="xs" variant="muted" isLink={true} href="#_"
-          >Read the docs</Button
+        <Button size="xs" variant="muted" isLink={true} href="#come-funziona"
+          >Come funziona</Button
         >
       </div>
     </div>
@@ -51,27 +51,27 @@ import Play from "@/components/fundations/icons/Play.astro";
       >
       </div>
       <div
-        class="relative max-w-2xl p-2 mx-auto mt-8 text-gray-900 rounded-lg shadow-dimensional bg-base-900"
+        class="relative max-w-2xl p-2 mx-auto mt-8 text-gray-900 rounded-lg shadow-dimensional bg-white"
       >
         <textarea
           id="message"
           name="message"
           rows="4"
-          placeholder="Type something... or don’t. I’m not your boss."
-          class="block w-full px-4 py-2 font-mono text-sm leading-tight text-white align-middle bg-transparent border border-transparent resize-none transition duration-300 ease-in-out focus:z-10 rounded-md placeholder-base-400 focus:outline-none focus:border-transparent focus:ring-0 scrollbar-hide"
+          placeholder="Inserisci una keyword, un URL o un documento..."
+          class="block w-full px-4 py-2 font-mono text-sm leading-tight text-base-950 align-middle bg-transparent border border-transparent resize-none transition duration-300 ease-in-out focus:z-10 rounded-md placeholder-base-400 focus:outline-none focus:border-transparent focus:ring-0 scrollbar-hide"
         ></textarea>
         <div class="grid grid-cols-1 md:flex gap-1 md:items-center">
           <Button size="xs" variant="muted" class="w-full md:w-fit">
-            Say something smart
+            Articolo di blog
           </Button>
           <Button size="xs" variant="muted" class="w-full md:w-fit">
-            Try to be funny
+            Landing page
           </Button>
           <Button size="xs" variant="muted" class="w-full md:w-fit">
-            Fake a meeting
+            Scheda prodotto
           </Button>
           <Button iconOnly size="xs" variant="muted">
-            <Play slot="icon" size="xs" />
+            <ArrowRight slot="icon" size="xs" />
           </Button>
         </div>
       </div>

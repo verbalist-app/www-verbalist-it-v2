@@ -108,17 +108,17 @@ const pageData = [
         ],
       },
       {
-        sectionTitle: "Integrations",
+        sectionTitle: "Funzionalità",
         links: [
           {
             title: "Home",
-            url: "/integrations/home",
-            ariaLabel: "link to integrations home",
+            url: "/funzionalita/home",
+            ariaLabel: "link to features home",
           },
           {
             title: "Details",
-            url: "/integrations/1",
-            ariaLabel: "link to integrations details",
+            url: "/funzionalita/analisi-serp",
+            ariaLabel: "link to feature details",
           },
         ],
       },
@@ -175,7 +175,7 @@ const pageData = [
 <BaseLayout>
   <section>
     <Wrapper variant="standard" class="py-12">
-      <Text tag="h1" variant="textBase" class="font-medium text-white">
+      <Text tag="h1" variant="textBase" class="font-medium text-base-950">
         Overview
       </Text>
       <div class="flex flex-col mt-12 gap-12">
@@ -183,19 +183,19 @@ const pageData = [
           pageData.map((category) => (
             <>
               <div>
-                <Text tag="h2" variant="textLG" class="font-medium text-white ">
+                <Text tag="h2" variant="textLG" class="font-medium text-base-950 ">
                   {category.categoryTitle}
                 </Text>
                 <div class="mt-4 gap-y-8 gap-x-4 grid grid-cols-2 lg:grid-cols-5 md:grid-cols-3 ">
                   {category.links.map((section) => (
                     <div>
-                      <Text tag="h3" variant="textBase" class="text-white">
+                      <Text tag="h3" variant="textBase" class="text-base-950">
                         {section.sectionTitle}
                       </Text>
-                      <div class="flex flex-col mt-4 text-sm gap-1 text-base-500">
+                      <div class="flex flex-col mt-4 text-sm gap-1 text-base-600">
                         {section.links.map((link) => (
                           <a
-                            class="hover:text-white"
+                            class="hover:text-base-950"
                             title={link.ariaLabel}
                             href={link.url}
                           >

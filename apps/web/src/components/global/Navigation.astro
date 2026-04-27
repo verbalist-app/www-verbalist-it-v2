@@ -21,26 +21,28 @@ const navigationLinks = [
     href: "https://lexingtonthemes.com/templates/flabbergasted",
   },
 ];
+// PUBLIC_DASHBOARD_URL: e.g. https://app.verbalist.it in prod or http://localhost:3001/dashboard in dev.
+const dashboardUrl = import.meta.env.PUBLIC_DASHBOARD_URL ?? "/dashboard";
 ---
 
 <div
   id="nav-wrapper"
-  class="fixed inset-x-0 top-0 w-full mx-auto z-51 bg-base-950"
+  class="fixed inset-x-0 top-0 w-full mx-auto z-51 bg-base-50"
 >
   <Wrapper
     id="second-wrapper"
     variant="paddinglessDesktop"
-    class="py-4 border-b lg:py-8 border-base-800"
+    class="py-4 border-b lg:py-8 border-base-200"
   >
     <div
       id="navigation-wrapper"
       class="relative flex flex-col md:items-center md:justify-start md:gap-12 md:flex-row"
     >
       <div class="flex flex-row items-center justify-between">
-        <a href="/" class="flex items-center text-xs text-white gap-2">
+        <a href="/" class="flex items-center text-xs text-base-950 gap-2">
           <span class="sr-only">Go to homepage</span>
-          <Logo class="h-8" />
-          Flabbergasted
+          <Logo class="h-6" />
+          Verbalist
         </a>
         <Button
           iconOnly
@@ -75,7 +77,7 @@ const navigationLinks = [
       </div>
       <nav
         id="navigation-menu"
-        class="fixed inset-0 flex flex-col justify-between h-full py-12 bg-black opacity-0 pointer-events-none md:bg-none md:bg-transparent lg:p-0 md:p-0 transform transition-all duration-300 ease-in-out -translate-y-4 md:relative md:inset-auto md:opacity-100 md:pointer-events-auto md:translate-y-0 md:w-full"
+        class="fixed inset-0 flex flex-col justify-between h-full py-12 bg-white opacity-0 pointer-events-none md:bg-none md:bg-transparent lg:p-0 md:p-0 transform transition-all duration-300 ease-in-out -translate-y-4 md:relative md:inset-auto md:opacity-100 md:pointer-events-auto md:translate-y-0 md:w-full"
       >
         <Button
           iconOnly
@@ -98,7 +100,7 @@ const navigationLinks = [
           
           <a href="/" class="md:hidden">
             <span class="sr-only">Go to homepage</span>
-            <Logo class="h-12 text-white" />
+            <Logo class="h-10 text-base-950" />
           </a>
           <div
             class="relative flex flex-col gap-2 md:gap-4 md:flex-row md:mr-auto"
@@ -107,7 +109,7 @@ const navigationLinks = [
               navigationLinks.map((link, index) => (
                 <a
                   href={link.href}
-                  class="text-2xl text-white md:text-xs hover:text-base-600 "
+                  class="text-2xl text-base-950 md:text-xs hover:text-base-600 "
                 >
                   {link.title}
                 </a>
@@ -121,7 +123,15 @@ const navigationLinks = [
               variant="muted"
               href="/forms/sign-in"
             >
-              Get started
+              Login
+            </Button>
+            <Button
+              isLink={true}
+              size="xs"
+              variant="alternative"
+              href="/forms/contact"
+            >
+              Inizia ora
             </Button>
           </div>
         </div>

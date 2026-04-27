@@ -3,6 +3,8 @@ import Seo from "@/components/fundations/head/Seo.astro";
 import Meta from "@/components/fundations/head/Meta.astro";
 import Fonts from "@/components/fundations/head/Fonts.astro";
 import Favicons from "@/components/fundations/head/Favicons.astro";
+import JsonLd from "@/components/fundations/head/JsonLd.astro";
+import { organizationSchema, websiteSchema } from "@/lib/seo/schema";
 // Scripts
 import FuseJS from "@/components/fundations/scripts/FuseJS.astro";
 import KeenSlider from "@/components/fundations/scripts/KeenSlider.astro";
@@ -25,6 +27,9 @@ const { seo } = Astro.props;
 <Meta />
 <Fonts />
 <Favicons />
+<!-- Site-wide structured data -->
+<JsonLd data={organizationSchema()} />
+<JsonLd data={websiteSchema()} />
 <!-- Scripts -->
 <FuseJS />
 <KeenSlider />

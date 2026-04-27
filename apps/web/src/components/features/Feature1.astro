@@ -9,35 +9,35 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 const features = [
   {
     bgClass: "bg-accent-horizontal-stripes",
-    title: "Poop Mode (aka Smelly Chaos)",
+    title: "Articoli per il blog",
     description:
-      "Blow things up without consequences. Simulate everything, send nothing.",
+      "Articoli che rispondono alle domande reali del tuo pubblico.",
   },
   {
     bgClass: "bg-base-horizontal-stripes",
-    title: "Webhooks That Actually Work",
+    title: "Schede prodotto",
     description:
-      "We ping your server the second something happens — delivery, open, click, bounce, interpretive dance.",
+      "Descrizioni e benefici scritti per chi sta valutando l'acquisto.",
   },
   {
     bgClass: "bg-light-horizontal-stripes",
-    title: "Blink-and-yo'll-miss-it speed",
+    title: "Guide pratiche",
     description:
-      "Flabbergasted responds faster than you can regret your last input. ",
+      "Tutorial e how-to che accompagnano l'utente passo dopo passo.",
   },
   {
     bgClass: "bg-meshPurple",
-    title: "Doesn't butcher your address",
+    title: "Landing page",
     description:
-      "From “4B Elm St.” to international phone numbers, it nails the details like it's been stalking your mailbox.",
+      "Pagine costruite intorno a keyword, intenti e CTA chiare.",
   },
 ];
 ---
 
-<section>
+<section id="come-funziona" class="scroll-mt-24">
   <Wrapper
     variant="standard"
-    class="relative pt-24 pb-8 border-t lg:pt-32 border-base-800"
+    class="relative pt-24 pb-8 border-t lg:pt-32 border-base-200"
   >
     <!-- Top Right Plus -->
     <Cross class="-top-[0.6rem] -right-[0.65rem]" />
@@ -45,18 +45,17 @@ const features = [
     <Cross class="-top-[0.6rem] -left-[0.65rem]" />
     <StripesBG
       variant="base"
-      class="absolute inset-0 mt-auto -mx-px border-t border-base-800 h-1/5"
+      class="absolute inset-0 mt-auto -mx-px border-t border-base-200 h-1/5"
     />
     <div class="relative max-w-2xl mx-auto text-center text-balance">
-      <Text tag="h2" variant="displayMD" class="text-white font-display">
-        Actually understands you in real time, no awkward pauses, no blank
-        stares
+      <Text tag="h2" variant="displayMD" class="text-base-950 font-display">
+        Genera contenuti per ogni formato, ottimizzati per Google e per le 
+        AI search
       </Text>
-      <Text tag="p" variant="textBase" class="mt-4 text-base-500">
-        It doesn’t just keep up — it dominates. Complex addresses? Weird phone
-        numbers? Random acronyms no one should be saying out loud? All handled
-        without flinching. You talk, it listens, and responds like it actually
-        paid attention.
+      <Text tag="p" variant="textBase" class="mt-4 text-base-600">
+        Che sia un articolo che risponde a una domanda, una scheda prodotto 
+        che convince, una guida passo passo o una landing che converte: 
+        ogni contenuto nasce da quello che le persone cercano davvero su Google e sulle AI.
       </Text>
     </div>
     <div
@@ -66,11 +65,11 @@ const features = [
         features.map((feature) => (
           <div class="flex flex-col justify-between h-full">
             <div class={`aspect-12/8  ${feature.bgClass}`} />
-            <div class="h-full p-4 pb-24  bg-base-900">
-              <Text tag="h3" variant="textBase" class="text-white ">
+            <div class="h-full p-4 pb-24  bg-white">
+              <Text tag="h3" variant="textBase" class="text-base-950 ">
                 {feature.title}
               </Text>
-              <Text tag="p" variant="textSM" class="mt-2  text-base-400">
+              <Text tag="p" variant="textSM" class="mt-2  text-base-600">
                 {feature.description}
               </Text>
             </div>

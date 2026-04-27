@@ -27,15 +27,16 @@ const { seo, hideNav = false, hideFooter = false } = Astro.props;
 ---
 
 <html
-  lang="en"
-  class="scroll-smooth selection:bg-white selection:text-base-900"
+  lang="it"
+  class="scroll-smooth selection:bg-accent-100 selection:text-accent-900"
 >
   <head>
     <BaseHead seo={seo} />
+    <slot name="head-extra" />
   </head>
-  <body class="relative flex flex-col py-16 bg-base-950 min-h-svh lg:py-25">
+  <body class="relative flex flex-col py-16 bg-base-50 min-h-svh lg:py-25">
     {!hideNav && <Navigation />}
-    <div class="w-full max-w-6xl mx-auto border-b xl:border-x border-base-800">
+    <div class="w-full max-w-6xl mx-auto border-b xl:border-x border-base-200">
       <main>
         <slot />
       </main>

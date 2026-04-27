@@ -13,16 +13,16 @@ const { frontmatter } = Astro.props;
     <Wrapper variant="standard" class="relative pt-32 pb-12 overflow-hidden">
       <StripesBG
         variant="base"
-        class="absolute inset-0 h-24 p-20 mt-auto -mx-px border-t border-base-800"
+        class="absolute inset-0 h-24 p-20 mt-auto -mx-px border-t border-base-200"
       />
       <div class="max-w-xl mx-auto text-balance relative">
-        <Text tag="h1" variant="displayMD" class="text-white">
+        <Text tag="h1" variant="displayMD" class="text-base-950">
           {frontmatter.customer}
         </Text>
-        <Text tag="p" variant="textBase" class="mt-4 text-base-500">
+        <Text tag="p" variant="textBase" class="mt-4 text-base-600">
           {frontmatter.about}
         </Text>
-        <dl class="flex flex-col mt-8 divide-y divide-base-800">
+        <dl class="flex flex-col mt-8 divide-y divide-base-200">
           {
             Object.entries(frontmatter.details).map(([key, value]) => (
               <div class="flex items-center justify-between py-2 gap-2">
@@ -30,7 +30,7 @@ const { frontmatter } = Astro.props;
                   <Text
                     tag="h4"
                     variant="textSM"
-                    class="font-medium text-white"
+                    class="font-medium text-base-950"
                   >
                     {key}
                   </Text>
@@ -39,7 +39,7 @@ const { frontmatter } = Astro.props;
                   <Text
                     tag="p"
                     variant="textSM"
-                    class="capitalize text-base-400 lg:text-balance"
+                    class="text-base-600 lg:text-balance"
                   >
                     {value}
                   </Text>
@@ -50,12 +50,12 @@ const { frontmatter } = Astro.props;
         </dl>
       </div>
       <div
-        class="grid grid-cols-1 md:grid-cols-3 gap-px items-start mt-8 relative"
+        class="grid grid-cols-1 md:grid-cols-3 gap-px items-start mt-8 relative bg-base-200"
       >
         {
           frontmatter.results.map((result) => (
-            <div class="gap-2 p-4 pb-24 bg-base-800 h-full border-b border-white">
-              <Text tag="p" variant="textBase" class=" text-white">
+            <div class="gap-2 p-4 pb-24 bg-base-100 h-full border-b border-base-200">
+              <Text tag="p" variant="textBase" class=" text-base-950">
                 {result}
               </Text>
             </div>
@@ -76,28 +76,27 @@ const { frontmatter } = Astro.props;
     </blockquote>
   </figure>
   <section>
-    <dl class="items-center grid grid-cols-1 md:grid-cols-2 gap-px">
+    <dl class="items-center grid grid-cols-1 md:grid-cols-2 gap-px bg-base-200">
       {
         frontmatter.challengesAndSolutions.map((item) => (
-          <div class="flex flex-col h-full overflow-hidden">
-            <div class="h-full flex flex-col p-4 pt-24 bg-base-900">
+          <div class="flex flex-col h-full overflow-hidden bg-white">
+            <div class="h-full flex flex-col p-4 pt-24">
               <dt>
-                <Text tag="h3" variant="displaySM" class="text-white ">
+                <Text tag="h3" variant="displaySM" class="text-base-950 ">
                   {item.title}
                 </Text>
               </dt>
               <dd>
-                <Text tag="p" variant="textSM" class=" text-base-400 mt-4">
+                <Text tag="p" variant="textSM" class=" text-base-600 mt-4">
                   {item.content}
                 </Text>
               </dd>
             </div>
-            <div class="aspect-12/4 p-4 -mx-px bg-base-vertical-stripes h-full order-first" />
           </div>
         ))
       }
     </dl>
-    <Wrapper variant="standard" class="py-8 border-t">
+    <Wrapper variant="standard" class="py-8 border-t border-base-200">
       <div class="max-w-xl mx-auto">
         <Wrapper variant="prose" class="mt-12"><slot /></Wrapper>
       </div>

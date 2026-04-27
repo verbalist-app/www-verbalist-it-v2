@@ -32,11 +32,11 @@ const breadcrumbs = [
     <Wrapper variant="standard" class="relative pt-48 pb-12 overflow-hidden">
       <StripesBG
         variant="base"
-        class="absolute inset-0 h-24 p-20 -mx-px border-b border-base-800"
+        class="absolute inset-0 h-24 p-20 -mx-px border-b border-base-200"
       />
       <div class="max-w-xl mx-auto text-balance">
         <nav aria-label="Breadcrumb">
-          <ol class="flex items-center text-sm gap-x-2 text-base-400">
+          <ol class="flex items-center text-sm gap-x-2 text-base-600">
             {
               breadcrumbs.map((item, index) => (
                 <>
@@ -44,16 +44,16 @@ const breadcrumbs = [
                     {index < breadcrumbs.length - 1 ? (
                       <a
                         href={item.href}
-                        class="text-xs  hover:text-accent-300"
+                        class="text-xs  hover:text-accent-600"
                       >
                         {item.label}
                       </a>
                     ) : (
-                      <span class="text-xs  text-accent-300">{item.label}</span>
+                      <span class="text-xs  text-accent-600">{item.label}</span>
                     )}
                   </li>
                   {index < breadcrumbs.length - 1 && (
-                    <li class="text-base-400">
+                    <li class="text-base-600">
                       <ChevronRight size="sm" />
                     </li>
                   )}
@@ -62,10 +62,10 @@ const breadcrumbs = [
             }
           </ol>
         </nav>
-        <Text tag="h1" variant="displayMD" class="mt-12 text-white">
+        <Text tag="h1" variant="displayMD" class="mt-12 text-base-950">
           {frontmatter.page}
         </Text>
-        <Text variant="textBase" class="mt-4 text-base-400">
+        <Text variant="textBase" class="mt-4 text-base-600">
           {frontmatter.description}
         </Text>
       </div>
@@ -74,7 +74,7 @@ const breadcrumbs = [
   <section>
     <Wrapper variant="standard" class="py-12">
       <Wrapper variant="prose" class="max-w-xl mx-auto">
-        <Text variant="textBase" class="flex items-center text-base-500 gap-2">
+        <Text variant="textBase" class="flex items-center text-base-600 gap-2">
           Last updated on
           <time
             datetime={new Date(frontmatter.lastUpdated).toLocaleDateString(

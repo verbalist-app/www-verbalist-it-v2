@@ -23,9 +23,9 @@ const tags = Object.keys(tagCounts);
 function getTagBgColor(tag) {
   const filteredPosts = allPosts.filter((post) => post.data.tags.includes(tag));
   if (filteredPosts.length > 0) {
-    return filteredPosts[0].data.bgColor || "bg-base-900"; // fallback
+    return filteredPosts[0].data.bgColor || "bg-white"; // fallback
   }
-  return "bg-base-900"; // default if none found
+  return "bg-white"; // default if none found
 }
 ---
 
@@ -40,14 +40,14 @@ function getTagBgColor(tag) {
       <Text
         tag="h1"
         variant="displayMD"
-        class="tracking-tight text-white font-display"
+        class="tracking-tight text-base-950 font-display"
       >
         Explore all our tags
       </Text>
       <Text
         tag="p"
         variant="textBase"
-        class="max-w-xl mx-auto mt-4 text-base-400"
+        class="max-w-xl mx-auto mt-4 text-base-600"
       >
         Every post, neatly labeled so you don’t have to guess what’s behind the
         click. It’s like email, but organized.
@@ -55,7 +55,7 @@ function getTagBgColor(tag) {
     </div>
   </Wrapper>
   <div
-    class="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px border-t border-base-800"
+    class="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px border-t border-base-200"
   >
     {
       tags.map((tag) => (
@@ -64,14 +64,14 @@ function getTagBgColor(tag) {
           {/* Display the image next to the tag */}
           <div class={`aspect-12/8 p-4 ${getTagBgColor(tag)}`} />
 
-          <div class="p-4 bg-base-900">
+          <div class="p-4 bg-white">
             <Text
               tag="h3"
               variant="textBase"
-              class="flex items-start justify-between mt-1 font-medium capitalize gap-4 text-white  font-display"
+              class="flex items-start justify-between mt-1 font-medium capitalize gap-4 text-base-950  font-display"
             >
               {tag}
-              <Text tag="span" variant="textXS" class="text-base-500">
+              <Text tag="span" variant="textXS" class="text-base-600">
                 ({tagCounts[tag]})
               </Text>
             </Text>

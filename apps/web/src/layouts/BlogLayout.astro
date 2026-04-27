@@ -28,9 +28,9 @@ const relatedPosts = allPosts.filter((post) =>
     
       <div class="flex flex-col justify-between text-center text-balance">
         <div>
-          <Text tag="p" variant="textXS" class="text-base-500">
+          <Text tag="p" variant="textXS" class="text-base-600">
             Written in
-            <span class="font-medium text-base-500">
+            <span class="font-medium text-base-600">
               <time datetime={new Date(frontmatter.pubDate).toISOString()}>
                 {
                   new Date(frontmatter.pubDate).toLocaleDateString("en-US", {
@@ -54,14 +54,14 @@ const relatedPosts = allPosts.filter((post) =>
           <Text
             tag="h1"
             variant="displayXL"
-            class="tracking-tight text-white font-display mt-12"
+            class="tracking-tight text-base-950 font-display mt-12"
           >
             {frontmatter.title}
           </Text>
           <Text
             tag="p"
             variant="textBase"
-            class="max-w-xl mx-auto mt-4 text-base-400"
+            class="max-w-xl mx-auto mt-4 text-base-600"
           >
             {frontmatter.description}
           </Text>
@@ -69,7 +69,7 @@ const relatedPosts = allPosts.filter((post) =>
       </div>
     </Wrapper>
     <div class={`aspect-12/4 p-4 -mx-px ${frontmatter.bgColor} h-full `}></div>
-    <Wrapper variant="standard" class="py-12 border-t overflow-hidden">
+    <Wrapper variant="standard" class="py-12 border-t border-base-200 overflow-hidden">
       <div class="max-w-xl mx-auto">
         <Wrapper variant="prose">
           <slot />
@@ -90,8 +90,8 @@ const relatedPosts = allPosts.filter((post) =>
                       />
                     )}
                   </a>
-                  <div class=" p-4 pt-24  bg-base-900">
-                    <Text tag="p" variant="textXS" class="text-base-500 ">
+                  <div class=" p-4 pt-24  bg-white">
+                    <Text tag="p" variant="textXS" class="text-base-600 ">
                       This article was written by a{" "}
                       <span>{team.data.name}</span>
                       <span> {team.data.role}</span> specialist at Flabbergasted
@@ -104,7 +104,7 @@ const relatedPosts = allPosts.filter((post) =>
           }
         </div>
         <div class="flex flex-wrap mt-12 gap-2">
-          <Text tag="p" variant="textXS" class="text-base-500">
+          <Text tag="p" variant="textXS" class="text-base-600">
             Share this article:
           </Text>
           <ShareButtons description={frontmatter.description} />
@@ -117,15 +117,15 @@ const relatedPosts = allPosts.filter((post) =>
       <section>
         <Wrapper
           variant="standard"
-          class="relative pt-24 pb-8 border-t lg:pt-32 border-base-800 overflow-hidden"
+          class="relative pt-24 pb-8 border-t lg:pt-32 border-base-200 overflow-hidden"
         >
           <Cross class="-top-[0.6rem] -right-[0.65rem]" />
           <Cross class="-top-[0.6rem] -left-[0.65rem]" />
-          <Text tag="h2" variant="displayMD" class="text-white font-display">
+          <Text tag="h2" variant="displayMD" class="text-base-950 font-display">
             Related posts
           </Text>
         </Wrapper>
-        <div class="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px border-t border-base-800">
+        <div class="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px border-t border-base-200">
           {relatedPosts.slice(0, 3).map((post) => (
             <BlogEntry post={post} />
           ))}

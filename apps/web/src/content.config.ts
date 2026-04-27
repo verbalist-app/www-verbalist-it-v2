@@ -30,11 +30,10 @@ const customers = defineCollection({
   }),
 });
 
-const integrations = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/integrations" }),
+const features = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/features" }),
   schema: z.object({
-    email: z.string(),
-    integration: z.string(),
+    name: z.string(),
     description: z.string(),
     permissions: z.array(z.string()),
     details: z.array(
@@ -135,5 +134,5 @@ export const collections = {
   infopages,
   helpcenter,
   posts: postsCollection,
-  integrations,
+  features,
 };

@@ -43,17 +43,17 @@ const allUpdates = allUpdatesUnsorted.sort(
         <Text
           tag="h1"
           variant="displayMD"
-          class="font-medium tracking-tight text-white"
+          class="font-medium tracking-tight text-base-950"
         >
           What’s New (and What We Finally Fixed)
         </Text>
-        <Text tag="p" variant="textBase" class="mt-4 text-base-500">
+        <Text tag="p" variant="textBase" class="mt-4 text-base-600">
           New features, improvements, and bugs we sent to the shadow realm — all
           tracked right here.
         </Text>
       </div>
     </Wrapper>
-    <div class="flex flex-col gap-px border-t border-base-800">
+    <div class="flex flex-col gap-px border-t border-base-200">
       {allUpdates.map((post) => <ChangelogEntry post={post} />)}
     </div>
   </section>

@@ -12,9 +12,9 @@ import Minus from "@/components/fundations/icons/Minus.astro";
 const pricingOptions = [
   {
     id: "Play",
-    cardClass: "bg-base-900",
-    primaryTextColor: "text-white",
-    secondaryTextColor: "text-base-500",
+    cardClass: "bg-white",
+    primaryTextColor: "text-base-950",
+    secondaryTextColor: "text-base-600",
     featuresBorderColor: "bg-meshLightBlue ",
     title: "Play",
     monthly: "$0",
@@ -32,9 +32,9 @@ const pricingOptions = [
   },
   {
     id: "Solo",
-    cardClass: "bg-base-900",
-    primaryTextColor: "text-white",
-    secondaryTextColor: "text-base-500",
+    cardClass: "bg-white",
+    primaryTextColor: "text-base-950",
+    secondaryTextColor: "text-base-600",
     featuresBorderColor: "bg-meshRainbow ",
     title: "Solo",
     monthly: "$19.00",
@@ -53,9 +53,9 @@ const pricingOptions = [
   },
   {
     id: "Pro",
-    cardClass: "bg-base-900",
-    primaryTextColor: "text-white",
-    secondaryTextColor: "text-base-500",
+    cardClass: "bg-white",
+    primaryTextColor: "text-base-950",
+    secondaryTextColor: "text-base-600",
     featuresBorderColor: "bg-meshPurple",
     title: "Pro",
     monthly: "$49.00",
@@ -75,9 +75,9 @@ const pricingOptions = [
   },
   {
     id: "Studio",
-    cardClass: "bg-base-800",
-    primaryTextColor: "text-white",
-    secondaryTextColor: "text-base-400",
+    cardClass: "bg-base-100",
+    primaryTextColor: "text-base-950",
+    secondaryTextColor: "text-base-600",
     featuresBorderColor: "bg-meshYellow",
     title: "Studio",
     monthly: "$99.00",
@@ -97,9 +97,9 @@ const pricingOptions = [
   },
   {
     id: "Blackbox",
-    cardClass: "bg-base-900 text-white",
-    primaryTextColor: "text-white",
-    secondaryTextColor: "text-base-400",
+    cardClass: "bg-white text-base-950",
+    primaryTextColor: "text-base-950",
+    secondaryTextColor: "text-base-600",
     featuresBorderColor: "bg-meshMagenta",
     title: "Blackbox",
     monthly: "Custom",
@@ -196,32 +196,32 @@ export const pricingFeatures = [
 <section>
   <Wrapper
     variant="standard"
-    class="relative pt-24 pb-8 border-t lg:pt-32 border-base-800"
+    class="relative pt-24 pb-8 border-t lg:pt-32 border-base-200"
   >
     <StripesBG
       variant="accent"
       class="absolute inset-0 hidden h-full p-20 mt-auto -mx-px lg:block lg:w-1/2 lg:ml-auto clip-rect-inset"
     />
     <div class="max-w-md text-balance">
-      <Text tag="h2" variant="displayMD" class="text-white font-display">
+      <Text tag="h2" variant="displayMD" class="text-base-950 font-display">
         Pricing for whatever stage you’re pretending to be at
       </Text>
-      <Text tag="p" variant="textBase" class="mt-4 text-base-500">
+      <Text tag="p" variant="textBase" class="mt-4 text-base-600">
         Free if you’re just tinkering. Paid when things get accidentally
         serious.
       </Text>
       <div
         aria-labelledby="pricing-toggle"
-        class="relative z-0 inline-flex justify-center p-1.5 mx-auto mt-8 ring ring-base-800 overflow-hidden bg-base-800 gap-4 lg:mx-0 rounded-full w-fit"
+        class="relative z-0 inline-flex justify-center p-1.5 mx-auto mt-8 ring ring-base-200 overflow-hidden bg-base-100 gap-4 lg:mx-0 rounded-full w-fit"
       >
         <div
           id="toggle-slider"
-          class="absolute inset-0 w-1/2 rounded-full bg-base-900 transition-transform duration-200 ease-in-out"
+          class="absolute inset-0 w-1/2 rounded-full bg-white transition-transform duration-200 ease-in-out"
         >
         </div>
         <button
           id="monthly-btn"
-          class="relative z-10 flex items-center justify-center w-full h-6 px-2 text-xs font-medium text-white focus:outline-none transition-colors duration-300"
+          class="relative z-10 flex items-center justify-center w-full h-6 px-2 text-xs font-medium text-base-950 focus:outline-none transition-colors duration-300"
           type="button"
           aria-pressed="true"
         >
@@ -229,7 +229,7 @@ export const pricingFeatures = [
         </button>
         <button
           id="annual-btn"
-          class="relative z-10 flex items-center justify-center w-full h-6 px-2 text-xs font-medium focus:outline-none transition-colors duration-300 text-base-200 hover:text-white focus:text-white"
+          class="relative z-10 flex items-center justify-center w-full h-6 px-2 text-xs font-medium focus:outline-none transition-colors duration-300 text-base-500 hover:text-base-950 focus:text-base-950"
           type="button"
           aria-pressed="false"
         >
@@ -244,7 +244,7 @@ export const pricingFeatures = [
       pricingOptions.map((tier) => (
         <div class={`flex flex-col p-4 ${tier.cardClass}`}>
           <div
-            class={`lg:sticky lg:top-25 lg:z-50 bg-base-800 ${tier.cardClass}`}
+            class={`lg:sticky lg:top-25 lg:z-50 bg-base-100 ${tier.cardClass}`}
           >
             <Text
               tag="h3"
@@ -317,16 +317,16 @@ export const pricingFeatures = [
   <div class="relative z-0 w-full overflow-x-auto scrollbar-hide">
     <div class="min-w-[768px] overflow-hidden">
       <table class="w-full text-sm">
-        <thead class="text-center border-b border-base-900">
+        <thead class="text-center border-b border-base-200">
           <tr>
-            <th class="px-4 pt-8 pb-2 font-medium text-left text-white"
+            <th class="px-4 pt-8 pb-2 font-medium text-left text-base-950"
               >Features</th
             >
-            <th class="px-4 py-2 font-medium text-white">Play</th>
-            <th class="px-4 py-2 font-medium text-white">Solo</th>
-            <th class="px-4 py-2 font-medium text-white">Pro</th>
-            <th class="px-4 py-2 font-medium text-white">Studio</th>
-            <th class="px-4 py-2 font-medium text-white">Blackbox</th>
+            <th class="px-4 py-2 font-medium text-base-950">Play</th>
+            <th class="px-4 py-2 font-medium text-base-950">Solo</th>
+            <th class="px-4 py-2 font-medium text-base-950">Pro</th>
+            <th class="px-4 py-2 font-medium text-base-950">Studio</th>
+            <th class="px-4 py-2 font-medium text-base-950">Blackbox</th>
           </tr>
         </thead>
         <tbody>
@@ -336,16 +336,16 @@ export const pricingFeatures = [
                 <tr>
                   <td
                     colspan="5"
-                    class="px-4 py-12 text-base font-medium text-white border-b border-base-900"
+                    class="px-4 py-12 text-base font-medium text-base-950 border-b border-base-200"
                   >
                     {category}
                   </td>
                 </tr>
                 {features.map(({ label, values }) => (
-                  <tr class="border-b border-base-900 even:bg-white/2">
-                    <td class="px-4 py-2 text-base-400">{label}</td>
+                  <tr class="border-b border-base-200 even:bg-white/60">
+                    <td class="px-4 py-2 text-base-600">{label}</td>
                     {values.map((value, i) => (
-                      <td class="px-4 py-4 text-center text-base-50">
+                      <td class="px-4 py-4 text-center text-base-700">
                         {value === "yes" ? (
                           <X size="sm" class="mx-auto " />
                         ) : value === "no" ? (
@@ -381,31 +381,31 @@ export const pricingFeatures = [
         // Update toggle slider position
         if (duration === "monthly") {
           toggleSlider.style.transform = "translateX(0)";
-          monthlyBtn.classList.add("text-white");
+          monthlyBtn.classList.add("text-base-950");
           monthlyBtn.classList.remove(
-            "focus:text-base-200",
-            "hover:text-base-200"
+            "focus:text-base-500",
+            "hover:text-base-500"
           );
-          annualBtn.classList.remove("text-white");
+          annualBtn.classList.remove("text-base-950");
           annualBtn.classList.add(
-            "text-base-200",
-            "hover:text-white",
-            "focus:text-white"
+            "text-base-500",
+            "hover:text-base-950",
+            "focus:text-base-950"
           );
           monthlyBtn.setAttribute("aria-pressed", "true");
           annualBtn.setAttribute("aria-pressed", "false");
         } else {
           toggleSlider.style.transform = "translateX(100%)";
-          annualBtn.classList.add("text-white");
+          annualBtn.classList.add("text-base-950");
           annualBtn.classList.remove(
-            "focus:text-base-200",
-            "hover:text-base-200"
+            "focus:text-base-500",
+            "hover:text-base-500"
           );
-          monthlyBtn.classList.remove("text-white");
+          monthlyBtn.classList.remove("text-base-950");
           monthlyBtn.classList.add(
-            "text-base-200",
-            "hover:text-white",
-            "focus:text-white"
+            "text-base-500",
+            "hover:text-base-950",
+            "focus:text-base-950"
           );
           monthlyBtn.setAttribute("aria-pressed", "false");
           annualBtn.setAttribute("aria-pressed", "true");

@@ -1,6 +1,8 @@
 # Build output
 dist/
 .astro/
+.next/
+out/
 
 # Dependencies
 node_modules/
@@ -23,9 +25,6 @@ pnpm-debug.log*
 .idea/
 *.iml
 
-# Sanity
-.sanity/
-
 # Temporary/system files
 *.swp
 *.tmp
@@ -33,3 +32,6 @@ Thumbs.db
 
 # VS Code settings
 .vscode/
+
+# Legacy site reference (PHP/Python original — kept locally only)
+nurdeveloper-www.v2.verbalist.it-*/

@@ -1,6 +1,8 @@
 ---
 // Fundations
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import JsonLd from "@/components/fundations/head/JsonLd.astro";
+import { softwareApplicationSchema } from "@/lib/seo/schema";
 // Sections
 import Hero1 from "@/components/heros/Hero1.astro";
 import LogoCloud1 from "@/components/testimonials/LogoCloud1.astro";
@@ -8,19 +10,26 @@ import Feature1 from "@/components/features/Feature1.astro";
 import Feature2 from "@/components/features/Feature2.astro";
 import Feature3 from "@/components/features/Feature3.astro";
 import Feature4 from "@/components/features/Feature4.astro";
-import IntegrationsCta from "@/components/ctas/IntegrationsCta.astro";
+import FeaturesCta from "@/components/ctas/FeaturesCta.astro";
 import Pricing1 from "@/components/pricing/Pricing1.astro";
 import Testimonial1 from "@/components/testimonials/Testimonial1.astro";
+
+const seo = {
+  title: "Crea contenuti SEO a partire dai dati di ricerca",
+  description:
+    "Verbalist trasforma keyword, risultati Google e competitor in contenuti SEO strutturati, completi e pronti anche per la ricerca con AI. Free trial disponibile.",
+};
 ---
 
-<BaseLayout>
+<BaseLayout seo={seo}>
+  <JsonLd slot="head-extra" data={softwareApplicationSchema()} />
   <Hero1 />
   <LogoCloud1 />
   <Feature1 />
   <Feature2 />
   <Feature3 />
   <Feature4 />
-  <IntegrationsCta />
+  <FeaturesCta />
   <Pricing1 />
   <Testimonial1 />
 </BaseLayout>

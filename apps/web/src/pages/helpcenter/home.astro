@@ -27,18 +27,18 @@ const allEntries = await getAllHelpcenter();
         <Text
           tag="h1"
           variant="displayMD"
-          class="font-medium tracking-tight text-white"
+          class="font-medium tracking-tight text-base-950"
         >
           Help, but make it helpful
         </Text>
-        <Text tag="p" variant="textBase" class="mt-4 text-base-500">
+        <Text tag="p" variant="textBase" class="mt-4 text-base-600">
           Stuck? Confused? Mildly annoyed? Our docs are here to save you from
           rage-Googling or yelling at your screen.
         </Text>
       </div>
     </Wrapper>
     <div
-      class="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px border-t border-base-800"
+      class="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px border-t border-base-200"
     >
       {allEntries.map((post) => <HelpCenterEntry post={post} />)}
     </div>

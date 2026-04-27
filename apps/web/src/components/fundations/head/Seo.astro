@@ -1,6 +1,5 @@
 ---
 import { AstroSeo } from "@lexingtonthemes/seo";
-import { sanityFetch, siteSettingsQuery, getImageUrl } from "@/lib/sanity";
 
 interface Props {
   title?: string;
@@ -23,32 +22,20 @@ const {
   noindex = false,
 } = Astro.props;
 
-// Fetch site settings for defaults
-const settings = await sanityFetch<{
-  title: string;
-  description: string;
-  siteUrl: string;
-  ogImage?: { asset: any; alt?: string };
-  twitterHandle?: string;
-}>(siteSettingsQuery);
+// Verbalist global defaults
+const SITE_TITLE = "Verbalist";
+const SITE_DESCRIPTION =
+  "Crea contenuti SEO a partire dai dati di ricerca, ottimizzati per Google e per le AI search.";
+const SITE_URL = "https://www.verbalist.it";
+const DEFAULT_OG_IMAGE = "/og-image.jpg";
+const TWITTER_HANDLE = "";
 
-// Use page-specific values or fall back to site defaults
-const title = pageTitle
-  ? `${pageTitle} | ${settings?.title}`
-  : settings?.title || "My Website";
-const description = pageDescription || settings?.description || "";
-const siteUrl = settings?.siteUrl || "https://example.com";
-const canonical = new URL(Astro.url.pathname, siteUrl).toString();
+const title = pageTitle ? `${pageTitle} | ${SITE_TITLE}` : SITE_TITLE;
+const description = pageDescription || SITE_DESCRIPTION;
+const canonical = new URL(Astro.url.pathname, SITE_URL).toString();
 
-// Image: use page image, or default OG image from settings
-const ogImageUrl =
-  pageImage?.url ||
-  (settings?.ogImage
-    ? getImageUrl(settings.ogImage.asset, { width: 1200, height: 630 })
-    : "");
-const ogImageAlt = pageImage?.alt || settings?.ogImage?.alt || title;
-
-const twitterHandle = settings?.twitterHandle || "";
+const ogImageUrl = pageImage?.url || DEFAULT_OG_IMAGE;
+const ogImageAlt = pageImage?.alt || title;
 ---
 
 <AstroSeo
@@ -60,20 +47,18 @@ const twitterHandle = settings?.twitterHandle || "";
     url: canonical,
     title: title,
     description: description,
-    images: ogImageUrl
-      ? [
-          {
-            url: ogImageUrl,
-            width: 1200,
-            height: 630,
-            alt: ogImageAlt,
-            type: "image/jpeg",
-          },
-        ]
-      : [],
-    site_name: settings?.title || "My Website",
+    images: [
+      {
+        url: new URL(ogImageUrl, SITE_URL).toString(),
+        width: 1200,
+        height: 630,
+        alt: ogImageAlt,
+        type: "image/jpeg",
+      },
+    ],
+    site_name: SITE_TITLE,
     type: type,
-    locale: "en_US",
+    locale: "it_IT",
     ...(type === "article" &&
       publishedTime && {
         article: {
@@ -82,8 +67,8 @@ const twitterHandle = settings?.twitterHandle || "";
       }),
   }}
   twitter={{
-    handle: twitterHandle,
-    site: twitterHandle,
-    cardType: ogImageUrl ? "summary_large_image" : "summary",
+    handle: TWITTER_HANDLE,
+    site: TWITTER_HANDLE,
+    cardType: "summary_large_image",
   }}
 />

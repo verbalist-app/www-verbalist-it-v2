@@ -1,0 +1,109 @@
+---
+// Assets
+import Cross from "@/components/assets/Cross.astro";
+import StripesBG from "@/components/assets/StripesBG.astro";
+// Fundations
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+// Components
+import FeatureCard from "@/components/features/FeatureCard.astro";
+// Content
+import { getAllFeatures } from "@/lib/data";
+const allFeatures = (await getAllFeatures()).sort((a, b) =>
+  a.data.name.localeCompare(b.data.name)
+);
+const allTags = Array.from(
+  new Set(allFeatures.flatMap((post) => post.data.tags))
+).sort();
+---
+
+<BaseLayout>
+  <section>
+    <Wrapper variant="standard" class="pt-32 pb-12 relative overflow-hidden">
+      <!-- Top Right Plus -->
+      <Cross class="-top-[0.6rem] -right-[0.65rem] z-51" />
+      <!-- Top left Plus -->
+      <Cross class="-top-[0.6rem] -left-[0.65rem] z-51" />
+      <StripesBG
+        variant="light"
+        class="absolute inset-0 h-full -mx-px w-[15%] ml-auto"
+      />
+      <StripesBG
+        variant="accent"
+        class="absolute inset-0 h-full -mx-px w-[25%] ml-auto"
+      />
+      <StripesBG
+        variant="base"
+        class="absolute inset-0 h-full -mx-px w-[50%] ml-auto"
+      />
+      <div class="text-balance max-w-xl relative">
+        <Text
+          tag="h1"
+          variant="displayMD"
+          class="font-medium tracking-tight text-base-950"
+        >
+          Tutto quello che fa Verbalist, modulo per modulo
+        </Text>
+        <Text tag="p" variant="textBase" class="mt-4 text-base-600">
+          Dall'analisi delle prime 10 posizioni di Google alla scrittura del
+          contenuto, ogni passaggio è un modulo che lavora con gli altri.
+          Esplora come funzionano.
+        </Text>
+      </div>
+    </Wrapper>
+    <div class="grid grid-cols-1 lg:grid-cols-3 border-t border-base-200">
+      <nav role="navigation" aria-label="Categorie funzionalità" class="p-8">
+        <ul class="flex flex-col gap-2">
+          {
+            allTags.map((tag) => (
+              <li>
+                <a
+                  href={`#tag-${tag}`}
+                  aria-label={`Vai alla sezione ${tag}`}
+                  class="text-base-950 hover:text-accent-600"
+                >
+                  {tag}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <div
+        class="flex flex-col divide-y divide-base-200 lg:col-span-2 lg:border-l border-t lg:border-t-0 border-base-200 overflow-hidden"
+      >
+        {
+          allTags.map((tag) => {
+            const tagFeatures = allFeatures.filter((post) =>
+              post.data.tags.includes(tag)
+            );
+            const showDivider = tagFeatures.length > 1;
+            return (
+              <section id={`tag-${tag}`} class="py-12 px-8 relative">
+                <StripesBG
+                  variant="base"
+                  class=" absolute inset-0 h-[50%] -mx-px  mt-auto border-t border-base-200"
+                />
+                <Text
+                  tag="h2"
+                  variant="textBase"
+                  class="relative text-base-950"
+                >
+                  {tag}
+                </Text>
+                <div
+                  class={`mt-4 grid grid-cols-1 gap-px md:grid-cols-2 relative ${showDivider ? "bg-base-200" : ""}`}
+                >
+                  {tagFeatures.map((post) => (
+                    <FeatureCard post={post} />
+                  ))}
+                </div>
+              </section>
+            );
+          })
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>

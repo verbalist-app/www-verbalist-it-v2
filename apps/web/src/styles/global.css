@@ -35,8 +35,8 @@
   --background-image-base-vertical-stripes: 
   repeating-linear-gradient(
     to right,
-    oklch(0.269 0 0) 0px,
-    oklch(0.269 0 0) 1px,
+    oklch(0.922 0 0) 0px,
+    oklch(0.922 0 0) 1px,
     transparent 1px,
     transparent 8px
   );
@@ -61,8 +61,8 @@
 --background-image-base-horizontal-stripes: 
   repeating-linear-gradient(
     to bottom,
-    oklch(0.269 0 0) 0px,
-    oklch(0.269 0 0) 1px,
+    oklch(0.922 0 0) 0px,
+    oklch(0.922 0 0) 1px,
     transparent 1px,
     transparent 8px
   );
@@ -108,7 +108,7 @@
       transform: translateX(0%);
     }
     100% {
-      transform: translateX(-100%);
+      transform: translateX(-50%);
     }
   }
   @keyframes rightMarquee {

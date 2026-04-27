@@ -17,7 +17,7 @@ const { customer, avatar, url, ctaTitle, testimonial, bgColor } = {
 };
 ---
 
-<div class="relative overflow-hidden bg-base-900 group">
+<div class="relative overflow-hidden bg-white group">
  
   <div class="grid grid-cols-1  lg:grid-cols-3 lg:items-center">
     <div class="pt-24 p-8 text-balance flex flex-col h-full justify-between lg:col-span-2">
@@ -25,24 +25,24 @@ const { customer, avatar, url, ctaTitle, testimonial, bgColor } = {
         <Text
           class="span"
           variant="textXS"
-          class="font-medium text-base-400 gap-2"
+          class="font-medium text-base-600 gap-2"
         >
           {customer}
         </Text>
         <Text
           tag="p"
           variant="textXL"
-          class="mt-8 font-medium tracking-tight text-white text-balance"
+          class="mt-8 font-medium tracking-tight text-base-950 text-balance"
         >
           "{testimonial}"
         </Text>
-        <Text tag="p" variant="textBase" class="mt-4 text-base text-base-500">
+        <Text tag="p" variant="textBase" class="mt-4 text-base text-base-600">
           {ctaTitle}
         </Text>
       </div>
        <div class="flex items-center justify-between gap-2">
-        <Text class="font-medium text-white" tag="p" variant="textSM">
-          Read {customer}'s case study
+        <Text class="font-medium text-base-950" tag="p" variant="textSM">
+          Leggi il case study di {customer}
         </Text>
         <Button
           iconOnly

@@ -7,48 +7,34 @@ import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 const footerLinks = [
   {
-    heading: "Navigation",
+    heading: "Prodotto",
     links: [
-      { label: "Overview", href: "/system/overview" },
-      { label: "Buttons", href: "/system/buttons" },
-      { label: "Links", href: "/system/links" },
-      { label: "Colors", href: "/system/colors" },
-      { label: "Typography", href: "/system/typography" },
+      { label: "Funzionalità", href: "/funzionalita/home" },
+      { label: "Prezzi", href: "/#prezzi" },
+      { label: "Changelog", href: "/changelog/home" },
     ],
   },
   {
-    heading: "Stay updated",
+    heading: "Risorse",
     links: [
-      {
-        label: "License",
-        href: "https://www.lexingtonthemes.com/legal/license",
-      },
-      {
-        label: "Documentation",
-        href: "https://www.lexingtonthemes.com/documentation",
-      },
+      { label: "Blog", href: "/blog/home" },
+      { label: "Help center", href: "/helpcenter/home" },
+      { label: "Customer stories", href: "/customers/home" },
     ],
   },
   {
-    heading: "Socials",
+    heading: "Azienda",
     links: [
-      {
-        label: "@lexingtonthemes",
-        href: "https://twitter.com/lexingtonthemes",
-      },
-      {
-        label: "@Mike_Andreuzza",
-        href: "https://twitter.com/Mike_Andreuzza",
-      },
+      { label: "Chi siamo", href: "/about" },
+      { label: "Team", href: "/team/home" },
+      { label: "Contatti", href: "/forms/contact" },
     ],
   },
   {
-    heading: "More Themes",
+    heading: "Legale",
     links: [
-      {
-        label: "Lexington Themes",
-        href: "https://lexingtonthemes.com/",
-      },
+      { label: "Privacy", href: "/infopages/privacy" },
+      { label: "Termini", href: "/infopages/privacy" },
     ],
   },
 ];
@@ -57,24 +43,25 @@ const footerLinks = [
 <footer>
   <Wrapper
     variant="paddinglessDesktop"
-    class="relative py-12 overflow-hidden border-white borderb"
+    class="relative py-12 overflow-hidden border-base-200 borderb"
   >
     <div class="relative pb-24 gap-8 grid grid-cols-1 lg:grid-cols-3">
-      <div class="text-white">
-        <a href="/" class="flex items-center text-sm text-white gap-2">
-          <span class="sr-only">Go to homepage</span>
+      <div class="text-base-950">
+        <a href="/" class="flex items-center text-sm text-base-950 gap-2">
+          <span class="sr-only">Vai alla homepage</span>
           <Logo class="h-6" />
-          Flabbergasted
+          Verbalist
         </a>
-        <p class="mt-1 text-sm font-normal text-base-500 text-balance">
-          Premium multipage themes crafted with Astro and Tailwind CSS
+        <p class="mt-1 text-sm font-normal text-base-600 text-balance">
+          Crea contenuti SEO a partire dai dati di ricerca, ottimizzati
+          per Google e per le AI search.
         </p>
       </div>
       <div class="grid grid-cols-2 gap-8 xl:col-span-2 xl:col-start-3">
         {
           footerLinks.map((section) => (
             <div>
-              <Text tag="h3" variant="textBase" class="text-white font-display">
+              <Text tag="h3" variant="textBase" class="text-base-950 font-display">
                 {section.heading}
               </Text>
               <ul role="list" class="mt-2 text-sm space-y-1 text-base-600">
@@ -84,7 +71,7 @@ const footerLinks = [
                       title="Button to your page"
                       aria-label="your label"
                       href={link.href}
-                      class="hover:text-white"
+                      class="hover:text-base-950"
                     >
                       {link.label}
                     </a>
@@ -97,6 +84,6 @@ const footerLinks = [
       </div>
     </div>
     
-    <div aria-hidden="true" class="bg-light-vertical-stripes p-20 clip-rect-inset lg:py-62 mt-12"></div>
+    <div aria-hidden="true" class="bg-base-vertical-stripes p-20 clip-rect-inset lg:py-62 mt-12"></div>
   </Wrapper>
 </footer>
