@@ -1,0 +1,835 @@
+---
+// Fundations
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import Button from "@/components/fundations/elements/Button.astro";
+// Logo components
+import Logo from "@/components/assets/Logo.astro";
+import LogoMark from "@/components/assets/LogoMark.astro";
+
+// SEO
+const seo = {
+  title: "Brand kit",
+  description:
+    "Logotipo, marchio, palette colori, tipografia e regole d'uso del brand Verbalist. Risorse per il team di comunicazione, marketing e design.",
+  noindex: true,
+};
+
+// Logo variants (per le card di anteprima e download)
+const logoVariants = [
+  {
+    label: "Logotipo, versione scura",
+    download: "/brand/verbalist-logotype-dark.svg",
+    bg: "bg-base-50",
+    text: "text-base-950",
+    component: "logotype",
+    fileName: "verbalist-logotype-dark.svg",
+  },
+  {
+    label: "Logotipo, versione chiara",
+    download: "/brand/verbalist-logotype-light.svg",
+    bg: "bg-base-950",
+    text: "text-base-50",
+    component: "logotype",
+    fileName: "verbalist-logotype-light.svg",
+  },
+  {
+    label: "Marchio, versione scura",
+    download: "/brand/verbalist-mark-dark.svg",
+    bg: "bg-base-50",
+    text: "text-base-950",
+    component: "mark",
+    fileName: "verbalist-mark-dark.svg",
+  },
+  {
+    label: "Marchio, versione chiara",
+    download: "/brand/verbalist-mark-light.svg",
+    bg: "bg-base-950",
+    text: "text-base-50",
+    component: "mark",
+    fileName: "verbalist-mark-light.svg",
+  },
+];
+
+// Palette colori principali
+const accentPalette = [
+  { name: "accent-50", hex: "#EFE9FB", oklch: "oklch(94.4% 0.025 301.07)", swatch: "bg-accent-50" },
+  { name: "accent-100", hex: "#E3D8F8", oklch: "oklch(90.08% 0.045 301.16)", swatch: "bg-accent-100" },
+  { name: "accent-200", hex: "#C6B0F2", oklch: "oklch(79.89% 0.095 299.55)", swatch: "bg-accent-200" },
+  { name: "accent-300", hex: "#A785EA", oklch: "oklch(69% 0.147 297.95)", swatch: "bg-accent-300" },
+  { name: "accent-400", hex: "#8A5DE4", oklch: "oklch(59.34% 0.196 295.11)", swatch: "bg-accent-400" },
+  { name: "accent-500", hex: "#6E36DD", oklch: "oklch(50.89% 0.233 290.96)", swatch: "bg-accent-500", isPrimary: true },
+  { name: "accent-600", hex: "#5821C4", oklch: "oklch(44.26% 0.225 288.6)", swatch: "bg-accent-600" },
+  { name: "accent-700", hex: "#421994", oklch: "oklch(36.36% 0.181 289.01)", swatch: "bg-accent-700" },
+  { name: "accent-800", hex: "#2B1060", oklch: "oklch(27.39% 0.129 290.51)", swatch: "bg-accent-800" },
+  { name: "accent-900", hex: "#150830", oklch: "oklch(18.44% 0.075 292.49)", swatch: "bg-accent-900" },
+  { name: "accent-950", hex: "#0C041A", oklch: "oklch(13.92% 0.049 298.54)", swatch: "bg-accent-950" },
+];
+
+const basePalette = [
+  { name: "base-50", hex: "#FAFAFA", oklch: "oklch(98.5% 0 0)", swatch: "bg-base-50" },
+  { name: "base-100", hex: "#F5F5F5", oklch: "oklch(97% 0 0)", swatch: "bg-base-100" },
+  { name: "base-200", hex: "#E5E5E5", oklch: "oklch(92.2% 0 0)", swatch: "bg-base-200" },
+  { name: "base-300", hex: "#D4D4D4", oklch: "oklch(87% 0 0)", swatch: "bg-base-300" },
+  { name: "base-400", hex: "#A1A1A1", oklch: "oklch(70.8% 0 0)", swatch: "bg-base-400" },
+  { name: "base-500", hex: "#737373", oklch: "oklch(55.6% 0 0)", swatch: "bg-base-500" },
+  { name: "base-600", hex: "#525252", oklch: "oklch(43.9% 0 0)", swatch: "bg-base-600" },
+  { name: "base-700", hex: "#404040", oklch: "oklch(37.1% 0 0)", swatch: "bg-base-700" },
+  { name: "base-800", hex: "#262626", oklch: "oklch(26.9% 0 0)", swatch: "bg-base-800" },
+  { name: "base-900", hex: "#171717", oklch: "oklch(20.5% 0 0)", swatch: "bg-base-900" },
+  { name: "base-950", hex: "#0A0A0A", oklch: "oklch(14.5% 0 0)", swatch: "bg-base-950", isPrimary: true },
+];
+
+// Uso corretto / da evitare
+const dos = [
+  "Usa il logotipo su sfondi chiari, scuri o neutri della palette base.",
+  "Mantieni le proporzioni originali, senza alterazioni di scala non uniformi.",
+  "Lascia un'area di rispetto pari almeno all'altezza della V del marchio.",
+  "Per dimensioni ridotte sotto i 24px usa il marchio, non il logotipo completo.",
+];
+const donts = [
+  "Non ruotare, deformare o aggiungere effetti (ombre, bordi, contorni).",
+  "Non ricolorare il logotipo con tinte fuori dalla palette ufficiale.",
+  "Non posizionarlo su immagini o pattern che ne riducono la leggibilità.",
+  "Non ricostruire il logotipo a mano: usa sempre i file SVG forniti.",
+];
+
+// Naming
+const namingRules = [
+  {
+    rule: "Verbalist",
+    note: "Sempre con la V maiuscola, sempre per esteso. Mai \"verbalist\" né \"VERBALIST\".",
+  },
+  {
+    rule: "NUR S.r.l. è l'azienda. Verbalist è il prodotto.",
+    note: "NUR sviluppa e gestisce Verbalist. Nei copyright, footer, contratti compare NUR. Nelle CTA, headline, materiali di prodotto compare Verbalist.",
+  },
+  {
+    rule: "Niente sinonimi forzati",
+    note: "In un testo Verbalist resta Verbalist. Evita \"la piattaforma\", \"la soluzione\", \"il sistema\" usati come sinonimo per evitare ripetizione.",
+  },
+];
+
+// Tone of voice
+const tovPrinciples = [
+  {
+    title: "Chiaro per chiunque, mai infantile",
+    body:
+      "Verbalist parla a marketing manager, founder, copywriter. Lessico tecnico ammesso (SEO, SERP, brief, intent), ma niente claim vuoti né registro esclamativo.",
+  },
+  {
+    title: "Concreto, non vago",
+    body:
+      "Dire cosa fa la feature, quando interviene, per chi. Verbi all'inizio o frase nominale. 1-2 frasi per descrizione, max 20 parole.",
+  },
+  {
+    title: "Verbalist suggerisce, non decide",
+    body:
+      "Lo strumento aiuta, propone, segnala. Non sceglie al posto dell'utente. \"Ti suggerisce cosa includere\" è meglio di \"ti dice cosa fare\".",
+  },
+  {
+    title: "Niente segni di scrittura AI",
+    body:
+      "Niente em-dash —, niente virgolette curve “ ”, niente \"non solo X ma anche Y\", niente parole-tic come \"valorizzare\", \"ridefinire\", \"paesaggio\", \"robusto\", \"perenne\".",
+  },
+];
+
+const tovExamples = [
+  {
+    bad: "Verbalist rappresenta la soluzione end-to-end pensata per valorizzare al massimo il tuo content marketing.",
+    good: "Verbalist scrive contenuti SEO a partire da SERP e keyword reali.",
+  },
+  {
+    bad: "Una piattaforma robusta che ridefinisce il modo in cui crei contenuti — non solo testi, ma vere strategie.",
+    good: "Verbalist ti suggerisce cosa scrivere, in che ordine, e con quali fonti.",
+  },
+  {
+    bad: "L'AI sceglie per te il brief migliore, automaticamente.",
+    good: "Verbalist propone un brief: tu decidi cosa tenere e cosa cambiare.",
+  },
+];
+
+// Pattern di background
+const stripeAssets = [
+  { label: "Stripes verticali base", file: "stripes-base-vertical.svg", preview: "bg-base-vertical-stripes" },
+  { label: "Stripes orizzontali base", file: "stripes-base-horizontal.svg", preview: "bg-base-horizontal-stripes" },
+  { label: "Stripes verticali accent", file: "stripes-accent-vertical.svg", preview: "bg-accent-vertical-stripes" },
+  { label: "Stripes orizzontali accent", file: "stripes-accent-horizontal.svg", preview: "bg-accent-horizontal-stripes" },
+];
+
+const meshAssets = [
+  { label: "Mesh Light Blue", file: "mesh-light-blue.png", preview: "bg-meshLightBlue" },
+  { label: "Mesh Rainbow", file: "mesh-rainbow.png", preview: "bg-meshRainbow" },
+  { label: "Mesh Purple", file: "mesh-purple.png", preview: "bg-meshPurple" },
+  { label: "Mesh Yellow", file: "mesh-yellow.png", preview: "bg-meshYellow" },
+  { label: "Mesh Magenta", file: "mesh-magenta.png", preview: "bg-meshMagenta" },
+  { label: "Mesh Green", file: "mesh-green.png", preview: "bg-meshGreen" },
+];
+
+// File aggiuntivi (PNG 512/1024) elencati nella sezione Asset finale
+const pngVariants = [
+  { label: "Logotipo, scuro, 512×151", file: "verbalist-logotype-dark-512.png" },
+  { label: "Logotipo, scuro, 1024×302", file: "verbalist-logotype-dark-1024.png" },
+  { label: "Logotipo, chiaro, 512×151", file: "verbalist-logotype-light-512.png" },
+  { label: "Logotipo, chiaro, 1024×302", file: "verbalist-logotype-light-1024.png" },
+  { label: "Marchio, scuro, 512×512", file: "verbalist-mark-dark-512.png" },
+  { label: "Marchio, scuro, 1024×1024", file: "verbalist-mark-dark-1024.png" },
+  { label: "Marchio, chiaro, 512×512", file: "verbalist-mark-light-512.png" },
+  { label: "Marchio, chiaro, 1024×1024", file: "verbalist-mark-light-1024.png" },
+];
+---
+
+<BaseLayout seo={seo}>
+  <!-- HERO -->
+  <section>
+    <Wrapper variant="standard" class="relative pt-32 pb-12">
+      <Text tag="p" variant="textXS" class="font-mono uppercase tracking-wider text-base-500">
+        Brand kit
+      </Text>
+      <Text
+        tag="h1"
+        variant="displayLG"
+        class="mt-4 max-w-3xl tracking-tight text-base-950 font-display text-balance"
+      >
+        Risorse di brand Verbalist
+      </Text>
+      <Text tag="p" variant="textBase" class="max-w-2xl mt-4 text-base-600">
+        Pagina di riferimento per chi progetta e produce comunicazione Verbalist:
+        fiere, social, presentazioni, materiali stampa. Qui trovi logotipo,
+        marchio, palette colori, tipografia, pattern, tono di voce e regole d'uso.
+      </Text>
+      <div class="flex flex-wrap items-center gap-3 mt-8">
+        <Button
+          href="/brand/verbalist-brand-kit.zip"
+          isLink={true}
+          size="xs"
+          variant="default"
+          class="w-fit"
+          download
+        >
+          Scarica il brand kit (zip)
+        </Button>
+        <span class="text-xs font-mono text-base-500">SVG + PNG + pattern · ~31 MB</span>
+      </div>
+    </Wrapper>
+  </section>
+
+  <!-- NAMING -->
+  <section class="border-t border-base-200">
+    <Wrapper variant="standard" class="py-12">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="flex flex-col gap-2 lg:col-span-1">
+          <Text tag="p" variant="textXS" class="font-mono uppercase tracking-wider text-base-500">
+            01 / Naming
+          </Text>
+          <Text tag="h2" variant="displaySM" class="text-base-950 font-display tracking-tight">
+            Come si scrive
+          </Text>
+          <Text tag="p" variant="textBase" class="text-base-600">
+            Tre regole brevi prima di mostrare il logo. Valgono nei copy, nelle
+            slide, nelle email e nei materiali fiera.
+          </Text>
+        </div>
+        <div class="lg:col-span-2 flex flex-col divide-y divide-base-200 border-t border-b border-base-200">
+          {
+            namingRules.map((r) => (
+              <div class="py-4 grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-6">
+                <Text tag="h3" variant="textBase" class="font-medium text-base-950 sm:col-span-1">
+                  {r.rule}
+                </Text>
+                <p class="text-sm text-base-600 sm:col-span-2">{r.note}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </Wrapper>
+  </section>
+
+  <!-- LOGO -->
+  <section class="border-t border-base-200">
+    <Wrapper variant="standard" class="py-12">
+      <div class="flex flex-col gap-2 max-w-2xl">
+        <Text tag="p" variant="textXS" class="font-mono uppercase tracking-wider text-base-500">
+          02 / Logo
+        </Text>
+        <Text tag="h2" variant="displaySM" class="text-base-950 font-display tracking-tight">
+          Logotipo e marchio
+        </Text>
+        <Text tag="p" variant="textBase" class="text-base-600">
+          Il logotipo "Verbalist" è la versione primaria, da preferire ovunque ci
+          sia spazio per leggerlo. Il marchio (la V) è la versione ridotta,
+          adatta a favicon, avatar, app icon, social profile.
+        </Text>
+      </div>
+
+      <div class="grid grid-cols-1 mt-8 sm:grid-cols-2 gap-px bg-base-200 border border-base-200">
+        {
+          logoVariants.map((v) => (
+            <div class={`flex flex-col ${v.bg}`}>
+              <div class={`flex items-center justify-center ${v.text} aspect-[16/9] p-12`}>
+                {v.component === "logotype" ? (
+                  <Logo class="w-auto h-10 md:h-14" />
+                ) : (
+                  <LogoMark class="w-auto h-20 md:h-28" />
+                )}
+              </div>
+              <div class={`flex items-center justify-between gap-4 px-4 py-3 border-t ${v.bg === "bg-base-50" ? "border-base-200" : "border-base-800"}`}>
+                <div class="flex flex-col">
+                  <span class={`text-xs ${v.bg === "bg-base-50" ? "text-base-600" : "text-base-300"}`}>
+                    {v.label}
+                  </span>
+                  <span class={`text-xs font-mono ${v.bg === "bg-base-50" ? "text-base-400" : "text-base-500"}`}>
+                    {v.fileName}
+                  </span>
+                </div>
+                <a
+                  href={v.download}
+                  download
+                  class={`text-xs font-medium underline underline-offset-4 decoration-base-300 hover:decoration-current ${v.text}`}
+                >
+                  Scarica SVG
+                </a>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </Wrapper>
+  </section>
+
+  <!-- AREA DI RISPETTO -->
+  <section class="border-t border-base-200">
+    <Wrapper variant="standard" class="py-12">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="flex flex-col gap-2 lg:col-span-1">
+          <Text tag="p" variant="textXS" class="font-mono uppercase tracking-wider text-base-500">
+            03 / Spazi
+          </Text>
+          <Text tag="h2" variant="displaySM" class="text-base-950 font-display tracking-tight">
+            Area di rispetto e dimensione minima
+          </Text>
+          <Text tag="p" variant="textBase" class="text-base-600">
+            Lascia attorno al logotipo uno spazio libero pari almeno all'altezza
+            della V del marchio. Niente testo, immagini o elementi grafici dentro
+            quest'area.
+          </Text>
+          <Text tag="p" variant="textBase" class="mt-2 text-base-600">
+            Dimensione minima consigliata: 96px in larghezza per il logotipo,
+            24px per il marchio. Sotto questa soglia usa solo il marchio.
+          </Text>
+        </div>
+
+        <div class="lg:col-span-2 relative bg-base-100 border border-base-200 p-8 sm:p-12 lg:p-16 flex items-center justify-center min-h-[280px] overflow-hidden">
+          <!-- Cornice area di rispetto -->
+          <div class="relative">
+            <div class="absolute -inset-6 sm:-inset-8 border border-dashed border-accent-400/60 pointer-events-none"></div>
+            <div class="absolute -top-6 left-1/2 -translate-x-1/2 -translate-y-full text-[10px] font-mono uppercase tracking-wider text-accent-600">
+              x
+            </div>
+            <div class="absolute top-1/2 -left-6 -translate-y-1/2 -translate-x-full text-[10px] font-mono uppercase tracking-wider text-accent-600">
+              x
+            </div>
+            <Logo class="relative w-auto h-10 sm:h-12 text-base-950" />
+          </div>
+        </div>
+      </div>
+    </Wrapper>
+  </section>
+
+  <!-- COLORI -->
+  <section class="border-t border-base-200">
+    <Wrapper variant="standard" class="py-12">
+      <div class="flex flex-col gap-2 max-w-2xl">
+        <Text tag="p" variant="textXS" class="font-mono uppercase tracking-wider text-base-500">
+          04 / Colori
+        </Text>
+        <Text tag="h2" variant="displaySM" class="text-base-950 font-display tracking-tight">
+          Palette
+        </Text>
+        <Text tag="p" variant="textBase" class="text-base-600">
+          Due famiglie principali: <strong class="text-base-950">accent</strong> (viola, identità di prodotto)
+          e <strong class="text-base-950">base</strong> (neutri, struttura e testo). Il viola è il colore primario di brand,
+          il nero della palette base è il colore di testo principale. I valori sono in OKLCH nel
+          codice e in HEX per i tool di design e stampa.
+        </Text>
+      </div>
+
+      <!-- Accent -->
+      <div class="mt-12">
+        <div class="flex items-baseline justify-between gap-4">
+          <Text tag="h3" variant="textBase" class="font-medium text-base-950">
+            Accent / Viola
+          </Text>
+          <span class="text-xs font-mono text-base-500">primario: accent-500</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-11 gap-1 mt-4">
+          {
+            accentPalette.map((c) => (
+              <div class="flex flex-col gap-2">
+                <div class={`relative aspect-square w-full ${c.swatch}`}>
+                  {c.isPrimary && (
+                    <span class="absolute top-1 left-1 text-[9px] font-mono uppercase tracking-wider text-white/80">
+                      primario
+                    </span>
+                  )}
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-xs font-medium text-base-950">{c.name}</span>
+                  <span class="text-[11px] font-mono text-base-600">{c.hex}</span>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- Base -->
+      <div class="mt-12">
+        <div class="flex items-baseline justify-between gap-4">
+          <Text tag="h3" variant="textBase" class="font-medium text-base-950">
+            Base / Neutri
+          </Text>
+          <span class="text-xs font-mono text-base-500">testo principale: base-950</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-11 gap-1 mt-4">
+          {
+            basePalette.map((c) => (
+              <div class="flex flex-col gap-2">
+                <div class={`relative aspect-square w-full ${c.swatch} ${c.name === "base-50" ? "outline outline-base-200" : ""}`}>
+                  {c.isPrimary && (
+                    <span class="absolute top-1 left-1 text-[9px] font-mono uppercase tracking-wider text-white/80">
+                      testo
+                    </span>
+                  )}
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-xs font-medium text-base-950">{c.name}</span>
+                  <span class="text-[11px] font-mono text-base-600">{c.hex}</span>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+    </Wrapper>
+  </section>
+
+  <!-- PATTERN -->
+  <section class="border-t border-base-200">
+    <Wrapper variant="standard" class="py-12">
+      <div class="flex flex-col gap-2 max-w-2xl">
+        <Text tag="p" variant="textXS" class="font-mono uppercase tracking-wider text-base-500">
+          05 / Pattern
+        </Text>
+        <Text tag="h2" variant="displaySM" class="text-base-950 font-display tracking-tight">
+          Pattern di background
+        </Text>
+        <Text tag="p" variant="textBase" class="text-base-600">
+          Texture decorative pronte all'uso. Le righe sono SVG vettoriali (tileable),
+          i mesh gradient sono PNG 1600×1600 ad alta risoluzione. Da usare per
+          sfondi di slide, social, totem e backdrop fiera.
+        </Text>
+      </div>
+
+      <!-- Stripes -->
+      <div class="mt-8">
+        <Text tag="h3" variant="textBase" class="font-medium text-base-950">
+          Stripes (SVG)
+        </Text>
+        <div class="grid grid-cols-1 mt-4 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-base-200 border border-base-200">
+          {
+            stripeAssets.map((s) => (
+              <div class="flex flex-col bg-base-50">
+                <div class={`aspect-[4/3] w-full ${s.preview}`} />
+                <div class="flex items-center justify-between gap-3 px-4 py-3 border-t border-base-200">
+                  <div class="flex flex-col">
+                    <span class="text-xs text-base-600">{s.label}</span>
+                    <span class="text-[11px] font-mono text-base-400">{s.file}</span>
+                  </div>
+                  <a
+                    href={`/brand/patterns/${s.file}`}
+                    download
+                    class="text-xs font-medium text-base-950 underline decoration-base-300 underline-offset-4 hover:decoration-base-950"
+                  >
+                    SVG
+                  </a>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- Mesh gradient -->
+      <div class="mt-12">
+        <Text tag="h3" variant="textBase" class="font-medium text-base-950">
+          Mesh gradient (PNG)
+        </Text>
+        <div class="grid grid-cols-1 mt-4 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-base-200 border border-base-200">
+          {
+            meshAssets.map((m) => (
+              <div class="flex flex-col bg-base-50">
+                <div class={`aspect-square w-full ${m.preview}`} />
+                <div class="flex items-center justify-between gap-3 px-4 py-3 border-t border-base-200">
+                  <div class="flex flex-col">
+                    <span class="text-xs text-base-600">{m.label}</span>
+                    <span class="text-[11px] font-mono text-base-400">{m.file}</span>
+                  </div>
+                  <a
+                    href={`/brand/patterns/${m.file}`}
+                    download
+                    class="text-xs font-medium text-base-950 underline decoration-base-300 underline-offset-4 hover:decoration-base-950"
+                  >
+                    PNG
+                  </a>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </Wrapper>
+  </section>
+
+  <!-- TIPOGRAFIA -->
+  <section class="border-t border-base-200">
+    <Wrapper variant="standard" class="py-12">
+      <div class="flex flex-col gap-2 max-w-2xl">
+        <Text tag="p" variant="textXS" class="font-mono uppercase tracking-wider text-base-500">
+          06 / Tipografia
+        </Text>
+        <Text tag="h2" variant="displaySM" class="text-base-950 font-display tracking-tight">
+          Font
+        </Text>
+        <Text tag="p" variant="textBase" class="text-base-600">
+          Tre font, una scelta per ogni ruolo: titoli, testo, dati tecnici. Sono
+          tutti gratuiti, open source e disponibili per Figma, Adobe e uso web.
+        </Text>
+      </div>
+
+      <div class="grid grid-cols-1 mt-8 lg:grid-cols-3 gap-px bg-base-200 border border-base-200">
+        <!-- InterDisplay -->
+        <div class="bg-base-50 p-6 flex flex-col gap-4">
+          <div class="flex items-baseline justify-between">
+            <span class="text-xs font-mono uppercase tracking-wider text-base-500">Display</span>
+            <a
+              href="https://rsms.me/inter/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-xs underline decoration-base-300 underline-offset-4 hover:decoration-base-950 text-base-600"
+            >
+              rsms.me/inter
+            </a>
+          </div>
+          <p class="font-display text-5xl leading-none text-base-950 tracking-tight">Aa</p>
+          <div class="flex flex-col gap-1">
+            <span class="text-base font-medium text-base-950">InterDisplay</span>
+            <span class="text-sm text-base-600">
+              Per titoli display e heading principali. Tracking stretto, peso 500.
+            </span>
+          </div>
+          <div class="mt-2 pt-4 border-t border-base-200 flex flex-col gap-1 text-xs font-mono text-base-600">
+            <span>--font-display: "InterDisplay"</span>
+            <span>weights: 400, 500, 600</span>
+          </div>
+        </div>
+
+        <!-- Inter -->
+        <div class="bg-base-50 p-6 flex flex-col gap-4">
+          <div class="flex items-baseline justify-between">
+            <span class="text-xs font-mono uppercase tracking-wider text-base-500">Sans</span>
+            <a
+              href="https://rsms.me/inter/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-xs underline decoration-base-300 underline-offset-4 hover:decoration-base-950 text-base-600"
+            >
+              rsms.me/inter
+            </a>
+          </div>
+          <p class="font-sans text-5xl leading-none text-base-950">Aa</p>
+          <div class="flex flex-col gap-1">
+            <span class="text-base font-medium text-base-950">Inter</span>
+            <span class="text-sm text-base-600">
+              Per body, paragrafi, UI e label. Versione variable per il web.
+            </span>
+          </div>
+          <div class="mt-2 pt-4 border-t border-base-200 flex flex-col gap-1 text-xs font-mono text-base-600">
+            <span>--font-sans: "Inter"</span>
+            <span>weights: 400, 500, 600</span>
+          </div>
+        </div>
+
+        <!-- Geist Mono -->
+        <div class="bg-base-50 p-6 flex flex-col gap-4">
+          <div class="flex items-baseline justify-between">
+            <span class="text-xs font-mono uppercase tracking-wider text-base-500">Mono</span>
+            <a
+              href="https://vercel.com/font"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-xs underline decoration-base-300 underline-offset-4 hover:decoration-base-950 text-base-600"
+            >
+              vercel.com/font
+            </a>
+          </div>
+          <p class="font-mono text-5xl leading-none text-base-950">Aa</p>
+          <div class="flex flex-col gap-1">
+            <span class="text-base font-medium text-base-950">Geist Mono</span>
+            <span class="text-sm text-base-600">
+              Per dati, codice, eyebrow e numeri. Da usare con parsimonia, mai
+              come font di lettura.
+            </span>
+          </div>
+          <div class="mt-2 pt-4 border-t border-base-200 flex flex-col gap-1 text-xs font-mono text-base-600">
+            <span>--font-mono: "Geist Mono"</span>
+            <span>weights: 400, 500</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scala display di esempio -->
+      <div class="mt-8">
+        <Text tag="h3" variant="textBase" class="font-medium text-base-950">
+          Scala (estratto)
+        </Text>
+        <div class="flex flex-col mt-4 divide-y divide-base-200 border-t border-b border-base-200">
+          <div class="py-4 flex items-baseline justify-between gap-4">
+            <p class="font-display tracking-tight text-base-950 text-3xl sm:text-4xl">Brand kit Verbalist</p>
+            <span class="text-xs font-mono text-base-500 shrink-0">displayLG · font-display</span>
+          </div>
+          <div class="py-4 flex items-baseline justify-between gap-4">
+            <p class="font-display tracking-tight text-base-950 text-2xl sm:text-3xl">Logotipo e marchio</p>
+            <span class="text-xs font-mono text-base-500 shrink-0">displayMD · font-display</span>
+          </div>
+          <div class="py-4 flex items-baseline justify-between gap-4">
+            <p class="text-base-600 text-base">Per body e paragrafi usiamo Inter, peso 400.</p>
+            <span class="text-xs font-mono text-base-500 shrink-0">textBase · font-sans</span>
+          </div>
+          <div class="py-4 flex items-baseline justify-between gap-4">
+            <p class="font-mono text-base-500 text-xs uppercase tracking-wider">Eyebrow / metadati</p>
+            <span class="text-xs font-mono text-base-500 shrink-0">textXS · font-mono</span>
+          </div>
+        </div>
+      </div>
+    </Wrapper>
+  </section>
+
+  <!-- TONE OF VOICE -->
+  <section class="border-t border-base-200">
+    <Wrapper variant="standard" class="py-12">
+      <div class="flex flex-col gap-2 max-w-2xl">
+        <Text tag="p" variant="textXS" class="font-mono uppercase tracking-wider text-base-500">
+          07 / Tono di voce
+        </Text>
+        <Text tag="h2" variant="displaySM" class="text-base-950 font-display tracking-tight">
+          Come parla Verbalist
+        </Text>
+        <Text tag="p" variant="textBase" class="text-base-600">
+          Quattro principi per i copy. Vale per claim sito, social, slide demo,
+          newsletter e materiali fiera.
+        </Text>
+      </div>
+
+      <!-- 4 principi -->
+      <div class="grid grid-cols-1 mt-8 sm:grid-cols-2 gap-px bg-base-200 border border-base-200">
+        {
+          tovPrinciples.map((p, i) => (
+            <div class="bg-base-50 p-6 flex flex-col gap-2">
+              <span class="text-[11px] font-mono uppercase tracking-wider text-base-500">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <Text tag="h3" variant="textBase" class="font-medium text-base-950">
+                {p.title}
+              </Text>
+              <p class="text-sm text-base-600">{p.body}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <!-- Esempi buono / cattivo -->
+      <div class="mt-12">
+        <Text tag="h3" variant="textBase" class="font-medium text-base-950">
+          Esempi
+        </Text>
+        <Text tag="p" variant="textSM" class="mt-1 text-base-600">
+          A sinistra il pattern da evitare, a destra come riscriverlo.
+        </Text>
+        <div class="flex flex-col mt-4 divide-y divide-base-200 border-t border-b border-base-200">
+          {
+            tovExamples.map((ex) => (
+              <div class="grid grid-cols-1 lg:grid-cols-2">
+                <div class="p-4 lg:border-r lg:border-base-200 bg-base-50/50">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-base-200 text-base-950 text-xs font-medium">
+                      ×
+                    </span>
+                    <span class="text-[11px] font-mono uppercase tracking-wider text-base-500">
+                      Da evitare
+                    </span>
+                  </div>
+                  <p class="text-sm text-base-600 line-through decoration-base-400/60">
+                    {ex.bad}
+                  </p>
+                </div>
+                <div class="p-4 bg-base-50">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-base-950 text-base-50 text-xs font-medium">
+                      +
+                    </span>
+                    <span class="text-[11px] font-mono uppercase tracking-wider text-base-500">
+                      Da preferire
+                    </span>
+                  </div>
+                  <p class="text-sm text-base-950">{ex.good}</p>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </Wrapper>
+  </section>
+
+  <!-- USO CORRETTO / DA EVITARE -->
+  <section class="border-t border-base-200">
+    <Wrapper variant="standard" class="py-12">
+      <div class="flex flex-col gap-2 max-w-2xl">
+        <Text tag="p" variant="textXS" class="font-mono uppercase tracking-wider text-base-500">
+          08 / Regole
+        </Text>
+        <Text tag="h2" variant="displaySM" class="text-base-950 font-display tracking-tight">
+          Cosa fare, cosa evitare
+        </Text>
+        <Text tag="p" variant="textBase" class="text-base-600">
+          Le regole valgono per logotipo e marchio, su qualsiasi supporto:
+          digitale, stampa, materiali fiera, social.
+        </Text>
+      </div>
+
+      <div class="grid grid-cols-1 mt-8 lg:grid-cols-2 gap-px bg-base-200 border border-base-200">
+        <div class="bg-base-50 p-6">
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-base-950 text-base-50 text-xs font-medium">+</span>
+            <Text tag="h3" variant="textBase" class="font-medium text-base-950">Da fare</Text>
+          </div>
+          <ul class="flex flex-col mt-4 gap-3 text-sm text-base-600">
+            {
+              dos.map((item) => (
+                <li class="flex gap-2">
+                  <span class="font-mono text-base-400 shrink-0">///</span>
+                  <span>{item}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div class="bg-base-50 p-6">
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-base-200 text-base-950 text-xs font-medium">×</span>
+            <Text tag="h3" variant="textBase" class="font-medium text-base-950">Da evitare</Text>
+          </div>
+          <ul class="flex flex-col mt-4 gap-3 text-sm text-base-600">
+            {
+              donts.map((item) => (
+                <li class="flex gap-2">
+                  <span class="font-mono text-base-400 shrink-0">///</span>
+                  <span>{item}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </Wrapper>
+  </section>
+
+  <!-- DOWNLOAD / CONTATTO -->
+  <section class="border-t border-base-200">
+    <Wrapper variant="standard" class="py-12">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="flex flex-col gap-2 lg:col-span-1">
+          <Text tag="p" variant="textXS" class="font-mono uppercase tracking-wider text-base-500">
+            09 / Risorse
+          </Text>
+          <Text tag="h2" variant="displaySM" class="text-base-950 font-display tracking-tight">
+            Asset
+          </Text>
+          <Text tag="p" variant="textBase" class="text-base-600">
+            Tutto in un unico zip oppure singoli file. SVG per uso vettoriale,
+            PNG per chi non lavora in vettoriale (slide, social, anteprime).
+          </Text>
+          <a
+            href="/brand/verbalist-brand-kit.zip"
+            download
+            class="mt-4 inline-flex items-center justify-between gap-4 px-4 py-3 bg-base-950 hover:bg-base-800 transition-colors w-fit"
+          >
+            <div class="flex flex-col">
+              <span class="text-sm font-medium text-base-50">Brand kit completo</span>
+              <span class="text-xs font-mono text-base-400">verbalist-brand-kit.zip</span>
+            </div>
+            <span class="text-xs font-medium text-base-50 underline decoration-base-700 underline-offset-4 ml-2">
+              Scarica ZIP
+            </span>
+          </a>
+        </div>
+
+        <div class="lg:col-span-2 flex flex-col gap-8">
+          <div>
+            <Text tag="h3" variant="textBase" class="font-medium text-base-950">
+              Logo (SVG)
+            </Text>
+            <div class="flex flex-col mt-2 gap-px bg-base-200 border border-base-200">
+              {
+                logoVariants.map((v) => (
+                  <a
+                    href={v.download}
+                    download
+                    class="flex items-center justify-between gap-4 px-4 py-3 bg-base-50 hover:bg-base-100 transition-colors"
+                  >
+                    <div class="flex flex-col">
+                      <span class="text-sm font-medium text-base-950">{v.label}</span>
+                      <span class="text-xs font-mono text-base-500">{v.fileName}</span>
+                    </div>
+                    <span class="text-xs font-medium text-base-950 underline decoration-base-300 underline-offset-4">
+                      SVG
+                    </span>
+                  </a>
+                ))
+              }
+            </div>
+          </div>
+
+          <div>
+            <Text tag="h3" variant="textBase" class="font-medium text-base-950">
+              Logo (PNG, 512 e 1024)
+            </Text>
+            <div class="grid grid-cols-1 sm:grid-cols-2 mt-2 gap-px bg-base-200 border border-base-200">
+              {
+                pngVariants.map((v) => (
+                  <a
+                    href={`/brand/${v.file}`}
+                    download
+                    class="flex items-center justify-between gap-3 px-4 py-3 bg-base-50 hover:bg-base-100 transition-colors"
+                  >
+                    <div class="flex flex-col min-w-0">
+                      <span class="text-xs font-medium text-base-950 truncate">{v.label}</span>
+                      <span class="text-[11px] font-mono text-base-500 truncate">{v.file}</span>
+                    </div>
+                    <span class="text-[11px] font-medium text-base-950 underline decoration-base-300 underline-offset-4 shrink-0">
+                      PNG
+                    </span>
+                  </a>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </Wrapper>
+  </section>
+</BaseLayout>

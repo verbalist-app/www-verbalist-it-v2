@@ -11,6 +11,8 @@ import Shield from "@/components/fundations/icons/Shield.astro";
 import Settings from "@/components/fundations/icons/Settings.astro";
 import CreditCard from "@/components/fundations/icons/CreditCard.astro";
 import ChevronRight from "@/components/fundations/icons/ChevronRight.astro";
+import JsonLd from "@/components/fundations/head/JsonLd.astro";
+import { absoluteUrl, breadcrumbSchema } from "@/lib/seo/schema";
 const { frontmatter } = Astro.props;
 const icons = {
   user: User,
@@ -18,16 +20,24 @@ const icons = {
   shield: Shield,
   creditCard: CreditCard,
 };
+const schemas = [
+  breadcrumbSchema([
+    { name: "Home", url: absoluteUrl("/") },
+    { name: "Help center", url: absoluteUrl("/helpcenter/") },
+    { name: frontmatter.page, url: absoluteUrl(Astro.url.pathname) },
+  ]),
+];
 
 // Breadcrumbs Data
 const breadcrumbs = [
   { label: "Home", href: "/" },
-  { label: "Help Center", href: "/helpcenter/home" },
+  { label: "Help Center", href: "/helpcenter/" },
   { label: frontmatter.page, href: "#" }, // Current page (unstyled)
 ];
 ---
 
 <BaseLayout>
+  <JsonLd slot="head-extra" data={schemas} />
   <section>
     <Wrapper variant="standard" class="relative pt-48 pb-12 overflow-hidden">
       <StripesBG

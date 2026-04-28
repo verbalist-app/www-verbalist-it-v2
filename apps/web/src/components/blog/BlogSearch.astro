@@ -21,7 +21,7 @@ const posts = await Promise.all(
   <button
     type="button"
     id="searchButton"
-    aria-label="Search posts"
+    aria-label="Cerca articoli"
     class="flex items-center justify-center p-2 rounded-full bg-base-100 hover:bg-accent-500 hover:text-base-950 duration-300"
   >
     <Search size="base" />
@@ -54,7 +54,7 @@ const posts = await Promise.all(
                 type="button"
                 id="closeSearch"
                 class="ml-auto cursor-pointer text-base-600 hover:text-base-600"
-                aria-label="Close search"
+                aria-label="Chiudi ricerca"
               >
                 <X size="base" />
               </button>
@@ -62,7 +62,7 @@ const posts = await Promise.all(
             <input
               type="text"
               id="searchInput"
-              placeholder="Search posts..."
+              placeholder="Cerca articoli..."
               class="block w-full px-4 py-2 text-xs leading-tight align-middle border border-transparent bg-white transition duration-300 ease-in-out focus:z-10 h-9 rounded-md text-base-600 ring-1 ring-base-200 placeholder-base-400 focus:border-accent-500 focus:ring-accent-600 focus:ring-2 focus:outline-none shadow-sm"
             />
             <div
@@ -123,7 +123,7 @@ const posts = await Promise.all(
       if (results.length === 0) {
         searchResults.innerHTML = `
                 <div class="py-4 text-sm text-base-950">
-                    No results found
+                    Nessun risultato
                 </div>
             `;
         return;
@@ -133,7 +133,7 @@ const posts = await Promise.all(
         .slice(0, 5) // Limit results to top 5 matches
         .map(
           (result) => `
-                <a href="/blog/posts/${result.item.slug}" class="block m-1 py-4 group  text-balance  focus:outline-none">   
+                <a href="/blog/${result.item.slug}" class="block m-1 py-4 group  text-balance  focus:outline-none">   
                   <h3 class="text-sm font-medium text-base-950 group-hover:text-accent-600">${result.item.title}</h3>   
                   <p class="mt-2 text-sm text-base-600 ">${result.item.description}</p> 
                 </a>

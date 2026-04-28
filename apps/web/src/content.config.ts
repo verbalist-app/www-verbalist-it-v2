@@ -6,6 +6,13 @@ const customers = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/customers" }),
   schema: z.object({
     customer: z.string(),
+    /**
+     * Set to `true` only when the customer has formally approved the case
+     * study (testimonial, story, metrics) for public publication. Until
+     * then the page is built and visible at the URL but emits
+     * `<meta name="robots" content="noindex">` and is excluded from sitemap.
+     */
+    approved: z.boolean().optional().default(false),
     bgColor: z.string().optional(),
     ctaTitle: z.string().optional(),
     testimonial: z.string().optional(),
@@ -119,6 +126,11 @@ const postsCollection = defineCollection({
     description: z.string(),
     team: z.string(),
     bgColor: z.string().optional(),
+    /**
+     * Categoria del post per il filtro nel listing /blog/.
+     * Una sola per post. Valori: "ai-automation" | "guide" | "seo".
+     */
+    category: z.enum(["ai-automation", "guide", "seo"]),
     image: z.object({
       url: z.string(),
       alt: z.string(),

@@ -8,15 +8,25 @@ import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 // Icons
 import ChevronRight from "@/components/fundations/icons/ChevronRight.astro";
+import JsonLd from "@/components/fundations/head/JsonLd.astro";
+import { absoluteUrl, breadcrumbSchema } from "@/lib/seo/schema";
 const { frontmatter } = Astro.props;
 // Breadcrumbs Data
 const breadcrumbs = [
   { label: "Home", href: "/" },
   { label: frontmatter.page, href: "#" },
 ];
+const schemas = [
+  breadcrumbSchema([
+    { name: "Home", url: absoluteUrl("/") },
+    { name: "Changelog", url: absoluteUrl("/changelog/") },
+    { name: frontmatter.page, url: absoluteUrl(Astro.url.pathname) },
+  ]),
+];
 ---
 
 <BaseLayout>
+  <JsonLd slot="head-extra" data={schemas} />
   <section>
     <Wrapper variant="standard" class="relative pt-32 pb-12 overflow-hidden">
       <div class="max-w-xl mx-auto text-balance">

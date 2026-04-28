@@ -223,6 +223,9 @@ importers:
       '@tailwindcss/vite':
         specifier: ^4.1.18
         version: 4.1.18(vite@7.3.2(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.2))
+      gray-matter:
+        specifier: ^4.0.3
+        version: 4.0.3
       tailwindcss:
         specifier: ^4.1.18
         version: 4.1.18

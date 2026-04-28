@@ -1,6 +1,4 @@
 ---
-// Assets
-import StripesBG from "@/components/assets/StripesBG.astro";
 // Fundations
 import Logo from "@/components/assets/Logo.astro";
 import Button from "@/components/fundations/elements/Button.astro";
@@ -9,20 +7,25 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import X from "@/components/fundations/icons/X.astro";
 const navigationLinks = [
   {
-    title: "Overview",
-    href: "/system/overview",
+    title: "Funzionalità",
+    href: "/funzionalita/",
+  },
+  {
+    title: "Clienti",
+    href: "/customers/",
+  },
+  {
+    title: "Prezzi",
+    href: "/#prezzi",
   },
   {
     title: "Blog",
-    href: "/blog/home",
-  },
-  {
-    title: "Buy Flabbergasted",
-    href: "https://lexingtonthemes.com/templates/flabbergasted",
+    href: "/blog/",
   },
 ];
 // PUBLIC_DASHBOARD_URL: e.g. https://app.verbalist.it in prod or http://localhost:3001/dashboard in dev.
 const dashboardUrl = import.meta.env.PUBLIC_DASHBOARD_URL ?? "/dashboard";
+const demoUrl = "https://share-eu1.hsforms.com/1QmfwKDraSVOGP3_N6WSMHAft3vh";
 ---
 
 <div
@@ -34,109 +37,141 @@ const dashboardUrl = import.meta.env.PUBLIC_DASHBOARD_URL ?? "/dashboard";
     variant="paddinglessDesktop"
     class="py-4 border-b lg:py-8 border-base-200"
   >
-    <div
-      id="navigation-wrapper"
-      class="relative flex flex-col md:items-center md:justify-start md:gap-12 md:flex-row"
-    >
-      <div class="flex flex-row items-center justify-between">
-        <a href="/" class="flex items-center text-xs text-base-950 gap-2">
-          <span class="sr-only">Go to homepage</span>
-          <Logo class="h-6" />
-          Verbalist
-        </a>
-        <Button
-          iconOnly
-          id="menu-toggle"
-          size="xs"
-          variant="muted"
-          class="md:hidden"
+    <!--
+      Layout pattern (Profound-style): on desktop the wrapper is a 3-sibling
+      flex with the first and last children taking `flex-1`, so the centre
+      child (nav links) is centred against the viewport, not against the
+      space between logo and CTAs. On mobile the wrapper falls back to a
+      single column and the overlay nav handles the menu.
+    -->
+    <div class="relative flex items-center justify-between md:gap-6">
+      <!-- Logo + mobile toggle. flex-1 on desktop -->
+      <div class="flex items-center md:flex-1">
+        <a
+          href="/"
+          class="flex items-center text-base-950"
+          aria-label="Verbalist, vai alla homepage"
         >
-          <svg
-            slot="icon"
-            class="size-4"
-            stroke="currentColor"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              id="menu-icon"
-              class="inline-flex"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16"></path>
-            <path
-              id="close-icon"
-              class="hidden"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
+          <Logo class="h-6 w-auto" />
+        </a>
+      </div>
+
+      <!-- Desktop nav links (centred) -->
+      <nav
+        class="hidden md:flex md:items-center md:gap-8"
+        aria-label="Navigazione principale"
+      >
+        {
+          navigationLinks.map((link) => (
+            <a
+              href={link.href}
+              class="text-xs text-base-950 hover:text-base-600"
+            >
+              {link.title}
+            </a>
+          ))
+        }
+      </nav>
+
+      <!-- Desktop CTAs. flex-1 + justify-end -->
+      <div class="hidden md:flex md:flex-1 md:items-center md:justify-end md:gap-2">
+        <Button isLink={true} size="xs" variant="muted" href={dashboardUrl}>
+          Login
+        </Button>
+        <Button isLink={true} size="xs" variant="alternative" href={demoUrl}>
+          Prenota demo
         </Button>
       </div>
-      <nav
-        id="navigation-menu"
-        class="fixed inset-0 flex flex-col justify-between h-full py-12 bg-white opacity-0 pointer-events-none md:bg-none md:bg-transparent lg:p-0 md:p-0 transform transition-all duration-300 ease-in-out -translate-y-4 md:relative md:inset-auto md:opacity-100 md:pointer-events-auto md:translate-y-0 md:w-full"
+
+      <!-- Mobile-only hamburger -->
+      <Button
+        iconOnly
+        id="menu-toggle"
+        size="xs"
+        variant="muted"
+        class="md:hidden"
       >
-        <Button
-          iconOnly
-          variant="muted"
-          size="xs"
-          id="menu-close"
-          class="absolute top-4 right-4 md:hidden"
-          aria-label="Close menu"
+        <svg
+          slot="icon"
+          class="size-4"
+          stroke="currentColor"
+          fill="none"
+          viewBox="0 0 24 24"
         >
-          <X slot="icon" size="sm" />
-        </Button>
-        <div
-          class="relative flex flex-col items-start justify-start w-full h-full px-8 py-12 md:py-0 gap-12 md:px-0 md:flex-row md:items-center md:text-left overflow-hidden lg:overflow-visible"
-        >
-          <div
-            aria-hidden="true"
-            class="block md:hidden absolute inset-0 pointer-events-none my-12 bg-accent-vertical-stripes w-[10%] ml-auto"
-          >
-          </div>
-          
-          <a href="/" class="md:hidden">
-            <span class="sr-only">Go to homepage</span>
-            <Logo class="h-10 text-base-950" />
-          </a>
-          <div
-            class="relative flex flex-col gap-2 md:gap-4 md:flex-row md:mr-auto"
-          >
-            {
-              navigationLinks.map((link, index) => (
-                <a
-                  href={link.href}
-                  class="text-2xl text-base-950 md:text-xs hover:text-base-600 "
-                >
-                  {link.title}
-                </a>
-              ))
-            }
-          </div>
-          <div class="flex flex-wrap items-center mt-auto gap-2">
-            <Button
-              isLink={true}
-              size="xs"
-              variant="muted"
-              href="/forms/sign-in"
-            >
-              Login
-            </Button>
-            <Button
-              isLink={true}
-              size="xs"
-              variant="alternative"
-              href="/forms/contact"
-            >
-              Inizia ora
-            </Button>
-          </div>
-        </div>
-      </nav>
+          <path
+            id="menu-icon"
+            class="inline-flex"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"></path>
+          <path
+            id="close-icon"
+            class="hidden"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </Button>
     </div>
+
+    <!-- Mobile overlay (full-screen). Hidden on desktop. -->
+    <nav
+      id="navigation-menu"
+      class="fixed inset-0 z-50 flex flex-col justify-between h-full py-12 bg-white opacity-0 pointer-events-none transform transition-all duration-300 ease-in-out -translate-y-4 md:hidden"
+      aria-label="Navigazione mobile"
+    >
+      <Button
+        iconOnly
+        variant="muted"
+        size="xs"
+        id="menu-close"
+        class="absolute top-4 right-4"
+        aria-label="Chiudi menu"
+      >
+        <X slot="icon" size="sm" />
+      </Button>
+      <div class="relative flex flex-col items-start justify-start w-full h-full px-8 py-12 gap-12 overflow-hidden">
+        <div
+          aria-hidden="true"
+          class="absolute inset-0 pointer-events-none my-12 bg-accent-vertical-stripes w-[10%] ml-auto"
+        >
+        </div>
+        <a
+          href="/"
+          class="text-base-950"
+          aria-label="Verbalist, vai alla homepage"
+        >
+          <Logo class="h-8 w-auto" />
+        </a>
+        <div class="relative flex flex-col gap-2">
+          {
+            navigationLinks.map((link) => (
+              <a
+                href={link.href}
+                class="text-2xl text-base-950 hover:text-base-600"
+              >
+                {link.title}
+              </a>
+            ))
+          }
+        </div>
+        <div class="flex flex-wrap items-center mt-auto gap-2">
+          <Button isLink={true} size="xs" variant="muted" href={dashboardUrl}>
+            Login
+          </Button>
+          <Button
+            isLink={true}
+            size="xs"
+            variant="alternative"
+            href={demoUrl}
+          >
+            Prenota demo
+          </Button>
+        </div>
+      </div>
+    </nav>
   </Wrapper>
 </div>
 <script type="module">
@@ -146,9 +181,7 @@ const dashboardUrl = import.meta.env.PUBLIC_DASHBOARD_URL ?? "/dashboard";
     const menuIcon = document.getElementById("menu-icon");
     const closeIcon = document.getElementById("close-icon");
     const navigationMenu = document.getElementById("navigation-menu");
-    // Toggle mobile menu
     function toggleMenu(open) {
-      console.log(`Toggling menu. Open: ${open}`); // Debug log to check the state of the toggle
       navigationMenu.classList.toggle("opacity-100", open);
       navigationMenu.classList.toggle("translate-y-0", open);
       navigationMenu.classList.toggle("pointer-events-auto", open);
@@ -158,7 +191,6 @@ const dashboardUrl = import.meta.env.PUBLIC_DASHBOARD_URL ?? "/dashboard";
       menuIcon.classList.toggle("hidden", open);
       closeIcon.classList.toggle("hidden", !open);
     }
-    // Event Listeners
     menuToggle.addEventListener("click", () => toggleMenu(true));
     menuClose.addEventListener("click", () => toggleMenu(false));
   });

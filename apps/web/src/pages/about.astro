@@ -1,10 +1,10 @@
 ---
 // Assets
 import { Image } from "astro:assets";
-import Team1 from "@/images/assets/team1.jpeg";
-import Team2 from "@/images/assets/team2.jpeg";
-import Team3 from "@/images/assets/team3.jpeg";
-import Team4 from "@/images/assets/team4.jpeg";
+import Team1 from "@/images/assets/about-1.jpg";
+import Team2 from "@/images/assets/about-2.jpg";
+import Team3 from "@/images/assets/about-3.jpg";
+import Team4 from "@/images/assets/about-4.png";
 // Assets
 
 // import the logos
@@ -14,21 +14,17 @@ import investor3 from "@/images/investors/3.svg";
 import investor4 from "@/images/investors/4.svg";
 import investor5 from "@/images/investors/5.svg";
 import investor6 from "@/images/investors/6.svg";
+// TODO: sostituire i 6 SVG placeholder con i loghi reali dei clienti
+// enterprise (EY, Mercedes-Benz, LVMH, SDA Bocconi…). I file vivono in
+// `apps/web/src/images/investors/` — vanno semplicemente sostituiti
+// mantenendo i nomi 1.svg–6.svg, oppure rinominati e aggiornati qui.
 const logos = [
-  {
-    bgClass: "bg-accent-vertical-stripes",
-    src: investor1,
-    alt: "Investor 1",
-  },
-  { bgClass: "bg-meshGreen", src: investor2, alt: "Investor 2" },
-  {
-    bgClass: "bg-accent-vertical-stripes",
-    src: investor3,
-    alt: "Investor 3",
-  },
-  { bgClass: "bg-meshRainbow", src: investor4, alt: "Investor 4" },
-  { bgClass: "bg-light-vertical-stripes", src: investor5, alt: "Investor 5" },
-  { bgClass: "bg-meshPurple", src: investor6, alt: "Investor 6" },
+  { bgClass: "bg-accent-vertical-stripes", src: investor1, alt: "Cliente enterprise" },
+  { bgClass: "bg-meshGreen", src: investor2, alt: "Cliente enterprise" },
+  { bgClass: "bg-accent-vertical-stripes", src: investor3, alt: "Cliente enterprise" },
+  { bgClass: "bg-meshRainbow", src: investor4, alt: "Cliente enterprise" },
+  { bgClass: "bg-light-vertical-stripes", src: investor5, alt: "Cliente enterprise" },
+  { bgClass: "bg-meshPurple", src: investor6, alt: "Cliente enterprise" },
 ];
 
 import Cross from "@/components/assets/Cross.astro";
@@ -57,23 +53,23 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
           variant="displaySM"
           class="tracking-tight text-base-950 font-display text-balance"
         >
-          Wanna help make AI less boring?
+          25 anni di esperienza SEO, in un software
         </Text>
         <Text
           tag="p"
           variant="textBase"
           class="max-w-xl mx-auto mt-4 text-base-600"
         >
-          We’re cranking out the kind of intelligence that doesn’t hide in the
-          cloud — it runs right where you are, and actually responds like it’s
-          listening.
+          Verbalist è il prodotto di NUR Digital Marketing. Dal 1999 lavoriamo
+          con team marketing italiani e internazionali. Oggi le metodologie
+          SEO che usiamo per loro sono accessibili a chiunque.
         </Text>
         <Button
-          href="#_"
+          href="https://share-eu1.hsforms.com/1QmfwKDraSVOGP3_N6WSMHAft3vh"
           isLink={true}
           size="xs"
           variant="alternative"
-          class="mt-8 w-fit">Work with us</Button
+          class="mt-8 w-fit">Prenota demo</Button
         >
       </div>
       <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
@@ -107,11 +103,12 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
       <div class="relative grid grid-cols-1 gap-8 lg:grid-cols-3">
         <div class="px-4 py-8">
           <Text tag="h2" variant="displayMD" class="text-base-950 font-display">
-            Fueled by people with deep pockets and good taste
+            Costruito sull'esperienza con i grandi brand
           </Text>
           <Text tag="p" variant="textBase" class="mt-4 text-base-600">
-            We’ve teamed up with top-tier VCs and product-obsessed founders who
-            know their stuff — and aren’t afraid to bet big on what’s next.
+            Lavoriamo con EY, Mercedes-Benz, LVMH e SDA Bocconi. Verbalist
+            automatizza le metodologie testate su migliaia di campagne reali,
+            tra cui i primi servizi GEO disponibili in Italia.
           </Text>
         </div>
         <div

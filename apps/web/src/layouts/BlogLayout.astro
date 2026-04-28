@@ -9,6 +9,12 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 // Components
 import ShareButtons from "@/components/fundations/elements/ShareButtons.astro";
 import BlogEntry from "@/components/blog/BlogEntry.astro";
+import JsonLd from "@/components/fundations/head/JsonLd.astro";
+import {
+  absoluteUrl,
+  blogPostingSchema,
+  breadcrumbSchema,
+} from "@/lib/seo/schema";
 // Content
 const { frontmatter } = Astro.props;
 import { getEntry } from "astro:content";
@@ -19,9 +25,30 @@ const allPosts = await getCollection("posts");
 const relatedPosts = allPosts.filter((post) =>
   post.data.tags.some((tag) => frontmatter.tags.includes(tag))
 );
+
+// Structured data for the blog post
+const pageUrl = absoluteUrl(Astro.url.pathname);
+const schemas = [
+  blogPostingSchema({
+    title: frontmatter.title,
+    description: frontmatter.description,
+    pubDate: frontmatter.pubDate,
+    url: pageUrl,
+    tags: frontmatter.tags,
+    author: team
+      ? { name: team.data.name, role: team.data.role }
+      : undefined,
+  }),
+  breadcrumbSchema([
+    { name: "Home", url: absoluteUrl("/") },
+    { name: "Blog", url: absoluteUrl("/blog/") },
+    { name: frontmatter.title, url: pageUrl },
+  ]),
+];
 ---
 
 <BaseLayout>
+  <JsonLd slot="head-extra" data={schemas} />
   <section class="overflow-hidden">
     <Wrapper variant="standard" class="pt-32 pb-12 relative">
       <!-- Top Right Plus -->
@@ -29,11 +56,11 @@ const relatedPosts = allPosts.filter((post) =>
       <div class="flex flex-col justify-between text-center text-balance">
         <div>
           <Text tag="p" variant="textXS" class="text-base-600">
-            Written in
+            Pubblicato il
             <span class="font-medium text-base-600">
               <time datetime={new Date(frontmatter.pubDate).toISOString()}>
                 {
-                  new Date(frontmatter.pubDate).toLocaleDateString("en-US", {
+                  new Date(frontmatter.pubDate).toLocaleDateString("it-IT", {
                     year: "numeric",
                     month: "long",
                     day: "2-digit",
@@ -92,9 +119,9 @@ const relatedPosts = allPosts.filter((post) =>
                   </a>
                   <div class=" p-4 pt-24  bg-white">
                     <Text tag="p" variant="textXS" class="text-base-600 ">
-                      This article was written by a{" "}
-                      <span>{team.data.name}</span>
-                      <span> {team.data.role}</span> specialist at Flabbergasted
+                      Articolo scritto da{" "}
+                      <span class="font-medium text-base-950">{team.data.name}</span>,{" "}
+                      <span>{team.data.role}</span>.
                     </Text>
                   </div>
                 </div>
@@ -105,7 +132,7 @@ const relatedPosts = allPosts.filter((post) =>
         </div>
         <div class="flex flex-wrap mt-12 gap-2">
           <Text tag="p" variant="textXS" class="text-base-600">
-            Share this article:
+            Condividi l'articolo:
           </Text>
           <ShareButtons description={frontmatter.description} />
         </div>
@@ -122,7 +149,7 @@ const relatedPosts = allPosts.filter((post) =>
           <Cross class="-top-[0.6rem] -right-[0.65rem]" />
           <Cross class="-top-[0.6rem] -left-[0.65rem]" />
           <Text tag="h2" variant="displayMD" class="text-base-950 font-display">
-            Related posts
+            Articoli correlati
           </Text>
         </Wrapper>
         <div class="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px border-t border-base-200">

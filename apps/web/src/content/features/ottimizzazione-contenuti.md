@@ -30,5 +30,5 @@ Quando un articolo non ranka più come prima, di solito non serve riscriverlo. V
 - **Tre input.** Incolla il testo, indica l'URL o carica un PDF del contenuto da rinfrescare.
 - **Confronto live.** Controlla la SERP attuale per la tua keyword, non una versione cached.
 - **Diff coi top result.** Mostra argomenti mancanti, sezioni datate e gap di copertura.
-- **Modifiche puntuali.** Suggerisce dove integrare, dove tagliare e dove riscrivere — non parte da zero.
+- **Modifiche puntuali.** Suggerisce dove integrare, dove tagliare e dove riscrivere. Non parte da zero.
 - **Stile preservato.** Mantiene il tono di voce del contenuto originale.

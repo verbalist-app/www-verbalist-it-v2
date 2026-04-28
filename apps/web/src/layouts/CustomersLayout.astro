@@ -5,10 +5,27 @@ import StripesBG from "@/components/assets/StripesBG.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import JsonLd from "@/components/fundations/head/JsonLd.astro";
+import { absoluteUrl, breadcrumbSchema } from "@/lib/seo/schema";
 const { frontmatter } = Astro.props;
+const schemas = [
+  breadcrumbSchema([
+    { name: "Home", url: absoluteUrl("/") },
+    { name: "Clienti", url: absoluteUrl("/customers/") },
+    { name: frontmatter.customer, url: absoluteUrl(Astro.url.pathname) },
+  ]),
+];
+// Soft launch: case study con `approved: false` (default) sono in noindex
+// finché il referente cliente non ha approvato testimonial/storia/metriche.
+const seo = {
+  title: `${frontmatter.customer}: case study`,
+  description: frontmatter.ctaTitle || frontmatter.about,
+  noindex: !frontmatter.approved,
+};
 ---
 
-<BaseLayout>
+<BaseLayout seo={seo}>
+  <JsonLd slot="head-extra" data={schemas} />
   <section>
     <Wrapper variant="standard" class="relative pt-32 pb-12 overflow-hidden">
       <StripesBG

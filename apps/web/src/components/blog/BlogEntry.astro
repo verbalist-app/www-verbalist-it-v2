@@ -2,23 +2,27 @@
 // Fundations
 import Text from "@/components/fundations/elements/Text.astro";
 // Content
-const { url, title, description, pubDate, bgColor } = {
-  url: "/blog/posts/" + Astro.props.post.slug,
+const { url, title, description, pubDate, bgColor, category } = {
+  url: "/blog/" + Astro.props.post.slug,
   title: Astro.props.post.data.title,
   bgColor: Astro.props.post.data.bgColor,
   description: Astro.props.post.data.description,
-  pubDate: new Date(Astro.props.post.data.pubDate).toLocaleDateString("en-US", {
+  category: Astro.props.post.data.category,
+  pubDate: new Date(Astro.props.post.data.pubDate).toLocaleDateString("it-IT", {
     year: "numeric",
     month: "long",
     day: "2-digit",
   }),
 };
 ---
-<article class="relative flex flex-col justify-between h-full overflow-hidden">
+<article
+  data-category={category}
+  class="blog-entry relative flex flex-col justify-between h-full overflow-hidden"
+>
   <a
     href={url}
-    title={`Read more: ${title}`}
-    aria-label={`Read blog post: ${title}`}
+    title={`Leggi l'articolo: ${title}`}
+    aria-label={`Leggi l'articolo: ${title}`}
     class="absolute inset-0 z-10"></a>
   <div class="flex flex-col h-full p-4 pt-24 bg-white">
     <Text tag="p" variant="textXS" class="text-base-600">

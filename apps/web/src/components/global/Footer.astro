@@ -9,24 +9,24 @@ const footerLinks = [
   {
     heading: "Prodotto",
     links: [
-      { label: "Funzionalità", href: "/funzionalita/home" },
+      { label: "Funzionalità", href: "/funzionalita/" },
       { label: "Prezzi", href: "/#prezzi" },
-      { label: "Changelog", href: "/changelog/home" },
+      { label: "Changelog", href: "/changelog/" },
     ],
   },
   {
     heading: "Risorse",
     links: [
-      { label: "Blog", href: "/blog/home" },
-      { label: "Help center", href: "/helpcenter/home" },
-      { label: "Customer stories", href: "/customers/home" },
+      { label: "Blog", href: "/blog/" },
+      { label: "Help center", href: "/helpcenter/" },
+      { label: "Customer stories", href: "/customers/" },
     ],
   },
   {
     heading: "Azienda",
     links: [
       { label: "Chi siamo", href: "/about" },
-      { label: "Team", href: "/team/home" },
+      { label: "Team", href: "/team/" },
       { label: "Contatti", href: "/forms/contact" },
     ],
   },
@@ -47,12 +47,10 @@ const footerLinks = [
   >
     <div class="relative pb-24 gap-8 grid grid-cols-1 lg:grid-cols-3">
       <div class="text-base-950">
-        <a href="/" class="flex items-center text-sm text-base-950 gap-2">
-          <span class="sr-only">Vai alla homepage</span>
-          <Logo class="h-6" />
-          Verbalist
+        <a href="/" class="flex items-center text-base-950" aria-label="Verbalist, vai alla homepage">
+          <Logo class="h-6 w-auto" />
         </a>
-        <p class="mt-1 text-sm font-normal text-base-600 text-balance">
+        <p class="mt-2 text-sm font-normal text-base-600 text-balance">
           Crea contenuti SEO a partire dai dati di ricerca, ottimizzati
           per Google e per le AI search.
         </p>

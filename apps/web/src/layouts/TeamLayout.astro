@@ -17,9 +17,19 @@ const teamSlug = Astro.url.pathname.split("/").filter(Boolean).pop();
 // Filter posts by this team (based on slug)
 const relatedPosts = allPosts.filter((post) => post.data.team === teamSlug);
 const { frontmatter } = Astro.props;
+import JsonLd from "@/components/fundations/head/JsonLd.astro";
+import { absoluteUrl, breadcrumbSchema } from "@/lib/seo/schema";
+const schemas = [
+  breadcrumbSchema([
+    { name: "Home", url: absoluteUrl("/") },
+    { name: "Team", url: absoluteUrl("/team/") },
+    { name: frontmatter.name, url: absoluteUrl(Astro.url.pathname) },
+  ]),
+];
 ---
 
 <BaseLayout>
+  <JsonLd slot="head-extra" data={schemas} />
   <section>
     <Wrapper variant="standard" class="pt-32 pb-12 relative overflow-hidden">
       <!-- Top Right Plus -->

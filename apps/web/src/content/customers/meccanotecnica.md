@@ -31,7 +31,7 @@ avatar:
 
 **Componenti meccanici di precisione per il B2B internazionale**
 
-Meccanotecnica progetta e produce componenti meccanici per applicazioni industriali e li distribuisce sui mercati internazionali. I clienti — buyer tecnici e responsabili acquisti — cercano informazioni puntuali sui prodotti nelle proprie lingue di lavoro, e il sito è il primo punto di contatto.
+Meccanotecnica progetta e produce componenti meccanici per applicazioni industriali e li distribuisce sui mercati internazionali. I clienti (buyer tecnici e responsabili acquisti) cercano informazioni puntuali sui prodotti nelle proprie lingue di lavoro, e il sito è il primo punto di contatto.
 
 **Tradurre non bastava**
 
