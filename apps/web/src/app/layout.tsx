@@ -144,7 +144,7 @@ export default function RootLayout({
                   <NavbarDropdownLink href="/prodotto/analisi-serp">Analisi SERP</NavbarDropdownLink>
                   <NavbarDropdownLink href="/prodotto/generazione-contenuti">Generazione contenuti</NavbarDropdownLink>
                   <NavbarDropdownLink href="/prodotto/ottimizzazione-contenuti">Ottimizzazione contenuti</NavbarDropdownLink>
-                  <NavbarDropdownLink href="/brand">Brand & Tone of voice</NavbarDropdownLink>
+                  <NavbarDropdownLink href="/prodotto/brand-tone-of-voice">Brand & Tone of voice</NavbarDropdownLink>
                   <NavbarDropdownLink href="/prodotto/multi-lingua">Multi-lingua</NavbarDropdownLink>
                 </NavbarDropdown>
                 <NavbarLink href="/clienti">Clienti</NavbarLink>
