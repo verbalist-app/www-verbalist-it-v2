@@ -21,7 +21,6 @@ import { Stat, StatsWithGraph } from '@/components/sections/stats-with-graph'
 import { Testimonial, TestimonialThreeColumnGrid } from '@/components/sections/testimonials-three-column-grid'
 
 export const metadata = {
-  title: 'AI per content engineering SEO e GEO',
   description:
     'Verbalist trasforma keyword, SERP e competitor in contenuti SEO e GEO strutturati, pronti anche per la ricerca con AI come ChatGPT e Perplexity.',
   alternates: { canonical: '/' },
