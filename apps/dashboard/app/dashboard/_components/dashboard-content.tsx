@@ -15,6 +15,7 @@ import {
 import { Bar, BarChart, Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { PageDescription, PageHeading } from "@/components/ui/page-heading"
 import {
   ChartContainer,
   ChartTooltip,
@@ -249,12 +250,10 @@ export function DashboardContent() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-display tracking-tight lg:text-2xl">{txt.heading}</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            {txt.subtitle}
-          </p>
+          <PageHeading>{txt.heading}</PageHeading>
+          <PageDescription>{txt.subtitle}</PageDescription>
         </div>
-        <Button asChild variant="alternative">
+        <Button asChild variant="accent">
           <Link href="/dashboard/documents/new">
             <Plus className="mr-2 size-4" />
             {txt.newDocument}
@@ -445,7 +444,7 @@ export function DashboardContent() {
             <p className="text-sm text-muted-foreground mt-2 max-w-md mx-auto">
               {txt.empty.description}
             </p>
-            <Button asChild variant="alternative" className="mt-6">
+            <Button asChild variant="accent" className="mt-6">
               <Link href="/dashboard/documents/new">
                 <Plus className="mr-2 size-4" />
                 {txt.empty.cta}

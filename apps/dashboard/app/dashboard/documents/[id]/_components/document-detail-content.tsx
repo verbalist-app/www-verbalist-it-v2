@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Skeleton } from "@/components/ui/skeleton"
+import { PageHeading } from "@/components/ui/page-heading"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -363,9 +364,7 @@ function DocumentDetailInner({
                 {document.createdAt}
               </span>
             </div>
-            <h1 className="text-xl font-display tracking-tight lg:text-2xl">
-              {document.title}
-            </h1>
+            <PageHeading>{document.title}</PageHeading>
             <div className="flex items-center gap-3 mt-2 text-sm text-muted-foreground">
               <Link
                 href={`/dashboard/projects/${document.projectId}`}

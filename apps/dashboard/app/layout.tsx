@@ -38,6 +38,10 @@ export default function RootLayout({
           crossOrigin=""
         />
         <link
+          href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:ital,wght@0,400..700;1,400..700&display=swap"
+          rel="stylesheet"
+        />
+        <link
           href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap"
           rel="stylesheet"
         />

@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
+import { PageDescription, PageHeading } from "@/components/ui/page-heading"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -135,10 +136,8 @@ export function SettingsContent() {
     <div className="space-y-8 max-w-2xl">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-display tracking-tight lg:text-2xl">{text.title}</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          {text.subtitle}
-        </p>
+        <PageHeading>{text.title}</PageHeading>
+        <PageDescription>{text.subtitle}</PageDescription>
       </div>
 
       {/* Profile */}

@@ -25,6 +25,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { PageDescription, PageHeading } from "@/components/ui/page-heading"
 import {
   Select,
   SelectContent,
@@ -281,12 +282,8 @@ function NewDocumentInner() {
           <ArrowLeft className="size-4" />
           {t(content.documents)}
         </Link>
-        <h1 className="text-xl font-display tracking-tight lg:text-2xl">
-          {t(content.newDocument)}
-        </h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          {t(content.newDocumentDescription)}
-        </p>
+        <PageHeading>{t(content.newDocument)}</PageHeading>
+        <PageDescription>{t(content.newDocumentDescription)}</PageDescription>
       </div>
 
       {/* Progress Steps */}
@@ -717,7 +714,7 @@ function NewDocumentInner() {
               <ArrowLeft className="mr-2 size-4" />
               {t(content.back)}
             </Button>
-            <Button variant="alternative" onClick={handleGenerate} disabled={isGenerating}>
+            <Button variant="accent" onClick={handleGenerate} disabled={isGenerating}>
               {isGenerating ? (
                 <>
                   <Loader2 className="mr-2 size-4 animate-spin motion-reduce:animate-none" />

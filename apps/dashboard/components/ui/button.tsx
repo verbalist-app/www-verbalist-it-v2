@@ -4,12 +4,14 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 /**
- * Button variants aligned with the marketing site (apps/web/src/components/fundations/elements/Button.astro):
- * - default  → muted grey pill (matches site "muted" — most secondary actions)
- * - alternative → brand mesh gradient (matches site "alternative" — the primary marketing CTA, "Inizia ora")
- * - neutral  → black pill (matches site "default")
- * - accent   → purple pill (matches site "accent" — used for forms like "Sign in with email")
- * Pill shape (rounded-full) and font-medium are intentional to keep brand identity coherent across both apps.
+ * Button variants aligned with the Oatmeal monochrome system:
+ * - default → muted grey pill (secondary actions)
+ * - accent  → black pill (primary CTA — "ink on paper")
+ * - outline → transparent with border (tertiary)
+ * - ghost   → transparent, hover muted (icon buttons, navigation)
+ * - destructive → red (delete/dangerous actions)
+ * - link    → underlined text link
+ * Pill shape (rounded-full) and font-medium keep brand identity coherent with the marketing site.
  */
 const buttonVariants = cva(
     'cursor-pointer active:scale-99 duration-150 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-colors ease-in-out focus-visible:outline-none focus-visible:ring-0 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
@@ -17,8 +19,6 @@ const buttonVariants = cva(
         variants: {
             variant: {
                 default: 'bg-muted text-foreground hover:bg-secondary',
-                alternative: 'bg-meshLightBlue text-black hover:bg-meshYellow',
-                neutral: 'bg-foreground text-background hover:brightness-95',
                 accent: 'bg-primary text-primary-foreground hover:bg-primary/90',
                 destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
                 outline: 'text-foreground border border-border bg-transparent hover:bg-muted',

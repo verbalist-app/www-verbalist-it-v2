@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
+import { PageDescription, PageHeading } from "@/components/ui/page-heading"
 import { useDashboardLocale } from "../../_lib/dashboard-locale"
 
 // Mock subscription data (non-translatable fields)
@@ -192,10 +193,8 @@ export function SubscriptionContent() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-display tracking-tight lg:text-2xl">{text.title}</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          {text.subtitle}
-        </p>
+        <PageHeading>{text.title}</PageHeading>
+        <PageDescription>{text.subtitle}</PageDescription>
       </div>
 
       {/* Current Plan Overview */}

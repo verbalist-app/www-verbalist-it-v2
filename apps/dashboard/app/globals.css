@@ -2,89 +2,78 @@
 @import "tw-animate-css";
 
 /* ─────────────────────────────────────────────────────────────────────
-   Mesh gradients — port from apps/web/src/styles/gradients.css.
-   Used by the brand "alternative" button variant to keep visual
-   identity coherent between marketing site and dashboard.
-   ───────────────────────────────────────────────────────────────────── */
-.bg-meshLightBlue {
-  background-color: hsla(161, 77%, 83%, 1);
-  background-image:
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 2000 2000' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"),
-    radial-gradient(circle at 7% 81%, hsla(213.08823529411774, 91%, 80%, 1) 16%, transparent 53%),
-    radial-gradient(circle at 5% 1%, hsla(238, 76%, 61%, 1) 7%, transparent 84%),
-    radial-gradient(circle at 39% 52%, hsla(187.9411764705882, 93%, 64%, 1) 6%, transparent 68%),
-    radial-gradient(circle at 11% 29%, hsla(201, 97%, 75%, 1) 8%, transparent 74%),
-    radial-gradient(circle at 90% 50%, hsla(182.64705882352945, 94%, 89%, 1) 2%, transparent 85%);
-  background-blend-mode: overlay, normal, normal, normal, normal, normal;
-}
-
-.bg-meshYellow {
-  background-color: hsla(250.1470588235294, 44%, 63%, 1);
-  background-image:
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 1227 1227' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"),
-    radial-gradient(circle at 98% 97%, hsla(59, 85%, 86%, 1) 15%, transparent 50.28756377877879%),
-    radial-gradient(circle at 43% 92%, hsla(238, 38%, 78%, 1) 30.780839988590987%, transparent 69%),
-    radial-gradient(circle at 95% 18%, hsla(1.0000000000000089, 81%, 89%, 1) 20%, transparent 80%),
-    radial-gradient(circle at 72% 71%, hsla(197, 79%, 67%, 1) 11%, transparent 69%);
-  background-blend-mode: overlay, normal, normal, normal, normal;
-}
-
-/* ─────────────────────────────────────────────────────────────────────
-   Verbalist Dashboard — palette aligned with apps/web (Astro site).
-   Base = grayscale OKLCH (matches --color-base-*).
-   Accent = purple OKLCH (matches --color-accent-*).
+   Verbalist Dashboard — Oatmeal "mist" monochrome palette.
+   All surfaces use the mist scale (acromatic with cool tint, hue ~213-228).
+   Primary follows "ink on paper" pattern: mist-950 on light backgrounds.
+   Status colors (success/warning/error) remain semantic.
    ───────────────────────────────────────────────────────────────────── */
 :root {
-  /* Surfaces */
-  --background: oklch(0.985 0 0);            /* base-50  */
-  --foreground: oklch(0.145 0 0);            /* base-950 */
-  --card: oklch(1 0 0);                      /* white    */
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
+  /* Mist scale (Oatmeal) — single source of truth */
+  --color-mist-50: oklch(98.7% 0.002 197.1);
+  --color-mist-100: oklch(96.3% 0.002 197.1);
+  --color-mist-200: oklch(92.5% 0.005 214.3);
+  --color-mist-300: oklch(87.2% 0.007 219.6);
+  --color-mist-400: oklch(72.3% 0.014 214.4);
+  --color-mist-500: oklch(56% 0.021 213.5);
+  --color-mist-600: oklch(45% 0.017 213.2);
+  --color-mist-700: oklch(37.8% 0.015 216);
+  --color-mist-800: oklch(27.5% 0.011 216.9);
+  --color-mist-900: oklch(21.8% 0.008 223.9);
+  --color-mist-950: oklch(14.8% 0.004 228.8);
 
-  /* Brand accent (purple) */
-  --primary: oklch(0.5089 0.233 290.96);     /* accent-500 */
-  --primary-foreground: oklch(1 0 0);
+  /* Surfaces — main bg sits between mist-50 and mist-100 for a soft cool tint
+     against white cards/sidebar. */
+  --background: oklch(98% 0.002 197.1);
+  --foreground: var(--color-mist-950);
+  --card: oklch(1 0 0);
+  --card-foreground: var(--color-mist-950);
+  --popover: oklch(1 0 0);
+  --popover-foreground: var(--color-mist-950);
+
+  /* Primary — pure black on paper */
+  --primary: oklch(0 0 0);
+  --primary-foreground: var(--color-mist-50);
 
   /* Subtle surfaces */
-  --secondary: oklch(0.97 0 0);              /* base-100 */
-  --secondary-foreground: oklch(0.145 0 0);
-  --muted: oklch(0.97 0 0);                  /* base-100 */
-  --muted-foreground: oklch(0.439 0 0);      /* base-600 */
-  --accent: oklch(0.97 0 0);                 /* base-100 — UI hover */
-  --accent-foreground: oklch(0.145 0 0);
+  --secondary: var(--color-mist-200);
+  --secondary-foreground: var(--color-mist-950);
+  --muted: var(--color-mist-200);
+  --muted-foreground: var(--color-mist-600);
+  --accent: var(--color-mist-200);
+  --accent-foreground: var(--color-mist-950);
 
   /* Feedback */
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(1 0 0);
 
-  /* Borders / focus ring (neutral — avoids heavy purple on inputs/selects) */
-  --border: oklch(0.922 0 0);                /* base-200 */
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.439 0 0);                  /* base-600, achromatic */
+  /* Borders / focus ring */
+  --border: var(--color-mist-200);
+  --input: var(--color-mist-200);
+  --ring: var(--color-mist-600);
 
-  /* Charts (recharts) — accent + base + neutrals */
-  --chart-1: oklch(0.5089 0.233 290.96);     /* accent-500 */
-  --chart-2: oklch(0.69 0.147 297.95);       /* accent-300 */
-  --chart-3: oklch(0.439 0 0);               /* base-600 */
-  --chart-4: oklch(0.708 0 0);               /* base-400 */
-  --chart-5: oklch(0.18 0.075 292.49);       /* accent-900 */
+  /* Charts — desaturated blue accent + mist scale ramp.
+     chart-1 carries the primary series (visual hierarchy);
+     chart-2..5 are neutrals so multi-series remain calm. */
+  --chart-1: oklch(60% 0.13 245);
+  --chart-2: var(--color-mist-700);
+  --chart-3: var(--color-mist-500);
+  --chart-4: var(--color-mist-400);
+  --chart-5: var(--color-mist-300);
 
   /* Sidebar */
   --sidebar: oklch(1 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.5089 0.233 290.96);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.145 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
+  --sidebar-foreground: var(--color-mist-950);
+  --sidebar-primary: oklch(0 0 0);
+  --sidebar-primary-foreground: var(--color-mist-50);
+  --sidebar-accent: var(--color-mist-200);
+  --sidebar-accent-foreground: var(--color-mist-950);
+  --sidebar-border: var(--color-mist-200);
+  --sidebar-ring: var(--color-mist-600);
 
-  /* Status (used by lib/status.ts) */
-  --status-success: oklch(0.62 0.16 152);
-  --status-warning: oklch(0.78 0.15 80);
-  --status-error: oklch(0.577 0.245 27.325);
+  /* Status (used by lib/status.ts) — desaturated for Linear/Profound mood */
+  --status-success: oklch(0.65 0.10 150);
+  --status-warning: oklch(0.78 0.10 80);
+  --status-error: oklch(0.60 0.13 25);
 
   --radius: 0.5rem;
 }
@@ -96,10 +85,23 @@
 
 @theme inline {
   --font-sans: "Inter", system-ui, sans-serif;
-  --font-display: "InterDisplay", "Inter", system-ui, sans-serif;
+  --font-display: "Familjen Grotesk", "Inter", system-ui, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, "SF Mono", "Menlo", monospace;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
+
+  /* Mist scale exposed as Tailwind tokens (bg-mist-100, text-mist-950, ...) */
+  --color-mist-50: var(--color-mist-50);
+  --color-mist-100: var(--color-mist-100);
+  --color-mist-200: var(--color-mist-200);
+  --color-mist-300: var(--color-mist-300);
+  --color-mist-400: var(--color-mist-400);
+  --color-mist-500: var(--color-mist-500);
+  --color-mist-600: var(--color-mist-600);
+  --color-mist-700: var(--color-mist-700);
+  --color-mist-800: var(--color-mist-800);
+  --color-mist-900: var(--color-mist-900);
+  --color-mist-950: var(--color-mist-950);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);

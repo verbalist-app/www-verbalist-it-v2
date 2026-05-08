@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { PageDescription, PageHeading } from "@/components/ui/page-heading"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -141,14 +142,10 @@ export function ProjectDetailContent({
         </Link>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-xl font-display tracking-tight lg:text-2xl">
-              {project.name}
-            </h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              {project.description}
-            </p>
+            <PageHeading>{project.name}</PageHeading>
+            <PageDescription>{project.description}</PageDescription>
           </div>
-          <Button asChild variant="alternative">
+          <Button asChild variant="accent">
             <Link href={`/dashboard/documents/new?project=${params.id}`}>
               <Plus className="mr-2 size-4" />
               {labels.newDocument}

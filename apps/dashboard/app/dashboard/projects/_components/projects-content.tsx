@@ -11,6 +11,7 @@ import {
 } from '@tabler/icons-react';
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { PageDescription, PageHeading } from "@/components/ui/page-heading"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -100,12 +101,10 @@ export function ProjectsContent() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-display tracking-tight lg:text-2xl">{labels.title}</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            {labels.subtitle}
-          </p>
+          <PageHeading>{labels.title}</PageHeading>
+          <PageDescription>{labels.subtitle}</PageDescription>
         </div>
-        <Button variant="alternative">
+        <Button variant="accent">
           <Plus className="mr-2 size-4" />
           {labels.newProject}
         </Button>

@@ -1,0 +1,78 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Verbalist Docs",
+  "colors": {
+    "primary": "#0A0A0A",
+    "light": "#FFFFFF",
+    "dark": "#0A0A0A"
+  },
+  "favicon": "/logo/light.svg",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg",
+    "href": "https://www.verbalist.it"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Sito",
+        "href": "https://www.verbalist.it"
+      },
+      {
+        "label": "Accedi",
+        "href": "https://app.verbalist.it"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Inizia la prova gratuita",
+      "href": "https://www.verbalist.it/sign-up"
+    }
+  },
+  "footer": {
+    "socials": {}
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentazione",
+        "groups": [
+          {
+            "group": "Inizia",
+            "pages": [
+              "introduction",
+              "getting-started/quickstart",
+              "getting-started/prova-gratuita"
+            ]
+          },
+          {
+            "group": "Funzionalità",
+            "pages": [
+              "funzionalita/analisi-serp",
+              "funzionalita/scraping-competitor",
+              "funzionalita/generazione-contenuti",
+              "funzionalita/ottimizzazione-contenuti",
+              "funzionalita/brand-tone-of-voice",
+              "funzionalita/multi-lingua"
+            ]
+          },
+          {
+            "group": "Guide",
+            "pages": [
+              "guide/scrivere-primo-articolo",
+              "guide/aggiornare-contenuti-pubblicati",
+              "guide/lavorare-multi-lingua"
+            ]
+          },
+          {
+            "group": "FAQ",
+            "pages": [
+              "faq"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

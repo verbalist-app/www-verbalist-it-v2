@@ -5,6 +5,7 @@
     "dev": "pnpm --parallel -r dev",
     "dev:web": "pnpm --filter @lexington/web dev",
     "dev:dashboard": "pnpm --filter @lexington/dashboard dev",
+    "dev:docs": "pnpm --filter @lexington/docs dev",
     "build": "pnpm --parallel -r build",
     "build:web": "pnpm --filter @lexington/web build",
     "build:dashboard": "pnpm --filter @lexington/dashboard build",
