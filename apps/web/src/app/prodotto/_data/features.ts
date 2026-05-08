@@ -18,10 +18,10 @@ export const features: Feature[] = [
   {
     slug: 'analisi-serp',
     category: 'Ricerca dati',
-    name: 'Analisi SERP',
+    name: 'Analisi SERP per content engineering',
     description:
-      'Verbalist legge le prime 10 posizioni di Google sulla tua keyword, le confronta e ti suggerisce cosa includere nel tuo contenuto.',
-    overviewHeadline: 'Tutto quello che serve per leggere la SERP',
+      'Trasforma le top 10 di Google in un brief strutturato. Argomenti, domande coperte e gap di copertura, pronti per il content team.',
+    overviewHeadline: 'Brief strutturati dalla SERP della tua keyword',
     overviewBody:
       'Verbalist analizza i primi 10 risultati di Google per la tua keyword e li trasforma in un brief con argomenti, struttura e domande coperte.',
     capabilities: [
@@ -52,10 +52,10 @@ export const features: Feature[] = [
   {
     slug: 'generazione-contenuti',
     category: 'Generazione',
-    name: 'Generazione contenuti',
+    name: 'Software di generazione contenuti SEO',
     description:
-      "Verbalist scrive contenuti SEO da zero usando le evidenze dell'analisi SERP, non un template generico.",
-    overviewHeadline: 'Tutto quello che serve per scrivere',
+      'Scrivi articoli SEO partendo da SERP e competitor reali, non da un prompt generico. Output Markdown o HTML pronto per il tuo CMS.',
+    overviewHeadline: 'Articoli SEO scritti sopra dati reali, non un prompt',
     overviewBody:
       'Articoli, schede prodotto, guide o landing page. Verbalist scrive a partire dalle evidenze raccolte sulla SERP della tua keyword, non da un prompt generico.',
     capabilities: [
@@ -86,10 +86,10 @@ export const features: Feature[] = [
   {
     slug: 'ottimizzazione-contenuti',
     category: 'Generazione',
-    name: 'Ottimizzazione contenuti',
+    name: 'Software di ottimizzazione contenuti SEO',
     description:
-      'Verbalist confronta i tuoi articoli già pubblicati con la SERP attuale e ti suggerisce dove intervenire, senza riscrivere da zero.',
-    overviewHeadline: 'Tutto quello che serve per aggiornare il pubblicato',
+      'Aggiorna gli articoli pubblicati con dati SERP attuali. Verbalist identifica gap, sezioni datate e modifiche prioritarie senza riscritture.',
+    overviewHeadline: 'Aggiornamenti puntuali, niente riscritture da zero',
     overviewBody:
       'Verbalist confronta i contenuti già online con la SERP corrente e ti suggerisce dove intervenire. Modifiche puntuali, niente riscritture da capo.',
     capabilities: [
@@ -120,10 +120,10 @@ export const features: Feature[] = [
   {
     slug: 'brand-tone-of-voice',
     category: 'Brand',
-    name: 'Brand & Tone of voice',
+    name: 'Brand tone of voice per contenuti AI',
     description:
-      'Verbalist apprende il tuo tono, la tua terminologia e i tuoi vincoli editoriali, così ogni contenuto suona tuo e non generico.',
-    overviewHeadline: 'Il tuo brand applicato a ogni contenuto',
+      'Applica il tuo brand a ogni contenuto generato: 6 toni preset, brand guidelines via PDF, terminologia coerente per progetto.',
+    overviewHeadline: 'Lo stesso brand su ogni contenuto, senza riconfigurarlo',
     overviewBody:
       'Toni di voce, terminologia e vincoli editoriali. Verbalist apprende il tuo brand e lo applica automaticamente a tutto quello che scrive.',
     capabilities: [
@@ -154,10 +154,10 @@ export const features: Feature[] = [
   {
     slug: 'multi-lingua',
     category: 'Infrastruttura',
-    name: 'Multi-lingua',
+    name: 'Generazione contenuti SEO multilingua',
     description:
-      'Verbalist non traduce: genera contenuti nativi nella lingua e località che indichi, partendo dalla SERP locale e non da una globale.',
-    overviewHeadline: 'Contenuti nativi in ogni lingua e mercato',
+      'Genera contenuti nativi nella lingua del mercato target, partendo dalla SERP locale e non da una traduzione automatica della versione italiana.',
+    overviewHeadline: 'Contenuti nativi nella SERP locale, non traduzioni',
     overviewBody:
       'Verbalist non traduce. Genera contenuti partendo dalla SERP locale, con keyword e idiomi specifici del mercato target.',
     capabilities: [
