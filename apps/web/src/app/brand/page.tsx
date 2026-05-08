@@ -11,7 +11,7 @@ import { HeroSimpleLeftAligned } from '@/components/sections/hero-simple-left-al
 export const metadata = {
   title: 'Brand kit',
   description:
-    "Logotipo, marchio, palette colori, tipografia e regole d'uso del brand Verbalist.",
+    "Logotipo, marchio, palette mist, tipografia Familjen Grotesk, pattern e regole d'uso del brand Verbalist. Asset SVG e PNG pronti per slide e materiali.",
   alternates: { canonical: '/brand' },
 }
 

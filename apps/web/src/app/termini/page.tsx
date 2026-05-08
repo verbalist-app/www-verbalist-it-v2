@@ -2,7 +2,7 @@ import { DocumentCentered } from '@/components/sections/document-centered'
 
 export const metadata = {
   title: 'Termini di servizio',
-  description: 'Termini di servizio di Verbalist (NUR S.r.l.).',
+  description: "Termini di servizio di Verbalist (NUR S.r.l.): condizioni d'uso della piattaforma, modalità di pagamento, proprietà intellettuale e limiti di responsabilità.",
   alternates: { canonical: '/termini' },
 }
 

@@ -10,7 +10,7 @@ import { customers } from './_data/customers'
 
 export const metadata = {
   title: 'Clienti',
-  description: 'Team marketing, agenzie e aziende che producono contenuti SEO su scala con Verbalist.',
+  description: 'Team marketing, agenzie e aziende italiane che producono contenuti SEO multilingua su scala con Verbalist. Casi reali di content engineering applicato.',
   alternates: { canonical: '/clienti' },
 }
 

@@ -15,7 +15,7 @@ import { TestimonialTwoColumnWithLargePhoto } from '@/components/sections/testim
 export const metadata = {
   title: 'Prezzi',
   description:
-    'Pacchetti a consumo, niente abbonamento. Crediti validi 12 mesi. Free trial 1 mese, 15 contenuti.',
+    'Pacchetti a consumo, niente abbonamento. Starter €270/30 contenuti, Pro €500/70 contenuti, Custom su richiesta. Crediti validi 12 mesi, free trial.',
   alternates: { canonical: '/prezzi' },
 }
 

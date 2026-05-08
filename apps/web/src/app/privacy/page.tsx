@@ -2,7 +2,7 @@ import { DocumentCentered } from '@/components/sections/document-centered'
 
 export const metadata = {
   title: 'Privacy Policy',
-  description: 'Informativa privacy di Verbalist (NUR S.r.l.) ai sensi del GDPR.',
+  description: 'Informativa privacy di Verbalist (NUR S.r.l.) ai sensi del GDPR: dati raccolti, finalità del trattamento, diritti degli interessati e contatti del titolare.',
   alternates: { canonical: '/privacy' },
 }
 

@@ -11,7 +11,7 @@ import { TestimonialTwoColumnWithLargePhoto } from '@/components/sections/testim
 export const metadata = {
   title: 'Chi siamo',
   description:
-    'Verbalist è il prodotto di NUR S.r.l. Costruiamo strumenti di SEO automation per team marketing e agenzie.',
+    'Verbalist è il prodotto di NUR S.r.l. Costruiamo strumenti di SEO automation e content engineering per team marketing, agenzie e content house.',
   alternates: { canonical: '/about' },
 }
 

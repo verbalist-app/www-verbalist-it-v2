@@ -2,7 +2,7 @@ import { DocumentCentered } from '@/components/sections/document-centered'
 
 export const metadata = {
   title: 'Cookie Policy',
-  description: 'Informativa cookie di Verbalist: tipologie, finalità e gestione del consenso.',
+  description: "Informativa cookie di Verbalist (NUR S.r.l.): tipologie utilizzate, finalità tecniche e di marketing, gestione del consenso e link al pannello preferenze.",
   alternates: { canonical: '/cookie' },
 }
 

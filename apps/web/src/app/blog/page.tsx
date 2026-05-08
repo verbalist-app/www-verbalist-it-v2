@@ -12,7 +12,7 @@ const HUBSPOT_DEMO = 'https://share-eu1.hsforms.com/1QmfwKDraSVOGP3_N6WSMHAft3vh
 export const metadata = {
   title: 'Blog',
   description:
-    'Articoli e guide su SEO, GEO, AI e contenuti. Cose pratiche che puoi applicare subito.',
+    'Articoli e guide su SEO, GEO, AI search e content engineering. Pattern, struttura e dati: cose pratiche da applicare subito al tuo workflow.',
   alternates: { canonical: '/blog' },
 }
 

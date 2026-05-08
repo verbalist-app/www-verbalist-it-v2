@@ -86,7 +86,7 @@ const entries: ChangelogEntry[] = [
 export const metadata = {
   title: 'Changelog',
   description:
-    'Tutti gli aggiornamenti, nuove funzionalità e correzioni di Verbalist, in ordine cronologico.',
+    "Tutti gli aggiornamenti, nuove funzionalità e correzioni di Verbalist in ordine cronologico. Note di rilascio della piattaforma di SEO automation.",
   alternates: { canonical: '/changelog' },
 }
 

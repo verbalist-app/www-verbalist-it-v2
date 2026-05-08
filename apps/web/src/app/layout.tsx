@@ -27,11 +27,11 @@ const SITE_URL = 'https://www.verbalist.it'
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Verbalist — Contenuti SEO a partire dai dati di ricerca',
+    default: 'AI per content engineering SEO e GEO — Verbalist',
     template: '%s — Verbalist',
   },
   description:
-    'Verbalist trasforma keyword, risultati Google e competitor in contenuti SEO strutturati, completi e pronti anche per la ricerca con AI.',
+    'Verbalist trasforma keyword, SERP e competitor in contenuti SEO e GEO strutturati, pronti anche per la ricerca con AI come ChatGPT e Perplexity.',
   applicationName: 'Verbalist',
   generator: 'Next.js',
   keywords: ['SEO', 'GEO', 'AI search', 'content marketing', 'AEO', 'generazione contenuti', 'analisi SERP'],
@@ -46,15 +46,15 @@ export const metadata: Metadata = {
     locale: 'it_IT',
     url: SITE_URL,
     siteName: 'Verbalist',
-    title: 'Verbalist — Contenuti SEO a partire dai dati di ricerca',
+    title: 'AI per content engineering SEO e GEO — Verbalist',
     description:
-      'Verbalist trasforma keyword, risultati Google e competitor in contenuti SEO strutturati, completi e pronti anche per la ricerca con AI.',
+      'Verbalist trasforma keyword, SERP e competitor in contenuti SEO e GEO strutturati, pronti anche per la ricerca con AI come ChatGPT e Perplexity.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Verbalist — Contenuti SEO a partire dai dati di ricerca',
+    title: 'AI per content engineering SEO e GEO — Verbalist',
     description:
-      'Verbalist trasforma keyword, risultati Google e competitor in contenuti SEO strutturati, completi e pronti anche per la ricerca con AI.',
+      'Verbalist trasforma keyword, SERP e competitor in contenuti SEO e GEO strutturati, pronti anche per la ricerca con AI come ChatGPT e Perplexity.',
   },
   robots: {
     index: true,
@@ -127,7 +127,7 @@ export default function RootLayout({
                   url: SITE_URL,
                   name: 'Verbalist',
                   description:
-                    'Verbalist trasforma keyword, risultati Google e competitor in contenuti SEO strutturati.',
+                    'Verbalist trasforma keyword, SERP e competitor in contenuti SEO e GEO strutturati, pronti anche per la ricerca con AI come ChatGPT e Perplexity.',
                   publisher: { '@id': `${SITE_URL}/#organization` },
                   inLanguage: 'it-IT',
                 },
