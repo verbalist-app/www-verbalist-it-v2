@@ -3,7 +3,7 @@ import { ArrowNarrowRightIcon } from '@/components/icons/arrow-narrow-right-icon
 import { HeroSimpleCentered } from '@/components/sections/hero-simple-centered'
 
 export const metadata = {
-  title: 'Pagina non trovata — Verbalist',
+  title: 'Pagina non trovata \\ Verbalist',
 }
 
 export default function NotFound() {

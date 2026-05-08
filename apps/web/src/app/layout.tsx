@@ -27,8 +27,8 @@ const SITE_URL = 'https://www.verbalist.it'
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'AI per content engineering SEO e GEO — Verbalist',
-    template: '%s — Verbalist',
+    default: 'AI per content engineering SEO e GEO \\ Verbalist',
+    template: '%s \\ Verbalist',
   },
   description:
     'Verbalist trasforma keyword, SERP e competitor in contenuti SEO e GEO strutturati, pronti anche per la ricerca con AI come ChatGPT e Perplexity.',
@@ -46,13 +46,13 @@ export const metadata: Metadata = {
     locale: 'it_IT',
     url: SITE_URL,
     siteName: 'Verbalist',
-    title: 'AI per content engineering SEO e GEO — Verbalist',
+    title: 'AI per content engineering SEO e GEO \\ Verbalist',
     description:
       'Verbalist trasforma keyword, SERP e competitor in contenuti SEO e GEO strutturati, pronti anche per la ricerca con AI come ChatGPT e Perplexity.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AI per content engineering SEO e GEO — Verbalist',
+    title: 'AI per content engineering SEO e GEO \\ Verbalist',
     description:
       'Verbalist trasforma keyword, SERP e competitor in contenuti SEO e GEO strutturati, pronti anche per la ricerca con AI come ChatGPT e Perplexity.',
   },

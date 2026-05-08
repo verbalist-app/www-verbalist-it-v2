@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     description: feature.description,
     alternates: { canonical: `/prodotto/${slug}` },
     openGraph: {
-      title: `${feature.name} — Verbalist`,
+      title: `${feature.name} \\ Verbalist`,
       description: feature.description,
       url: `/prodotto/${slug}`,
       type: 'website',
