@@ -55,7 +55,6 @@ export function NavbarDropdown({
       <ElPopover
         popover="auto"
         id={id}
-        // @ts-expect-error anchor positioning attribute
         anchor="bottom start"
         className="mt-2 flex w-64 flex-col gap-1 rounded-xl bg-white p-2 ring-1 ring-black/5 [&:not(:popover-open)]:hidden dark:bg-mist-900 dark:ring-white/10"
       >
