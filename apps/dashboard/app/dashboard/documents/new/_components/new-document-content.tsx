@@ -5,21 +5,21 @@ import { Suspense } from "react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import {
-  IconArrowLeft as ArrowLeft,
-  IconArrowRight as ArrowRight,
-  IconFileText as FileText,
-  IconShoppingBag as ShoppingBag,
-  IconBook2 as BookOpen,
-  IconLayout as Layout,
-  IconLink as LinkIcon,
-  IconTypography as Type,
-  IconSparkles as Sparkles,
-  IconCheck as Check,
-  IconLoader2 as Loader2,
-  IconSelector as ChevronsUpDown,
-  IconLanguage as Languages,
-  IconMapPin as MapPin
-} from '@tabler/icons-react';
+  ArrowLeft,
+  ArrowRight,
+  FileText,
+  ShoppingBag,
+  BookOpen,
+  Layout,
+  Link as LinkIcon,
+  Type,
+  Sparkles,
+  Check,
+  Loader2,
+  ChevronsUpDown,
+  Languages,
+  MapPin,
+} from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -46,8 +46,25 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { toast } from "sonner"
 import { cn } from "@/lib/utils"
+import { NewProjectDialog } from "@/components/dashboard/new-project-dialog"
 import { useDashboardLocale } from "../../../_lib/dashboard-locale"
+
+const DRAFT_STORAGE_KEY = "verbalist:new-document-draft"
+
+type DocumentDraft = {
+  outputType: string
+  contentMode: string
+  keyword: string
+  contentUrl: string
+  contentText: string
+  project: string
+  inputMode: "url" | "text"
+  locationCode: string
+  languageCode: string
+  step: number
+}
 import { googleLanguages, getLanguageByCode } from "../../../_lib/google-languages"
 import { googleLocations, getLocationByCode } from "../../../_lib/google-locations"
 
@@ -93,14 +110,22 @@ function NewDocumentInner() {
       it: "Incolla qui il contenuto da ottimizzare...",
       en: "Paste content to optimize here...",
     },
-    mainKeyword: { it: "Keyword principale", en: "Main keyword" },
+    mainKeyword: { it: "Parole chiave SEO", en: "SEO keywords" },
     mainKeywordDescription: {
-      it: "La keyword per cui vuoi ottimizzare il contenuto",
-      en: "The keyword you want to optimize content for",
+      it: "Sono le parole con cui vuoi che il contenuto venga trovato su Google. Non sono un prompt — usa una keyword principale e fino a 3-4 varianti.",
+      en: "These are the words you want the content to rank for on Google. They are not a prompt — use one main keyword and up to 3-4 variants.",
     },
     keywordPlaceholder: {
-      it: "es. miglior software gestionale",
-      en: "e.g., best management software",
+      it: "es. seo 2025, ottimizzazione organica, ranking google",
+      en: "e.g., seo 2025, organic optimization, google ranking",
+    },
+    keywordSeparatorHint: {
+      it: "Separa più keyword con la virgola.",
+      en: "Separate multiple keywords with a comma.",
+    },
+    keywordExtractFromText: {
+      it: "Estrarremo automaticamente keyword aggiuntive dal testo che hai incollato.",
+      en: "We'll automatically extract additional keywords from the pasted text.",
     },
     serpSettings: {
       it: "Localizzazione ricerca",
@@ -116,8 +141,13 @@ function NewDocumentInner() {
     language: { it: "Lingua", en: "Language" },
     languagePlaceholder: { it: "Cerca lingua...", en: "Search language..." },
     languageEmpty: { it: "Nessuna lingua trovata.", en: "No language found." },
-    projectOptional: { it: "Progetto (opzionale)", en: "Project (optional)" },
+    projectOptional: { it: "Progetto", en: "Project" },
+    projectRequiredHint: {
+      it: "Ogni documento appartiene a un progetto. Scegline uno o creane uno nuovo.",
+      en: "Every document belongs to a project. Pick one or create a new one.",
+    },
     selectProject: { it: "Seleziona un progetto", en: "Select a project" },
+    createNewProject: { it: "+ Crea nuovo progetto", en: "+ Create new project" },
     back: { it: "Indietro", en: "Back" },
     summary: { it: "Riepilogo", en: "Summary" },
     summaryDescription: {
@@ -126,8 +156,8 @@ function NewDocumentInner() {
     },
     contentTypeSummary: { it: "Tipo contenuto", en: "Content type" },
     modeSummary: { it: "Modalità", en: "Mode" },
-    newContent: { it: "Nuovo contenuto", en: "New content" },
-    optimization: { it: "Ottimizzazione", en: "Optimization" },
+    newContent: { it: "Da parole chiave", en: "From keywords" },
+    optimization: { it: "Da testo", en: "From text" },
     keyword: { it: "Keyword", en: "Keyword" },
     contentToOptimize: {
       it: "Contenuto da ottimizzare",
@@ -178,18 +208,34 @@ function NewDocumentInner() {
     landingPage: { it: "Landing Page", en: "Landing Page" },
     landingPageDesc: { it: "Pagina di conversione", en: "Conversion page" },
     // Content modes
-    createMode: { it: "Crea nuovo contenuto", en: "Create new content" },
+    createMode: { it: "Crea da parole chiave", en: "Create from keywords" },
     createModeDesc: {
-      it: "Genera un contenuto da zero basandoti sulla keyword",
-      en: "Generate content from scratch based on the keyword",
+      it: "Verbalist genera il contenuto da zero a partire da una keyword principale.",
+      en: "Verbalist generates content from scratch starting from a main keyword.",
     },
     optimizeMode: {
-      it: "Ottimizza contenuto esistente",
-      en: "Optimize existing content",
+      it: "Crea da testo",
+      en: "Create from text",
     },
     optimizeModeDesc: {
-      it: "Migliora un contenuto già esistente",
-      en: "Improve existing content",
+      it: "Parti da un testo esistente (URL o bozza) che vuoi ottimizzare.",
+      en: "Start from existing text (URL or draft) you want to optimize.",
+    },
+    draftRestored: {
+      it: "Bozza ripristinata",
+      en: "Draft restored",
+    },
+    draftRestoredDesc: {
+      it: "Abbiamo recuperato il documento che stavi creando.",
+      en: "We recovered the document you were creating.",
+    },
+    discardDraft: {
+      it: "Scarta",
+      en: "Discard",
+    },
+    unsavedChangesWarning: {
+      it: "Hai un documento in creazione non salvato. Vuoi davvero uscire?",
+      en: "You have an unsaved document in progress. Are you sure you want to leave?",
     },
   }
 
@@ -233,12 +279,21 @@ function NewDocumentInner() {
     },
   ]
 
-  const projects = [
-    { id: "1", name: t({ it: "Blog Aziendale", en: "Company Blog" }) },
-    { id: "2", name: t({ it: "Landing Pages", en: "Landing Pages" }) },
-    { id: "3", name: t({ it: "E-commerce", en: "E-commerce" }) },
-    { id: "4", name: t({ it: "Guide Tecniche", en: "Technical Guides" }) },
-  ]
+  const baseProjects = React.useMemo(
+    () => [
+      { id: "1", name: t({ it: "Blog Aziendale", en: "Company Blog" }) },
+      { id: "2", name: t({ it: "Landing Pages", en: "Landing Pages" }) },
+      { id: "3", name: t({ it: "E-commerce", en: "E-commerce" }) },
+      { id: "4", name: t({ it: "Guide Tecniche", en: "Technical Guides" }) },
+    ],
+    [t],
+  )
+  const [extraProjects, setExtraProjects] = React.useState<{ id: string; name: string }[]>([])
+  const projects = React.useMemo(
+    () => [...baseProjects, ...extraProjects],
+    [baseProjects, extraProjects],
+  )
+  const [newProjectOpen, setNewProjectOpen] = React.useState(false)
   const router = useRouter()
   const searchParams = useSearchParams()
   const preselectedType = searchParams.get("type")
@@ -261,10 +316,165 @@ function NewDocumentInner() {
   const [languageOpen, setLanguageOpen] = React.useState(false)
 
   const canProceedStep1 = outputType !== ""
-  const canProceedStep2 = keyword.trim() !== "" && (contentMode === "create" || contentUrl || contentText)
+  const canProceedStep2 =
+    keyword.trim() !== "" &&
+    project !== "" &&
+    (contentMode === "create" || contentUrl || contentText)
+
+  const hasDraftContent = React.useMemo(
+    () =>
+      Boolean(
+        outputType ||
+          keyword.trim() ||
+          contentUrl.trim() ||
+          contentText.trim(),
+      ),
+    [outputType, keyword, contentUrl, contentText],
+  )
+
+  // Hydrate from sessionStorage on mount (only when no preselected params)
+  const hydratedRef = React.useRef(false)
+  React.useEffect(() => {
+    if (hydratedRef.current) return
+    hydratedRef.current = true
+    if (preselectedType || preselectedProject) return
+    if (typeof window === "undefined") return
+    const raw = window.sessionStorage.getItem(DRAFT_STORAGE_KEY)
+    if (!raw) return
+    try {
+      const draft = JSON.parse(raw) as Partial<DocumentDraft>
+      if (draft.outputType) setOutputType(draft.outputType)
+      if (draft.contentMode) setContentMode(draft.contentMode)
+      if (draft.keyword) setKeyword(draft.keyword)
+      if (draft.contentUrl) setContentUrl(draft.contentUrl)
+      if (draft.contentText) setContentText(draft.contentText)
+      if (draft.project) setProject(draft.project)
+      if (draft.inputMode === "url" || draft.inputMode === "text") {
+        setInputMode(draft.inputMode)
+      }
+      if (draft.locationCode) setLocationCode(draft.locationCode)
+      if (draft.languageCode) setLanguageCode(draft.languageCode)
+      if (typeof draft.step === "number" && draft.step >= 1 && draft.step <= 3) {
+        setStep(draft.step)
+      }
+      const hasValue =
+        draft.outputType ||
+        draft.keyword?.trim() ||
+        draft.contentUrl?.trim() ||
+        draft.contentText?.trim()
+      if (hasValue) {
+        toast.info(t(content.draftRestored), {
+          description: t(content.draftRestoredDesc),
+          action: {
+            label: t(content.discardDraft),
+            onClick: () => {
+              window.sessionStorage.removeItem(DRAFT_STORAGE_KEY)
+              setOutputType("")
+              setContentMode("create")
+              setKeyword("")
+              setContentUrl("")
+              setContentText("")
+              setProject("")
+              setInputMode("url")
+              setLocationCode("IT")
+              setLanguageCode("it")
+              setStep(1)
+            },
+          },
+        })
+      }
+    } catch {
+      window.sessionStorage.removeItem(DRAFT_STORAGE_KEY)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Persist draft on every change
+  React.useEffect(() => {
+    if (typeof window === "undefined") return
+    if (isGenerating) return
+    if (!hasDraftContent) {
+      window.sessionStorage.removeItem(DRAFT_STORAGE_KEY)
+      return
+    }
+    const draft: DocumentDraft = {
+      outputType,
+      contentMode,
+      keyword,
+      contentUrl,
+      contentText,
+      project,
+      inputMode,
+      locationCode,
+      languageCode,
+      step,
+    }
+    window.sessionStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draft))
+  }, [
+    hasDraftContent,
+    isGenerating,
+    outputType,
+    contentMode,
+    keyword,
+    contentUrl,
+    contentText,
+    project,
+    inputMode,
+    locationCode,
+    languageCode,
+    step,
+  ])
+
+  // Warn before leaving with unsaved draft
+  React.useEffect(() => {
+    if (!hasDraftContent || isGenerating) return
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault()
+      e.returnValue = t(content.unsavedChangesWarning)
+      return e.returnValue
+    }
+    window.addEventListener("beforeunload", handler)
+    return () => window.removeEventListener("beforeunload", handler)
+  }, [hasDraftContent, isGenerating, t, content.unsavedChangesWarning])
+
+  const buildProvisionalTitle = () => {
+    const typeLabels: Record<string, { it: string; en: string }> = {
+      blog_post: { it: "Blog Post", en: "Blog Post" },
+      product_page: { it: "Pagina Prodotto", en: "Product Page" },
+      guide: { it: "Guida", en: "Guide" },
+      landing_page: { it: "Landing Page", en: "Landing Page" },
+    }
+    const typeLabel = outputType ? t(typeLabels[outputType]) : t({ it: "Documento", en: "Document" })
+    const now = new Date()
+    const dateStr = new Intl.DateTimeFormat(undefined, {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(now)
+    const kw = keyword.trim().slice(0, 40)
+    return kw ? `${typeLabel} — ${dateStr} — ${kw}` : `${typeLabel} — ${dateStr}`
+  }
 
   const handleGenerate = async () => {
     setIsGenerating(true)
+    if (typeof window !== "undefined") {
+      window.sessionStorage.removeItem(DRAFT_STORAGE_KEY)
+      window.sessionStorage.setItem(
+        "verbalist:last-generated-title",
+        buildProvisionalTitle(),
+      )
+      window.sessionStorage.setItem(
+        "verbalist:last-generated-meta",
+        JSON.stringify({
+          createdAt: new Date().toISOString(),
+          keyword: keyword.trim(),
+          type: outputType,
+          project: project,
+        }),
+      )
+    }
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 2000))
     // Redirect to document detail page (mock)
@@ -444,6 +654,12 @@ function NewDocumentInner() {
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
             />
+            <p className="text-xs text-muted-foreground">
+              {t(content.keywordSeparatorHint)}
+              {contentMode === "optimize" && (contentText.trim() || contentUrl.trim()) && (
+                <span className="block mt-1">{t(content.keywordExtractFromText)}</span>
+              )}
+            </p>
           </div>
 
           {/* SERP Location & Language */}
@@ -577,7 +793,19 @@ function NewDocumentInner() {
           {/* Project */}
           <div className="space-y-3">
             <Label className="text-base">{t(content.projectOptional)}</Label>
-            <Select value={project} onValueChange={setProject}>
+            <p className="text-sm text-muted-foreground">
+              {t(content.projectRequiredHint)}
+            </p>
+            <Select
+              value={project}
+              onValueChange={(value) => {
+                if (value === "__new__") {
+                  setNewProjectOpen(true)
+                  return
+                }
+                setProject(value)
+              }}
+            >
               <SelectTrigger>
                 <SelectValue placeholder={t(content.selectProject)} />
               </SelectTrigger>
@@ -587,6 +815,9 @@ function NewDocumentInner() {
                     {p.name}
                   </SelectItem>
                 ))}
+                <SelectItem value="__new__" className="text-primary">
+                  {t(content.createNewProject)}
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -730,6 +961,15 @@ function NewDocumentInner() {
           </div>
         </div>
       )}
+
+      <NewProjectDialog
+        open={newProjectOpen}
+        onOpenChange={setNewProjectOpen}
+        onCreate={(newProject) => {
+          setExtraProjects((prev) => [...prev, newProject])
+          setProject(newProject.id)
+        }}
+      />
     </div>
   )
 }

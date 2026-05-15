@@ -2,16 +2,16 @@
 
 import Link from "next/link"
 import {
-  IconFileText as FileText,
-  IconLayoutKanban as FolderKanban,
-  IconBolt as Zap,
-  IconSparkles as Sparkles,
-  IconClock as Clock,
-  IconArrowRight as ArrowRight,
-  IconPlus as Plus,
-  IconArrowUpRight as ArrowUpRight,
-  IconArrowDownRight as ArrowDownRight
-} from '@tabler/icons-react';
+  FileText,
+  Folder,
+  Zap,
+  Sparkles,
+  Clock,
+  ArrowRight,
+  Plus,
+  ArrowUpRight,
+  ArrowDownRight,
+} from 'lucide-react'
 import { Bar, BarChart, Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -21,7 +21,13 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import { cn } from "@/lib/utils"
 import { getStatusConfig, type Status } from "@/lib/status"
+import {
+  getCreditsBarClass,
+  getCreditsLevel,
+  getDocumentsRemaining,
+} from "@/lib/credits"
 import { useDashboardLocale } from "../_lib/dashboard-locale"
 
 const content = {
@@ -37,7 +43,9 @@ const content = {
       creditsUsed: "Crediti utilizzati",
       daysRemaining: "Giorni rimanenti",
       inCycle: "nel ciclo",
-      creditsPerPost: "~20 crediti per blog post",
+      documentsRemaining: (n: number) =>
+        `Puoi generare ${n} ${n === 1 ? "documento" : "documenti"}`,
+      creditsExhausted: "Crediti esauriti",
     },
     charts: {
       generatedDocuments: "Documenti generati",
@@ -53,7 +61,21 @@ const content = {
     },
     empty: {
       title: "Benvenuto in Verbalist",
-      description: "Genera contenuti SEO ottimizzati in pochi minuti. Ogni blog post utilizza circa 20 crediti.",
+      description: "Bastano tre passi per pubblicare il tuo primo contenuto ottimizzato.",
+      steps: [
+        {
+          title: "Crea un progetto",
+          description: "Organizza i tuoi documenti in cartelle per cliente o canale.",
+        },
+        {
+          title: "Genera il documento",
+          description: "Inserisci una keyword e Verbalist analizza la SERP per te.",
+        },
+        {
+          title: "Esporta o pubblica",
+          description: "Copia il testo o scarica in più formati pronti per il web.",
+        },
+      ],
       cta: "Crea il tuo primo documento",
     },
   },
@@ -69,7 +91,9 @@ const content = {
       creditsUsed: "Credits used",
       daysRemaining: "Days remaining",
       inCycle: "in the cycle",
-      creditsPerPost: "~20 credits per blog post",
+      documentsRemaining: (n: number) =>
+        `You can generate ${n} ${n === 1 ? "document" : "documents"}`,
+      creditsExhausted: "Credits exhausted",
     },
     charts: {
       generatedDocuments: "Generated documents",
@@ -85,7 +109,21 @@ const content = {
     },
     empty: {
       title: "Welcome to Verbalist",
-      description: "Generate SEO-optimized content in minutes. Each blog post uses about 20 credits.",
+      description: "Three steps to publish your first optimized piece.",
+      steps: [
+        {
+          title: "Create a project",
+          description: "Group your documents into folders by client or channel.",
+        },
+        {
+          title: "Generate the document",
+          description: "Enter a keyword and Verbalist analyzes the SERP for you.",
+        },
+        {
+          title: "Export or publish",
+          description: "Copy the text or download in multiple web-ready formats.",
+        },
+      ],
       cta: "Create your first document",
     },
   },
@@ -221,14 +259,16 @@ export function DashboardContent() {
       changeType: "positive" as const,
       icon: FileText,
       description: txt.stats.thisMonth,
+      href: "/dashboard/documents",
     },
     {
       name: txt.stats.activeProjects,
       value: "5",
       change: "+2",
       changeType: "positive" as const,
-      icon: FolderKanban,
+      icon: Folder,
       description: txt.stats.total,
+      href: "/dashboard/projects",
     },
     {
       name: txt.stats.creditsUsed,
@@ -236,12 +276,14 @@ export function DashboardContent() {
       total: "500",
       icon: Zap,
       description: txt.stats.thisMonth,
+      href: "/dashboard/subscription",
     },
     {
       name: txt.stats.daysRemaining,
       value: "23",
       icon: Clock,
       description: txt.stats.inCycle,
+      href: "/dashboard/subscription",
     },
   ]
 
@@ -264,57 +306,80 @@ export function DashboardContent() {
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
-          <Card key={stat.name} className={stat.total ? "bg-muted/30" : undefined}>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <stat.icon className="size-5 text-muted-foreground" />
-                {stat.change && (
-                  <span
-                    className={`inline-flex items-center gap-1 text-xs font-medium ${
-                      stat.changeType === "positive"
-                        ? "text-status-success"
-                        : "text-status-error"
-                    }`}
-                  >
-                    {stat.changeType === "positive" ? (
-                      <ArrowUpRight className="size-3" />
-                    ) : (
-                      <ArrowDownRight className="size-3" />
-                    )}
-                    {stat.change}
-                  </span>
-                )}
-              </div>
-              <div className="mt-4">
-                <div className="flex items-baseline gap-1">
-                  <span className="text-2xl font-display tracking-tight tabular-nums">{stat.value}</span>
-                  {stat.total && (
-                    <span className="text-sm text-muted-foreground">
-                      /{stat.total}
+          <Link
+            key={stat.name}
+            href={stat.href}
+            className="block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          >
+            <Card
+              className={cn(
+                "h-full cursor-pointer transition-colors hover:border-primary/40 hover:bg-muted/40",
+                stat.total ? "bg-muted/30" : undefined
+              )}
+            >
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <stat.icon className="size-5 text-muted-foreground" />
+                  {stat.change && (
+                    <span
+                      className={`inline-flex items-center gap-1 text-xs font-medium ${
+                        stat.changeType === "positive"
+                          ? "text-status-success"
+                          : "text-status-error"
+                      }`}
+                    >
+                      {stat.changeType === "positive" ? (
+                        <ArrowUpRight className="size-3" />
+                      ) : (
+                        <ArrowDownRight className="size-3" />
+                      )}
+                      {stat.change}
                     </span>
                   )}
                 </div>
-                <p className="text-sm text-muted-foreground mt-1">{stat.name}</p>
-                {stat.total && (
-                  <p className="text-xs text-muted-foreground">
-                    {txt.stats.creditsPerPost}
-                  </p>
-                )}
-              </div>
-              {stat.total && (
-                <div className="mt-3">
-                  <div className="h-1.5 w-full rounded-full bg-muted">
-                    <div
-                      className="h-1.5 rounded-full bg-foreground transition-all"
-                      style={{
-                        width: `${(parseInt(stat.value) / parseInt(stat.total)) * 100}%`,
-                      }}
-                    />
+                <div className="mt-4">
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-2xl font-display tracking-tight tabular-nums">{stat.value}</span>
+                    {stat.total && (
+                      <span className="text-sm text-muted-foreground">
+                        /{stat.total}
+                      </span>
+                    )}
                   </div>
+                  <p className="text-sm text-muted-foreground mt-1">{stat.name}</p>
+                  {stat.total && (() => {
+                    const used = parseInt(stat.value)
+                    const total = parseInt(stat.total)
+                    const remaining = getDocumentsRemaining(used, total)
+                    return (
+                      <p className="text-xs text-muted-foreground">
+                        {remaining > 0
+                          ? txt.stats.documentsRemaining(remaining)
+                          : txt.stats.creditsExhausted}
+                      </p>
+                    )
+                  })()}
                 </div>
-              )}
-            </CardContent>
-          </Card>
+                {stat.total && (
+                  <div className="mt-3">
+                    <div className="h-1.5 w-full rounded-full bg-muted">
+                      <div
+                        className={cn(
+                          "h-1.5 rounded-full transition-all",
+                          getCreditsBarClass(
+                            getCreditsLevel(parseInt(stat.value), parseInt(stat.total))
+                          )
+                        )}
+                        style={{
+                          width: `${(parseInt(stat.value) / parseInt(stat.total)) * 100}%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </Link>
         ))}
       </div>
 
@@ -436,20 +501,38 @@ export function DashboardContent() {
         </Card>
       ) : (
         <Card className="bg-muted/30 border-dashed">
-          <CardContent className="p-8 text-center">
-            <div className="flex size-12 items-center justify-center rounded-full bg-foreground/10 mx-auto mb-4">
-              <Sparkles className="size-6 text-foreground" />
+          <CardContent className="p-8 lg:p-10">
+            <div className="text-center">
+              <div className="flex size-12 items-center justify-center rounded-full bg-foreground/10 mx-auto mb-4">
+                <Sparkles className="size-6 text-foreground" />
+              </div>
+              <h2 className="text-xl font-semibold tracking-tight">{txt.empty.title}</h2>
+              <p className="text-sm text-muted-foreground mt-2 max-w-md mx-auto">
+                {txt.empty.description}
+              </p>
             </div>
-            <h2 className="text-xl font-semibold tracking-tight">{txt.empty.title}</h2>
-            <p className="text-sm text-muted-foreground mt-2 max-w-md mx-auto">
-              {txt.empty.description}
-            </p>
-            <Button asChild variant="accent" className="mt-6">
-              <Link href="/dashboard/documents/new">
-                <Plus className="mr-2 size-4" />
-                {txt.empty.cta}
-              </Link>
-            </Button>
+            <ol className="mt-8 grid gap-4 sm:grid-cols-3">
+              {txt.empty.steps.map((s, i) => (
+                <li
+                  key={s.title}
+                  className="rounded-lg border bg-background/60 p-4"
+                >
+                  <div className="flex size-7 items-center justify-center rounded-full bg-foreground text-background text-xs font-medium tabular-nums">
+                    {i + 1}
+                  </div>
+                  <p className="mt-3 font-medium text-sm">{s.title}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{s.description}</p>
+                </li>
+              ))}
+            </ol>
+            <div className="mt-8 flex justify-center">
+              <Button asChild variant="accent">
+                <Link href="/dashboard/documents/new">
+                  <Plus className="mr-2 size-4" />
+                  {txt.empty.cta}
+                </Link>
+              </Button>
+            </div>
           </CardContent>
         </Card>
       )}

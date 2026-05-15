@@ -5,18 +5,26 @@ import { Suspense } from "react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import {
-  IconCopy as Copy,
-  IconDownload as Download,
-  IconDots as MoreHorizontal,
-  IconFileText as FileText,
-  IconChartBar as BarChart3,
-  IconCircleCheck as CheckCircle2,
-  IconLoader2 as Loader2,
-  IconRefresh as RefreshCw,
-  IconExternalLink as ExternalLink,
-  IconHome as Home,
-  IconAlertTriangle as AlertTriangle
-} from '@tabler/icons-react';
+  Copy,
+  Download,
+  MoreHorizontal,
+  FileText,
+  BarChart3,
+  CheckCircle2,
+  Loader2,
+  RefreshCw,
+  ExternalLink,
+  Home,
+  AlertTriangle,
+  Pencil,
+  Code,
+  Type,
+  FileType2,
+  FileCode2,
+  Save,
+  X,
+  ChevronDown,
+} from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -49,6 +57,14 @@ import {
 } from "@/components/ui/alert-dialog"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
+import { Textarea } from "@/components/ui/textarea"
+import { RenameDocumentDialog } from "@/components/dashboard/rename-document-dialog"
+import {
+  markdownToHtml,
+  markdownToPlainText,
+  buildHtmlDocument,
+  downloadBlob,
+} from "@/lib/markdown"
 import { useDashboardLocale } from "../../../_lib/dashboard-locale"
 
 // Mock data
@@ -222,11 +238,41 @@ const translations = {
     retry: "Riprova",
     copied: "Copiato!",
     copy: "Copia",
+    copyPlainText: "Copia testo pulito",
+    copyHtml: "Copia HTML",
+    copyMarkdown: "Copia Markdown",
+    copyMenuLabel: "Opzioni copia",
     export: "Esporta",
+    exportMd: "Scarica .md",
+    exportHtml: "Scarica .html",
+    exportTxt: "Scarica .txt",
+    exportMenuLabel: "Opzioni esportazione",
+    edit: "Modifica",
+    save: "Salva",
+    discard: "Annulla",
+    editing: "Modalità modifica",
+    contentSaved: "Contenuto aggiornato",
+    plainCopied: "Testo pulito copiato",
+    htmlCopied: "HTML copiato",
+    markdownCopied: "Markdown copiato",
     regenerate: "Rigenera",
+    rename: "Rinomina",
+    renameTooltip: "Doppio clic per rinominare",
     openInEditor: "Apri in editor",
+    publishedTitleLabel: "Titolo pubblicabile",
+    publishedTitleHint: "È il titolo H1 del contenuto: appare online quando pubblichi.",
+    systemNameLabel: "Nome file",
+    systemNameHint: "Identifica il documento all'interno di Verbalist. Usalo per ritrovarlo in elenco e nelle cartelle.",
+    renameSystemName: "Rinomina file",
+    renamePublishedTitle: "Modifica titolo pubblicabile",
+    safeNavigationTitle: "La generazione continua in background",
+    safeNavigationDesc: "Puoi navigare in altre sezioni di Verbalist senza perdere il documento. Ti avviseremo quando sarà pronto.",
     docGenerated: "Documento generato con successo",
     docGeneratedDesc: "Puoi copiare il contenuto, esportarlo o modificarlo nell'editor",
+    docReadyTitle: (name: string) => `"${name}" è pronto`,
+    docReadyDesc: "Apri il documento per controllarlo e pubblicarlo.",
+    docReadyAction: "Apri ora",
+    notifyReady: "Notifica documento pronto",
     content: "Contenuto",
     serpAnalysis: "Analisi SERP",
     competitorsAnalyzed: "Competitor analizzati",
@@ -255,11 +301,41 @@ const translations = {
     retry: "Retry",
     copied: "Copied!",
     copy: "Copy",
+    copyPlainText: "Copy plain text",
+    copyHtml: "Copy HTML",
+    copyMarkdown: "Copy Markdown",
+    copyMenuLabel: "Copy options",
     export: "Export",
+    exportMd: "Download .md",
+    exportHtml: "Download .html",
+    exportTxt: "Download .txt",
+    exportMenuLabel: "Export options",
+    edit: "Edit",
+    save: "Save",
+    discard: "Discard",
+    editing: "Edit mode",
+    contentSaved: "Content updated",
+    plainCopied: "Plain text copied",
+    htmlCopied: "HTML copied",
+    markdownCopied: "Markdown copied",
     regenerate: "Regenerate",
+    rename: "Rename",
+    renameTooltip: "Double-click to rename",
     openInEditor: "Open in editor",
+    publishedTitleLabel: "Published title",
+    publishedTitleHint: "This is the H1 of the content — what readers see online.",
+    systemNameLabel: "File name",
+    systemNameHint: "Identifies the document inside Verbalist. Use it to find it in the list and folders.",
+    renameSystemName: "Rename file",
+    renamePublishedTitle: "Edit published title",
+    safeNavigationTitle: "Generation continues in the background",
+    safeNavigationDesc: "You can move to other sections of Verbalist without losing this document. We'll let you know when it's ready.",
     docGenerated: "Document generated successfully",
     docGeneratedDesc: "You can copy, export, or edit in the editor",
+    docReadyTitle: (name: string) => `"${name}" is ready`,
+    docReadyDesc: "Open the document to review and publish.",
+    docReadyAction: "Open now",
+    notifyReady: "Document ready notification",
     content: "Content",
     serpAnalysis: "SERP Analysis",
     competitorsAnalyzed: "Competitors analyzed",
@@ -292,11 +368,109 @@ function DocumentDetailInner({
   const [copied, setCopied] = React.useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = React.useState(false)
   const [showSuccess, setShowSuccess] = React.useState(false)
+  const [showRenameDialog, setShowRenameDialog] = React.useState(false)
+  const [systemName, setSystemName] = React.useState<string>(document.title)
+  const [title, setTitle] = React.useState(document.title)
+  const [content, setContent] = React.useState(document.content)
+
+  React.useEffect(() => {
+    if (!isNew) return
+    if (typeof window === "undefined") return
+    const provisional = window.sessionStorage.getItem("verbalist:last-generated-title")
+    if (provisional) {
+      setSystemName(provisional)
+      setTitle(provisional)
+    }
+  }, [isNew])
+
+  // Once generation completes, suggest replacing the provisional title with the AI-generated one
+  React.useEffect(() => {
+    if (!isNew) return
+    if (isProcessing) return
+    setTitle(document.title)
+  }, [isNew, isProcessing])
+  const [isEditing, setIsEditing] = React.useState(false)
+  const [editBuffer, setEditBuffer] = React.useState(document.content)
+
+  const startEditing = () => {
+    setEditBuffer(content)
+    setIsEditing(true)
+  }
+
+  const cancelEditing = () => {
+    setIsEditing(false)
+    setEditBuffer(content)
+  }
+
+  const saveEditing = () => {
+    setContent(editBuffer)
+    setIsEditing(false)
+    toast.success(labels.contentSaved)
+  }
+
+  const flashCopied = (message: string) => {
+    setCopied(true)
+    toast.success(message)
+    setTimeout(() => setCopied(false), 3000)
+  }
+
+  const handleCopyPlain = async () => {
+    await navigator.clipboard.writeText(markdownToPlainText(content))
+    flashCopied(labels.plainCopied)
+  }
+
+  const handleCopyHtml = async () => {
+    const html = markdownToHtml(content)
+    if (typeof window !== "undefined" && window.ClipboardItem) {
+      try {
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            "text/html": new Blob([html], { type: "text/html" }),
+            "text/plain": new Blob([markdownToPlainText(content)], { type: "text/plain" }),
+          }),
+        ])
+        flashCopied(labels.htmlCopied)
+        return
+      } catch {
+        // fallback below
+      }
+    }
+    await navigator.clipboard.writeText(html)
+    flashCopied(labels.htmlCopied)
+  }
+
+  const handleCopyMarkdown = async () => {
+    await navigator.clipboard.writeText(content)
+    flashCopied(labels.markdownCopied)
+  }
+
+  const slugFor = (input: string) =>
+    input
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[̀-ͯ]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 60) || "document"
+
+  const handleExportMd = () => {
+    downloadBlob(`${slugFor(title)}.md`, content, "text/markdown;charset=utf-8")
+  }
+
+  const handleExportHtml = () => {
+    const body = markdownToHtml(content)
+    const html = buildHtmlDocument(title, body)
+    downloadBlob(`${slugFor(title)}.html`, html, "text/html;charset=utf-8")
+  }
+
+  const handleExportTxt = () => {
+    downloadBlob(`${slugFor(title)}.txt`, markdownToPlainText(content), "text/plain;charset=utf-8")
+  }
 
   // Simulate processing completion
   React.useEffect(() => {
     if (isNew) {
-      const timer = setTimeout(() => setIsProcessing(false), 3000)
+      const timer = setTimeout(() => setIsProcessing(false), 6000)
       return () => clearTimeout(timer)
     }
   }, [isNew])
@@ -304,17 +478,16 @@ function DocumentDetailInner({
   React.useEffect(() => {
     if (isNew && !isProcessing) {
       setShowSuccess(true)
-      const timer = setTimeout(() => setShowSuccess(false), 4000)
+      toast.success(labels.docReadyTitle(title), {
+        description: labels.docReadyDesc,
+        duration: 10000,
+      })
+      const timer = setTimeout(() => setShowSuccess(false), 8000)
       return () => clearTimeout(timer)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isNew, isProcessing])
 
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(document.content)
-    setCopied(true)
-    toast.success(labels.contentCopied)
-    setTimeout(() => setCopied(false), 3000)
-  }
 
   return (
     <div className="space-y-6">
@@ -336,10 +509,10 @@ function DocumentDetailInner({
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage title={document.title}>
-              {document.title.length > 30
-                ? document.title.substring(0, document.title.lastIndexOf(" ", 30)) + "..."
-                : document.title}
+            <BreadcrumbPage title={systemName}>
+              {systemName.length > 40
+                ? systemName.substring(0, systemName.lastIndexOf(" ", 40)) + "..."
+                : systemName}
             </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
@@ -364,8 +537,31 @@ function DocumentDetailInner({
                 {document.createdAt}
               </span>
             </div>
-            <PageHeading>{document.title}</PageHeading>
-            <div className="flex items-center gap-3 mt-2 text-sm text-muted-foreground">
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground/80 mb-1">
+              {labels.publishedTitleLabel}
+            </p>
+            <PageHeading title={labels.publishedTitleHint}>
+              {title}
+            </PageHeading>
+            <p
+              className="mt-2 text-xs text-muted-foreground inline-flex items-center gap-1.5 cursor-pointer hover:text-foreground transition-colors"
+              onDoubleClick={() => setShowRenameDialog(true)}
+              title={labels.systemNameHint}
+            >
+              <FileText className="size-3.5" />
+              <span>
+                {labels.systemNameLabel}: <span className="font-medium">{systemName}</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => setShowRenameDialog(true)}
+                className="ml-1 inline-flex items-center gap-1 rounded px-1.5 py-0.5 hover:bg-muted hover:text-foreground"
+                aria-label={labels.renameSystemName}
+              >
+                <Pencil className="size-3" />
+              </button>
+            </p>
+            <div className="flex items-center gap-3 mt-3 text-sm text-muted-foreground">
               <Link
                 href={`/dashboard/projects/${document.projectId}`}
                 className="hover:text-foreground"
@@ -387,64 +583,140 @@ function DocumentDetailInner({
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={handleCopy}>
-              {copied ? (
-                <CheckCircle2 className="mr-2 size-4" />
-              ) : (
-                <Copy className="mr-2 size-4" />
-              )}
-              {copied ? labels.copied : labels.copy}
-            </Button>
-            <Button variant="outline" size="sm">
-              <Download className="mr-2 size-4" />
-              {labels.export}
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" className="size-9" aria-label={labels.moreOptions}>
-                  <MoreHorizontal className="size-4" />
+            {isEditing ? (
+              <>
+                <Button variant="outline" size="sm" onClick={cancelEditing}>
+                  <X className="mr-2 size-4" />
+                  {labels.discard}
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>
-                  <RefreshCw className="mr-2 size-4" />
-                  {labels.regenerate}
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <ExternalLink className="mr-2 size-4" />
-                  {labels.openInEditor}
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-destructive" onClick={() => setShowDeleteDialog(true)}>
-                  {labels.delete}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                <Button size="sm" onClick={saveEditing}>
+                  <Save className="mr-2 size-4" />
+                  {labels.save}
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="outline" size="sm" onClick={startEditing}>
+                  <Pencil className="mr-2 size-4" />
+                  {labels.edit}
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" aria-label={labels.copyMenuLabel}>
+                      {copied ? (
+                        <CheckCircle2 className="mr-2 size-4" />
+                      ) : (
+                        <Copy className="mr-2 size-4" />
+                      )}
+                      {copied ? labels.copied : labels.copy}
+                      <ChevronDown className="ml-1 size-3.5 opacity-60" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={handleCopyPlain}>
+                      <Type className="mr-2 size-4" />
+                      {labels.copyPlainText}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleCopyHtml}>
+                      <Code className="mr-2 size-4" />
+                      {labels.copyHtml}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleCopyMarkdown}>
+                      <FileCode2 className="mr-2 size-4" />
+                      {labels.copyMarkdown}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" aria-label={labels.exportMenuLabel}>
+                      <Download className="mr-2 size-4" />
+                      {labels.export}
+                      <ChevronDown className="ml-1 size-3.5 opacity-60" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={handleExportMd}>
+                      <FileCode2 className="mr-2 size-4" />
+                      {labels.exportMd}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleExportHtml}>
+                      <Code className="mr-2 size-4" />
+                      {labels.exportHtml}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleExportTxt}>
+                      <FileType2 className="mr-2 size-4" />
+                      {labels.exportTxt}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="icon" className="size-9" aria-label={labels.moreOptions}>
+                      <MoreHorizontal className="size-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => setShowRenameDialog(true)}>
+                      <Pencil className="mr-2 size-4" />
+                      {labels.rename}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <RefreshCw className="mr-2 size-4" />
+                      {labels.regenerate}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <ExternalLink className="mr-2 size-4" />
+                      {labels.openInEditor}
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="text-destructive" onClick={() => setShowDeleteDialog(true)}>
+                      {labels.delete}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            )}
           </div>
         </div>
       </div>
 
       {/* Processing State */}
       {isProcessing && (
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <Loader2 className="size-5 text-muted-foreground animate-spin motion-reduce:animate-none shrink-0" />
-              <div className="flex-1">
-                <h3 className="font-medium">{labels.generating}</h3>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {labels.generatingDesc}
-                </p>
-                <div className="mt-3 h-1.5 w-full rounded-full bg-muted overflow-hidden">
-                  <div
-                    className="h-full w-2/5 rounded-full bg-foreground motion-reduce:animate-none"
-                    style={{ animation: "progress-indeterminate 1.5s ease-in-out infinite" }}
-                  />
+        <>
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <Loader2 className="size-5 text-muted-foreground animate-spin motion-reduce:animate-none shrink-0" />
+                <div className="flex-1">
+                  <h3 className="font-medium">{labels.generating}</h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {labels.generatingDesc}
+                  </p>
+                  <div className="mt-3 h-1.5 w-full rounded-full bg-muted overflow-hidden">
+                    <div
+                      className="h-full w-2/5 rounded-full bg-foreground motion-reduce:animate-none"
+                      style={{ animation: "progress-indeterminate 1.5s ease-in-out infinite" }}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+          <Card className="bg-muted/40 border-dashed">
+            <CardContent className="p-4">
+              <div className="flex items-start gap-3 text-sm">
+                <ExternalLink className="size-4 mt-0.5 text-muted-foreground shrink-0" />
+                <div>
+                  <p className="font-medium">{labels.safeNavigationTitle}</p>
+                  <p className="text-muted-foreground mt-0.5">
+                    {labels.safeNavigationDesc}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </>
       )}
 
       {/* Failed State */}
@@ -470,24 +742,35 @@ function DocumentDetailInner({
         </Card>
       )}
 
+      {/* Success banner — promoted to top-level for visibility */}
+      {showSuccess && !isProcessing && (
+        <Card className="bg-status-success/5 border-status-success/20">
+          <CardContent className="p-4">
+            <div className="flex items-start gap-3">
+              <CheckCircle2 className="size-5 text-status-success shrink-0 mt-0.5" />
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-sm">{labels.docReadyTitle(title)}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {labels.docReadyDesc}
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-7"
+                onClick={() => setShowSuccess(false)}
+                aria-label={labels.discard}
+              >
+                <X className="size-4" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Content */}
       {!isProcessing && document.status !== "failed" && (
         <Tabs defaultValue="content" className="space-y-6">
-          {showSuccess && (
-            <Card className="bg-status-success/5 border-status-success/20">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <CheckCircle2 className="size-5 text-status-success shrink-0" />
-                  <div>
-                    <p className="font-medium text-sm">{labels.docGenerated}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      {labels.docGeneratedDesc}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
           <TabsList>
             <TabsTrigger value="content">
               <FileText className="mr-2 size-4" />
@@ -502,9 +785,23 @@ function DocumentDetailInner({
           <TabsContent value="content" className="space-y-6">
             <Card>
               <CardContent className="p-6 lg:p-8">
-                <article className="prose prose-neutral max-w-none prose-headings:font-medium prose-h1:text-xl prose-h1:lg:text-2xl prose-h2:text-lg prose-h2:lg:text-xl prose-h3:text-base prose-h3:lg:text-lg">
-                  {renderMarkdown(document.content)}
-                </article>
+                {isEditing ? (
+                  <div className="space-y-3">
+                    <p className="text-xs text-muted-foreground">
+                      {labels.editing}
+                    </p>
+                    <Textarea
+                      value={editBuffer}
+                      onChange={(e) => setEditBuffer(e.target.value)}
+                      rows={24}
+                      className="font-mono text-sm leading-6"
+                    />
+                  </div>
+                ) : (
+                  <article className="prose prose-neutral max-w-none prose-headings:font-medium prose-h1:text-xl prose-h1:lg:text-2xl prose-h2:text-lg prose-h2:lg:text-xl prose-h3:text-base prose-h3:lg:text-lg">
+                    {renderMarkdown(content)}
+                  </article>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -566,12 +863,19 @@ function DocumentDetailInner({
         </Tabs>
       )}
 
+      <RenameDocumentDialog
+        open={showRenameDialog}
+        onOpenChange={setShowRenameDialog}
+        currentName={systemName}
+        onRename={(newName) => setSystemName(newName)}
+      />
+
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{labels.deleteTitle}</AlertDialogTitle>
             <AlertDialogDescription>
-              {labels.deleteDesc.replace("{title}", document.title)}
+              {labels.deleteDesc.replace("{title}", systemName)}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

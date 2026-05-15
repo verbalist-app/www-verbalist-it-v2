@@ -1,18 +1,18 @@
 "use client"
 
 import Link from "next/link"
-import {
-  IconCheck as Check,
-  IconBolt as Zap,
-  IconClock as Clock,
-  IconCreditCard as CreditCard,
-  IconArrowRight as ArrowRight,
-  IconExternalLink as ExternalLink
-} from '@tabler/icons-react';
+import { Check, Zap, Clock, CreditCard, ArrowRight, ExternalLink } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { PageDescription, PageHeading } from "@/components/ui/page-heading"
+import { cn } from "@/lib/utils"
+import {
+  getCreditsBarClass,
+  getCreditsLevel,
+  getCreditsTextClass,
+  getDocumentsRemaining,
+} from "@/lib/credits"
 import { useDashboardLocale } from "../../_lib/dashboard-locale"
 
 // Mock subscription data (non-translatable fields)
@@ -28,6 +28,11 @@ const subscription = {
 export function SubscriptionContent() {
   const { locale, t } = useDashboardLocale()
   const creditsPercentage = (subscription.creditsUsed / subscription.creditsTotal) * 100
+  const creditsLevel = getCreditsLevel(subscription.creditsUsed, subscription.creditsTotal)
+  const documentsRemaining = getDocumentsRemaining(
+    subscription.creditsUsed,
+    subscription.creditsTotal,
+  )
 
   const text = t({
     it: {
@@ -38,6 +43,9 @@ export function SubscriptionContent() {
       active: "Attivo",
       perMonth: "/mese",
       creditsUsed: "Crediti utilizzati",
+      documentsRemaining: (n: number) =>
+        `Puoi generare ancora ${n} ${n === 1 ? "documento" : "documenti"}`,
+      creditsExhausted: "Crediti esauriti",
       daysRemaining: "giorni rimanenti",
       period: "Periodo:",
       manageSubscription: "Gestisci abbonamento",
@@ -90,6 +98,9 @@ export function SubscriptionContent() {
       active: "Active",
       perMonth: "/month",
       creditsUsed: "Credits used",
+      documentsRemaining: (n: number) =>
+        `You can still generate ${n} ${n === 1 ? "document" : "documents"}`,
+      creditsExhausted: "Credits exhausted",
       daysRemaining: "days remaining",
       period: "Period:",
       manageSubscription: "Manage subscription",
@@ -234,7 +245,16 @@ export function SubscriptionContent() {
                     {subscription.creditsUsed}/{subscription.creditsTotal}
                   </span>
                 </div>
-                <Progress value={creditsPercentage} className="h-2" />
+                <Progress
+                  value={creditsPercentage}
+                  className="h-2"
+                  indicatorClassName={getCreditsBarClass(creditsLevel)}
+                />
+                <p className={cn("text-xs", getCreditsTextClass(creditsLevel))}>
+                  {documentsRemaining > 0
+                    ? text.documentsRemaining(documentsRemaining)
+                    : text.creditsExhausted}
+                </p>
               </div>
               <div className="flex items-center gap-2">
                 <Clock className="size-4 text-muted-foreground" />

@@ -170,6 +170,37 @@
   button {
     cursor: pointer;
   }
+
+  /* Allinea il peso delle icone Tabler/Lucide al feel editoriale del marketing site (Oatmeal,
+     strokeWidth 1 su viewBox 13). Tabler default è 2 su viewBox 24 — ridotto a 1.5 per
+     uniformità tra dashboard e marketing senza sostituire i set di icone. */
+  .tabler-icon,
+  .lucide {
+    stroke-width: 1.5;
+  }
+
+  /* Scale tipografiche allineate al kit Oatmeal (apps/web). Usabili su welcome screens,
+     onboarding, success/upgrade pages della dashboard quando serve display heading.
+     Per dense UI standard (Card.Title, label, body) restano le scale shadcn default. */
+  .typography-display {
+    @apply font-display text-5xl/12 tracking-[-0.04em] text-balance text-foreground sm:text-[4rem]/16;
+  }
+
+  .typography-heading {
+    @apply font-display text-3xl/9 font-medium tracking-[-0.03em] text-pretty text-foreground sm:text-[2.5rem]/10;
+  }
+
+  .typography-eyebrow {
+    @apply text-sm/7 font-semibold text-muted-foreground;
+  }
+
+  .typography-body-lg {
+    @apply text-lg/8 text-muted-foreground;
+  }
+
+  .typography-body {
+    @apply text-base/7 text-muted-foreground;
+  }
 }
 
 @layer base {

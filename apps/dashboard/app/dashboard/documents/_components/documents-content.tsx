@@ -3,21 +3,22 @@
 import * as React from "react"
 import Link from "next/link"
 import {
-  IconPlus as Plus,
-  IconSearch as Search,
-  IconArrowsUpDown as ArrowUpDown,
-  IconArrowUp as ArrowUp,
-  IconArrowDown as ArrowDown,
-  IconDots as MoreHorizontal,
-  IconFileText as FileText,
-  IconTrash as Trash2,
-  IconFolderSymlink as FolderInput,
-  IconEye as Eye,
-  IconDownload as Download,
-  IconX as X,
-  IconChevronLeft as ChevronLeft,
-  IconChevronRight as ChevronRight
-} from '@tabler/icons-react';
+  Plus,
+  Search,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
+  MoreHorizontal,
+  FileText,
+  Trash2,
+  FolderInput,
+  Eye,
+  Download,
+  Pencil,
+  X,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
@@ -58,6 +59,8 @@ import {
 } from "@/components/ui/alert-dialog"
 import { toast } from "sonner"
 import { getStatusConfig, type Status } from "@/lib/status"
+import { RenameDocumentDialog } from "@/components/dashboard/rename-document-dialog"
+import { MoveDocumentDialog } from "@/components/dashboard/move-document-dialog"
 import { useDashboardLocale } from "../../_lib/dashboard-locale"
 
 // Mock data
@@ -187,6 +190,7 @@ const content = {
     noDocuments: "Nessun documento trovato",
     view: "Visualizza",
     export: "Esporta",
+    rename: "Rinomina",
     moveToProject: "Sposta in progetto",
     moreOptions: "Altre opzioni",
     page: "Pagina",
@@ -240,6 +244,7 @@ const content = {
     noDocuments: "No documents found",
     view: "View",
     export: "Export",
+    rename: "Rename",
     moveToProject: "Move to project",
     moreOptions: "More options",
     page: "Page",
@@ -311,17 +316,29 @@ export function DocumentsContent() {
   const [currentPage, setCurrentPage] = React.useState(1)
   const [deleteTarget, setDeleteTarget] = React.useState<string | null>(null)
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = React.useState(false)
+  const [renameTarget, setRenameTarget] = React.useState<{ id: string; name: string } | null>(null)
+  const [titleOverrides, setTitleOverrides] = React.useState<Record<string, string>>({})
+  const [moveTarget, setMoveTarget] = React.useState<{ id: string; currentProjectId: string } | null>(null)
+  const [showBulkMoveDialog, setShowBulkMoveDialog] = React.useState(false)
+  const [projectOverrides, setProjectOverrides] = React.useState<Record<string, string | null>>({})
+
+  const getDocTitle = React.useCallback(
+    (doc: (typeof allDocuments)[number]) =>
+      titleOverrides[doc.id] ?? t(doc.title),
+    [titleOverrides, t],
+  )
 
   // Filter and sort documents
   const filteredDocuments = React.useMemo(() => {
     let result = allDocuments.filter((doc) => {
-      const docTitle = t(doc.title)
+      const docTitle = getDocTitle(doc)
+      const docProjectId = projectOverrides[doc.id] ?? doc.projectId
       const matchesSearch = search === "" ||
         docTitle.toLowerCase().includes(search.toLowerCase()) ||
         doc.keyword.toLowerCase().includes(search.toLowerCase())
       const matchesStatus = statusFilter === "all" || doc.status === statusFilter
       const matchesType = typeFilter === "all" || doc.type === typeFilter
-      const matchesProject = projectFilter === "all" || doc.projectId === projectFilter
+      const matchesProject = projectFilter === "all" || docProjectId === projectFilter
       return matchesSearch && matchesStatus && matchesType && matchesProject
     })
 
@@ -329,7 +346,7 @@ export function DocumentsContent() {
     result.sort((a, b) => {
       let comparison = 0
       if (sortField === "title") {
-        comparison = t(a.title).localeCompare(t(b.title))
+        comparison = getDocTitle(a).localeCompare(getDocTitle(b))
       } else if (sortField === "createdAt") {
         comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       } else if (sortField === "wordCount") {
@@ -339,7 +356,7 @@ export function DocumentsContent() {
     })
 
     return result
-  }, [search, statusFilter, typeFilter, projectFilter, sortField, sortDirection, t])
+  }, [search, statusFilter, typeFilter, projectFilter, sortField, sortDirection, getDocTitle, projectOverrides])
 
   // Pagination
   const totalPages = Math.ceil(filteredDocuments.length / ITEMS_PER_PAGE)
@@ -390,9 +407,16 @@ export function DocumentsContent() {
   }
 
   const handleBulkMove = () => {
-    toast.success(`${selectedIds.length} ${c.documentsMoved}`)
-    setSelectedIds([])
+    setShowBulkMoveDialog(true)
   }
+
+  const moveProjectOptions = React.useMemo(
+    () => projectOptions.filter((o) => o.value !== "all").map((o) => ({ id: o.value, name: o.label })),
+    [projectOptions],
+  )
+
+  const getDocProjectId = (doc: (typeof allDocuments)[number]) =>
+    projectOverrides[doc.id] ?? doc.projectId
 
   const clearFilters = () => {
     setSearch("")
@@ -596,7 +620,7 @@ export function DocumentsContent() {
                         href={`/dashboard/documents/${doc.id}`}
                         className="font-medium hover:underline"
                       >
-                        {t(doc.title)}
+                        {getDocTitle(doc)}
                       </Link>
                       <p className="text-xs text-muted-foreground mt-0.5">
                         <code className="bg-muted px-1 py-0.5 rounded">{doc.keyword}</code>
@@ -604,12 +628,22 @@ export function DocumentsContent() {
                     </div>
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
-                    <Link
-                      href={`/dashboard/projects/${doc.projectId}`}
-                      className="text-sm hover:underline"
-                    >
-                      {t(doc.project)}
-                    </Link>
+                    {(() => {
+                      const projectId = getDocProjectId(doc)
+                      const projectName =
+                        moveProjectOptions.find((p) => p.id === projectId)?.name ??
+                        t(doc.project)
+                      return projectId ? (
+                        <Link
+                          href={`/dashboard/projects/${projectId}`}
+                          className="text-sm hover:underline"
+                        >
+                          {projectName}
+                        </Link>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">—</span>
+                      )
+                    })()}
                   </TableCell>
                   <TableCell className="hidden lg:table-cell">
                     <span className="text-sm text-muted-foreground">
@@ -645,11 +679,26 @@ export function DocumentsContent() {
                             {c.view}
                           </Link>
                         </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() =>
+                            setRenameTarget({ id: doc.id, name: getDocTitle(doc) })
+                          }
+                        >
+                          <Pencil className="mr-2 size-4" />
+                          {c.rename}
+                        </DropdownMenuItem>
                         <DropdownMenuItem>
                           <Download className="mr-2 size-4" />
                           {c.export}
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() =>
+                            setMoveTarget({
+                              id: doc.id,
+                              currentProjectId: getDocProjectId(doc),
+                            })
+                          }
+                        >
                           <FolderInput className="mr-2 size-4" />
                           {c.moveToProject}
                         </DropdownMenuItem>
@@ -726,6 +775,52 @@ export function DocumentsContent() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <RenameDocumentDialog
+        open={renameTarget !== null}
+        onOpenChange={(open) => !open && setRenameTarget(null)}
+        currentName={renameTarget?.name ?? ""}
+        onRename={(newName) => {
+          if (!renameTarget) return
+          setTitleOverrides((prev) => ({ ...prev, [renameTarget.id]: newName }))
+          setRenameTarget(null)
+        }}
+      />
+
+      <MoveDocumentDialog
+        open={moveTarget !== null}
+        onOpenChange={(open) => !open && setMoveTarget(null)}
+        projects={moveProjectOptions}
+        count={1}
+        currentProjectId={moveTarget?.currentProjectId ?? null}
+        onMove={(destinationProjectId) => {
+          if (!moveTarget) return
+          setProjectOverrides((prev) => ({
+            ...prev,
+            [moveTarget.id]: destinationProjectId,
+          }))
+          setMoveTarget(null)
+        }}
+      />
+
+      <MoveDocumentDialog
+        open={showBulkMoveDialog}
+        onOpenChange={setShowBulkMoveDialog}
+        projects={moveProjectOptions}
+        count={selectedIds.length}
+        currentProjectId={null}
+        onMove={(destinationProjectId) => {
+          setProjectOverrides((prev) => {
+            const next = { ...prev }
+            for (const id of selectedIds) {
+              next[id] = destinationProjectId
+            }
+            return next
+          })
+          setSelectedIds([])
+          setShowBulkMoveDialog(false)
+        }}
+      />
 
       {/* Bulk delete dialog */}
       <AlertDialog open={showBulkDeleteDialog} onOpenChange={setShowBulkDeleteDialog}>

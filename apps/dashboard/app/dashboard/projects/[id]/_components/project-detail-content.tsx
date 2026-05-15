@@ -2,14 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
-import {
-  IconArrowLeft as ArrowLeft,
-  IconPlus as Plus,
-  IconDots as MoreHorizontal,
-  IconFileText as FileText,
-  IconSearch as Search,
-  IconFilter as Filter
-} from '@tabler/icons-react';
+import { ArrowLeft, Plus, MoreHorizontal, FileText, Search, Filter, Pencil, FolderInput } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -33,6 +26,8 @@ import {
 } from "@/components/ui/alert-dialog"
 import { toast } from "sonner"
 import { getStatusConfig, type Status } from "@/lib/status"
+import { RenameDocumentDialog } from "@/components/dashboard/rename-document-dialog"
+import { MoveDocumentDialog } from "@/components/dashboard/move-document-dialog"
 import { useDashboardLocale } from "../../../_lib/dashboard-locale"
 
 const translations = {
@@ -43,6 +38,8 @@ const translations = {
     searchAriaLabel: "Cerca documenti",
     filters: "Filtri",
     open: "Apri",
+    rename: "Rinomina",
+    move: "Sposta in progetto",
     duplicate: "Duplica",
     export: "Esporta",
     delete: "Elimina",
@@ -76,6 +73,8 @@ const translations = {
     searchAriaLabel: "Search documents",
     filters: "Filters",
     open: "Open",
+    rename: "Rename",
+    move: "Move to project",
     duplicate: "Duplicate",
     export: "Export",
     delete: "Delete",
@@ -128,6 +127,19 @@ export function ProjectDetailContent({
   }))
   const typeLabels = labels.typeLabels
   const [deleteTarget, setDeleteTarget] = React.useState<string | null>(null)
+  const [renameTarget, setRenameTarget] = React.useState<{ id: string; name: string } | null>(null)
+  const [titleOverrides, setTitleOverrides] = React.useState<Record<string, string>>({})
+  const [moveTarget, setMoveTarget] = React.useState<{ id: string } | null>(null)
+
+  const moveProjectOptions = React.useMemo(
+    () => [
+      { id: "1", name: t({ it: "Blog Aziendale", en: "Corporate Blog" }) },
+      { id: "2", name: t({ it: "Landing Pages", en: "Landing Pages" }) },
+      { id: "3", name: t({ it: "E-commerce", en: "E-commerce" }) },
+      { id: "4", name: t({ it: "Guide Tecniche", en: "Technical Guides" }) },
+    ],
+    [t],
+  )
 
   return (
     <div className="space-y-8">
@@ -182,7 +194,7 @@ export function ProjectDetailContent({
                       href={`/dashboard/documents/${doc.id}`}
                       className="font-medium text-sm hover:underline block truncate"
                     >
-                      {doc.title}
+                      {titleOverrides[doc.id] ?? doc.title}
                     </Link>
                     <div className="flex items-center gap-2 mt-1">
                       <span className="text-xs text-muted-foreground">
@@ -227,6 +239,21 @@ export function ProjectDetailContent({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem>{labels.open}</DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          setRenameTarget({
+                            id: doc.id,
+                            name: titleOverrides[doc.id] ?? doc.title,
+                          })
+                        }
+                      >
+                        <Pencil className="mr-2 size-4" />
+                        {labels.rename}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setMoveTarget({ id: doc.id })}>
+                        <FolderInput className="mr-2 size-4" />
+                        {labels.move}
+                      </DropdownMenuItem>
                       <DropdownMenuItem>{labels.duplicate}</DropdownMenuItem>
                       <DropdownMenuItem>{labels.export}</DropdownMenuItem>
                       <DropdownMenuSeparator />
@@ -241,6 +268,26 @@ export function ProjectDetailContent({
           </div>
         </CardContent>
       </Card>
+
+      <RenameDocumentDialog
+        open={renameTarget !== null}
+        onOpenChange={(open) => !open && setRenameTarget(null)}
+        currentName={renameTarget?.name ?? ""}
+        onRename={(newName) => {
+          if (!renameTarget) return
+          setTitleOverrides((prev) => ({ ...prev, [renameTarget.id]: newName }))
+          setRenameTarget(null)
+        }}
+      />
+
+      <MoveDocumentDialog
+        open={moveTarget !== null}
+        onOpenChange={(open) => !open && setMoveTarget(null)}
+        projects={moveProjectOptions}
+        count={1}
+        currentProjectId={params.id}
+        onMove={() => setMoveTarget(null)}
+      />
 
       {/* Delete document dialog */}
       <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>

@@ -4,20 +4,27 @@ import * as React from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import {
-  IconLayoutDashboard as LayoutDashboard,
-  IconLayoutKanban as FolderKanban,
-  IconFileText as FileText,
-  IconSettings as Settings,
-  IconCreditCard as CreditCard,
-  IconPlus as Plus,
-  IconLogout as LogOut,
-  IconUser as User,
-  IconChevronDown as ChevronDown,
-  IconSearch as Search,
-  IconExternalLink as ExternalLink,
-  IconWorld as Globe
-} from '@tabler/icons-react';
+  LayoutDashboard,
+  Folder,
+  FileText,
+  Settings,
+  CreditCard,
+  Plus,
+  LogOut,
+  User,
+  ChevronDown,
+  ChevronRight,
+  Search,
+  ExternalLink,
+  Globe,
+  Zap,
+} from 'lucide-react'
 import { cn } from "@/lib/utils"
+import {
+  getCreditsLevel,
+  getCreditsTextClass,
+  getDocumentsRemaining,
+} from "@/lib/credits"
 import { VerbalistMark } from "@/components/verbalist-mark"
 import { Button } from "@/components/ui/button"
 import {
@@ -37,11 +44,20 @@ import {
   SidebarHeader,
   SidebarInset,
   SidebarMenu,
+  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
 import {
   CommandDialog,
   CommandEmpty,
@@ -52,6 +68,7 @@ import {
   CommandSeparator,
 } from "@/components/ui/command"
 import { Toaster } from "@/components/ui/sonner"
+import { OnboardingDialog } from "@/components/dashboard/onboarding-dialog"
 import { DashboardLocaleProvider, useDashboardLocale } from "./_lib/dashboard-locale"
 
 const layoutContent = {
@@ -60,6 +77,8 @@ const layoutContent = {
       overview: "Panoramica",
       projects: "Progetti",
       documents: "Documenti",
+      expandProjects: "Mostra progetti",
+      collapseProjects: "Nascondi progetti",
     },
     secondary: {
       settings: "Impostazioni",
@@ -71,6 +90,9 @@ const layoutContent = {
     logout: "Esci",
     search: "Cerca...",
     site: "Sito",
+    creditsBadge: (n: number) =>
+      `${n} ${n === 1 ? "documento residuo" : "documenti residui"}`,
+    creditsBadgeTitle: "Vai all'abbonamento",
     command: {
       placeholder: "Cerca documenti, progetti, azioni...",
       empty: "Nessun risultato trovato.",
@@ -87,6 +109,8 @@ const layoutContent = {
       overview: "Overview",
       projects: "Projects",
       documents: "Documents",
+      expandProjects: "Show projects",
+      collapseProjects: "Hide projects",
     },
     secondary: {
       settings: "Settings",
@@ -98,6 +122,9 @@ const layoutContent = {
     logout: "Log out",
     search: "Search...",
     site: "Website",
+    creditsBadge: (n: number) =>
+      `${n} ${n === 1 ? "doc left" : "docs left"}`,
+    creditsBadgeTitle: "Go to subscription",
     command: {
       placeholder: "Search documents, projects, actions...",
       empty: "No results found.",
@@ -133,6 +160,22 @@ const recentDocuments = {
   ],
 }
 
+// Mock projects for sidebar tree-view
+const sidebarProjects = {
+  it: [
+    { id: "1", name: "Blog Aziendale" },
+    { id: "2", name: "Landing Pages" },
+    { id: "3", name: "E-commerce" },
+    { id: "4", name: "Guide Tecniche" },
+  ],
+  en: [
+    { id: "1", name: "Corporate Blog" },
+    { id: "2", name: "Landing Pages" },
+    { id: "3", name: "E-commerce" },
+    { id: "4", name: "Technical Guides" },
+  ],
+}
+
 export default function DashboardLayout({
   children,
 }: {
@@ -154,12 +197,25 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
 
   const txt = t(layoutContent)
   const docs = t(recentDocuments)
+  const projects = t(sidebarProjects)
 
-  const navigation = [
-    { name: txt.nav.overview, href: "/dashboard", icon: LayoutDashboard },
-    { name: txt.nav.projects, href: "/dashboard/projects", icon: FolderKanban },
+  // Mock subscription credits (mirrors mock data in /subscription and /dashboard)
+  const CREDITS_USED = 156
+  const CREDITS_TOTAL = 500
+  const documentsRemaining = getDocumentsRemaining(CREDITS_USED, CREDITS_TOTAL)
+  const creditsLevel = getCreditsLevel(CREDITS_USED, CREDITS_TOTAL)
+
+  const trailingNavigation = [
     { name: txt.nav.documents, href: "/dashboard/documents", icon: FileText },
   ]
+
+  const projectsHref = "/dashboard/projects"
+  const isProjectsRouteActive = pathname.startsWith(projectsHref)
+  const [projectsOpen, setProjectsOpen] = React.useState(isProjectsRouteActive)
+
+  React.useEffect(() => {
+    if (isProjectsRouteActive) setProjectsOpen(true)
+  }, [isProjectsRouteActive])
 
   const secondaryNavigation = [
     { name: txt.secondary.settings, href: "/dashboard/settings", icon: Settings },
@@ -218,8 +274,80 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
             <SidebarGroupLabel>{txt.menu}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {navigation.map((item) => {
-                  const isActive = pathname === item.href ||
+                {/* Overview (first item) */}
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={pathname === "/dashboard"}
+                    tooltip={txt.nav.overview}
+                  >
+                    <Link href="/dashboard">
+                      <LayoutDashboard className="size-4" />
+                      <span>{txt.nav.overview}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+
+                {/* Projects with collapsible tree */}
+                <Collapsible
+                  asChild
+                  open={projectsOpen}
+                  onOpenChange={setProjectsOpen}
+                >
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isProjectsRouteActive}
+                      tooltip={txt.nav.projects}
+                    >
+                      <Link href={projectsHref}>
+                        <Folder className="size-4" />
+                        <span>{txt.nav.projects}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuAction
+                        aria-label={
+                          projectsOpen
+                            ? txt.nav.collapseProjects
+                            : txt.nav.expandProjects
+                        }
+                      >
+                        <ChevronRight
+                          className={cn(
+                            "size-3.5 transition-transform",
+                            projectsOpen && "rotate-90"
+                          )}
+                        />
+                      </SidebarMenuAction>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <SidebarMenuSub>
+                        {projects.map((p) => {
+                          const href = `/dashboard/projects/${p.id}`
+                          return (
+                            <SidebarMenuSubItem key={p.id}>
+                              <SidebarMenuSubButton
+                                asChild
+                                isActive={pathname === href}
+                              >
+                                <Link href={href}>
+                                  <Folder className="size-3.5" />
+                                  <span>{p.name}</span>
+                                </Link>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          )
+                        })}
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  </SidebarMenuItem>
+                </Collapsible>
+
+                {/* Other top-level nav items */}
+                {trailingNavigation.map((item) => {
+                  const isActive =
+                    pathname === item.href ||
                     (item.href !== "/dashboard" && pathname.startsWith(item.href))
                   return (
                     <SidebarMenuItem key={item.href}>
@@ -333,6 +461,19 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
           <div className="flex-1" />
 
           <Button
+            asChild
+            variant="ghost"
+            size="sm"
+            className={cn("hidden sm:inline-flex", getCreditsTextClass(creditsLevel))}
+            title={txt.creditsBadgeTitle}
+          >
+            <Link href="/dashboard/subscription">
+              <Zap className="mr-1.5 size-3.5" />
+              <span className="tabular-nums">{txt.creditsBadge(documentsRemaining)}</span>
+            </Link>
+          </Button>
+
+          <Button
             variant="ghost"
             size="sm"
             onClick={() => setLocale(locale === "it" ? "en" : "it")}
@@ -365,7 +506,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
               {txt.command.newDoc}
             </CommandItem>
             <CommandItem onSelect={() => runCommand(() => router.push("/dashboard/projects"))}>
-              <FolderKanban className="mr-2 size-4" />
+              <Folder className="mr-2 size-4" />
               {txt.command.goProjects}
             </CommandItem>
             <CommandItem onSelect={() => runCommand(() => router.push("/dashboard/documents"))}>
@@ -401,6 +542,9 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
 
       {/* Toast notifications */}
       <Toaster />
+
+      {/* First-access onboarding walkthrough */}
+      <OnboardingDialog />
     </SidebarProvider>
   )
 }

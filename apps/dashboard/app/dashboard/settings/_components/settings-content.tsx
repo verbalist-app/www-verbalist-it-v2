@@ -1,13 +1,7 @@
 "use client"
 
 import * as React from "react"
-import {
-  IconUser as User,
-  IconMail as Mail,
-  IconLock as Lock,
-  IconBell as Bell,
-  IconWorld as Globe
-} from '@tabler/icons-react';
+import { User, Mail, Lock, Bell, Globe } from 'lucide-react'
 import { useDashboardLocale } from "../../_lib/dashboard-locale"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"

@@ -3,12 +3,12 @@
 import * as React from "react"
 import Link from "next/link"
 import {
-  IconLayoutKanban as FolderKanban,
-  IconPlus as Plus,
-  IconDots as MoreHorizontal,
-  IconFileText as FileText,
-  IconClock as Clock
-} from '@tabler/icons-react';
+  Folder,
+  Plus,
+  MoreHorizontal,
+  FileText,
+  Clock,
+} from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { PageDescription, PageHeading } from "@/components/ui/page-heading"
@@ -30,6 +30,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { toast } from "sonner"
+import { NewProjectDialog } from "@/components/dashboard/new-project-dialog"
 import { useDashboardLocale } from "../../_lib/dashboard-locale"
 
 const translations = {
@@ -95,6 +96,7 @@ export function ProjectsContent() {
     lastUpdated: labels.projects[i].lastUpdated,
   }))
   const [deleteTarget, setDeleteTarget] = React.useState<{ id: string; name: string } | null>(null)
+  const [newProjectOpen, setNewProjectOpen] = React.useState(false)
 
   return (
     <div className="space-y-8">
@@ -104,7 +106,7 @@ export function ProjectsContent() {
           <PageHeading>{labels.title}</PageHeading>
           <PageDescription>{labels.subtitle}</PageDescription>
         </div>
-        <Button variant="accent">
+        <Button variant="accent" onClick={() => setNewProjectOpen(true)}>
           <Plus className="mr-2 size-4" />
           {labels.newProject}
         </Button>
@@ -120,7 +122,7 @@ export function ProjectsContent() {
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
-                  <FolderKanban className="size-5 text-muted-foreground shrink-0" />
+                  <Folder className="size-5 text-muted-foreground shrink-0" />
                   <div>
                     <Link
                       href={`/dashboard/projects/${project.id}`}
@@ -170,15 +172,21 @@ export function ProjectsContent() {
         ))}
 
         {/* New Project Card */}
-        <Link href="/dashboard/projects/new" className="block">
+        <button
+          type="button"
+          onClick={() => setNewProjectOpen(true)}
+          className="block text-left"
+        >
           <Card className="border-dashed hover:border-primary/40 transition-colors">
             <CardContent className="p-6 flex flex-col items-center justify-center h-full min-h-[160px] text-muted-foreground hover:text-foreground transition-colors">
               <Plus className="size-5 mb-3" />
               <span className="text-sm font-medium">{labels.createNewProject}</span>
             </CardContent>
           </Card>
-        </Link>
+        </button>
       </div>
+
+      <NewProjectDialog open={newProjectOpen} onOpenChange={setNewProjectOpen} />
 
       {/* Delete project dialog */}
       <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
