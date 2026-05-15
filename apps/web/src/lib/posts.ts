@@ -10,6 +10,7 @@ export type PostFrontmatter = {
   title: string
   description: string
   publishedAt: string
+  updatedAt?: string
   author?: string
   category: PostCategory
   tags?: string[]
@@ -48,19 +49,10 @@ export function getRelatedPosts(all: Post[], slug: string, category: PostCategor
   return [...sameCategory, ...rest].slice(0, limit)
 }
 
-export function getNextPost(all: Post[], slug: string): Post | null {
-  if (all.length < 2) return null
-  const idx = all.findIndex((p) => p.slug === slug)
-  if (idx === -1) return null
-  return all[idx + 1] ?? all[0]
-}
-
 export async function getAllPosts(): Promise<Post[]> {
   const files = await fs.readdir(POSTS_DIR)
   const posts = await Promise.all(
-    files
-      .filter((f) => f.endsWith('.md'))
-      .map((f) => readPost(f.replace(/\.md$/, ''))),
+    files.filter((f) => f.endsWith('.md')).map((f) => readPost(f.replace(/\.md$/, ''))),
   )
   return posts.sort((a, b) => {
     const da = new Date(a.frontmatter.publishedAt).getTime()
@@ -99,9 +91,4 @@ export function formatDate(date: string): string {
     month: 'long',
     year: 'numeric',
   }).format(d)
-}
-
-export function readingMinutes(content: string): number {
-  const words = content.trim().split(/\s+/).length
-  return Math.max(1, Math.round(words / 200))
 }

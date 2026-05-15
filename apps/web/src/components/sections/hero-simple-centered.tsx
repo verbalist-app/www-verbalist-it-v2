@@ -7,6 +7,7 @@ import { Text } from '../elements/text'
 export function HeroSimpleCentered({
   eyebrow,
   headline,
+  headlineSize = 'lg',
   subheadline,
   cta,
   className,
@@ -14,6 +15,7 @@ export function HeroSimpleCentered({
 }: {
   eyebrow?: ReactNode
   headline: ReactNode
+  headlineSize?: 'lg' | 'md'
   subheadline: ReactNode
   cta?: ReactNode
 } & ComponentProps<'section'>) {
@@ -21,7 +23,9 @@ export function HeroSimpleCentered({
     <section className={clsx('py-16', className)} {...props}>
       <Container className="flex flex-col items-center gap-6">
         {eyebrow}
-        <Heading className="max-w-5xl text-center">{headline}</Heading>
+        <Heading size={headlineSize} className="max-w-5xl text-center">
+          {headline}
+        </Heading>
         <Text size="lg" className="flex max-w-xl flex-col gap-4 text-center">
           {subheadline}
         </Text>

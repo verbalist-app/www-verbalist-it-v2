@@ -4,7 +4,8 @@ import Link from 'next/link'
 
 import { ElDialog, ElDialogPanel, ElDropdown, ElPopover } from '@tailwindplus/elements/react'
 import { clsx } from 'clsx/lite'
-import type { ComponentProps, ReactNode } from 'react'
+import { useEffect, useRef } from 'react'
+import type { ComponentProps, MouseEvent, ReactNode } from 'react'
 
 export function NavbarLink({
   children,
@@ -16,7 +17,7 @@ export function NavbarLink({
     <Link
       href={href}
       className={clsx(
-        'group inline-flex items-center justify-between gap-2 text-3xl/10 font-medium text-mist-950 lg:text-sm/7 dark:text-white',
+        'group inline-flex items-center justify-between gap-2 text-3xl/10 font-medium text-mist-950 lg:text-sm/7',
         className,
       )}
       {...props}
@@ -40,12 +41,60 @@ export function NavbarDropdown({
   id: string
   children: ReactNode
 }) {
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const popoverRef = useRef<HTMLElement>(null)
+
+  // Desktop hover: open on mouseenter, close after a small delay on mouseleave.
+  // Tap on touch devices keeps using popoverTarget on the button.
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const button = buttonRef.current
+    const popover = popoverRef.current
+    if (!button || !popover) return
+
+    const hoverMql = window.matchMedia('(hover: hover) and (pointer: fine)')
+    if (!hoverMql.matches) return
+
+    let closeTimer: ReturnType<typeof setTimeout> | null = null
+
+    const open = () => {
+      if (closeTimer) {
+        clearTimeout(closeTimer)
+        closeTimer = null
+      }
+      type PopoverEl = HTMLElement & { showPopover?: () => void }
+      ;(popover as PopoverEl).showPopover?.()
+    }
+
+    const scheduleClose = () => {
+      if (closeTimer) clearTimeout(closeTimer)
+      closeTimer = setTimeout(() => {
+        type PopoverEl = HTMLElement & { hidePopover?: () => void }
+        ;(popover as PopoverEl).hidePopover?.()
+      }, 180)
+    }
+
+    button.addEventListener('mouseenter', open)
+    button.addEventListener('mouseleave', scheduleClose)
+    popover.addEventListener('mouseenter', open)
+    popover.addEventListener('mouseleave', scheduleClose)
+
+    return () => {
+      button.removeEventListener('mouseenter', open)
+      button.removeEventListener('mouseleave', scheduleClose)
+      popover.removeEventListener('mouseenter', open)
+      popover.removeEventListener('mouseleave', scheduleClose)
+      if (closeTimer) clearTimeout(closeTimer)
+    }
+  }, [id])
+
   return (
     <ElDropdown className="contents">
       <button
+        ref={buttonRef}
         type="button"
         popoverTarget={id}
-        className="group inline-flex items-center gap-2 text-3xl/10 font-medium text-mist-950 lg:text-sm/7 dark:text-white"
+        className="group inline-flex items-center gap-2 text-3xl/10 font-medium text-mist-950 lg:text-sm/7"
       >
         {label}
         <svg fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-5 lg:size-4">
@@ -53,10 +102,11 @@ export function NavbarDropdown({
         </svg>
       </button>
       <ElPopover
+        ref={popoverRef}
         popover="auto"
         id={id}
         anchor="bottom start"
-        className="mt-2 flex w-64 flex-col gap-1 rounded-xl bg-white p-2 ring-1 ring-black/5 [&:not(:popover-open)]:hidden dark:bg-mist-900 dark:ring-white/10"
+        className="mt-2 flex w-64 flex-col gap-1 rounded-xl bg-white p-2 ring-1 ring-black/5 [&:not(:popover-open)]:hidden"
       >
         {children}
       </ElPopover>
@@ -70,7 +120,7 @@ export function NavbarDropdownLink({
   onClick,
   ...props
 }: { href: string } & Omit<ComponentProps<'a'>, 'href'>) {
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
     const popover = e.currentTarget.closest('[popover]') as (HTMLElement & { hidePopover?: () => void }) | null
     popover?.hidePopover?.()
     onClick?.(e)
@@ -79,7 +129,7 @@ export function NavbarDropdownLink({
     <Link
       href={href}
       onClick={handleClick}
-      className="block rounded-lg px-3 py-2 text-sm/6 font-medium text-mist-700 hover:bg-mist-100 hover:text-mist-950 dark:text-mist-300 dark:hover:bg-mist-800 dark:hover:text-white"
+      className="block rounded-lg px-3 py-2 text-sm/6 font-medium text-mist-700 hover:bg-mist-100 hover:text-mist-950"
       {...props}
     >
       {children}
@@ -103,7 +153,7 @@ export function NavbarWithLinksActionsAndCenteredLogo({
   actions: ReactNode
 } & ComponentProps<'header'>) {
   return (
-    <header className={clsx('sticky top-0 z-10 bg-mist-100 dark:bg-mist-950', className)} {...props}>
+    <header className={clsx('sticky top-0 z-10 bg-mist-100', className)} {...props}>
       <style>{`:root { --scroll-padding-top: 5.25rem }`}</style>
       <nav>
         <div className="mx-auto flex h-(--scroll-padding-top) max-w-7xl items-center gap-4 px-6 lg:px-10">
@@ -116,7 +166,7 @@ export function NavbarWithLinksActionsAndCenteredLogo({
               command="show-modal"
               commandfor="mobile-menu"
               aria-label="Toggle menu"
-              className="inline-flex rounded-full p-1.5 text-mist-950 hover:bg-mist-950/10 lg:hidden dark:text-white dark:hover:bg-white/10"
+              className="inline-flex size-11 items-center justify-center rounded-full text-mist-950 hover:bg-mist-950/10 lg:hidden"
             >
               <svg viewBox="0 0 24 24" fill="currentColor" className="size-6">
                 <path
@@ -131,13 +181,13 @@ export function NavbarWithLinksActionsAndCenteredLogo({
 
         <ElDialog className="lg:hidden">
           <dialog id="mobile-menu" className="backdrop:bg-transparent">
-            <ElDialogPanel className="fixed inset-0 bg-mist-100 px-6 py-6 lg:px-10 dark:bg-mist-950">
+            <ElDialogPanel className="fixed inset-0 bg-mist-100 px-6 py-6 lg:px-10">
               <div className="flex justify-end">
                 <button
                   command="close"
                   commandfor="mobile-menu"
                   aria-label="Toggle menu"
-                  className="inline-flex rounded-full p-1.5 text-mist-950 hover:bg-mist-950/10 dark:text-white dark:hover:bg-white/10"
+                  className="inline-flex size-11 items-center justify-center rounded-full text-mist-950 hover:bg-mist-950/10"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

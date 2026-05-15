@@ -1,33 +1,29 @@
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-import { PostCard } from '@/components/blog/post-card'
 import { ButtonLink, PlainButtonLink } from '@/components/elements/button'
 import { Container } from '@/components/elements/container'
-import { Document } from '@/components/elements/document'
+import { Eyebrow } from '@/components/elements/eyebrow'
+import { Heading } from '@/components/elements/heading'
+import { Subheading } from '@/components/elements/subheading'
+import { Text } from '@/components/elements/text'
 import { Wallpaper } from '@/components/elements/wallpaper'
 import { ChevronIcon } from '@/components/icons/chevron-icon'
+import { LongFormDocument } from '@/components/blog/long-form-document'
+import { PostCard } from '@/components/blog/post-card'
 import { CallToActionSimple } from '@/components/sections/call-to-action-simple'
-import {
-  categoryLabels,
-  categoryWallpaper,
-  getAllPosts,
-  getPost,
-  getRelatedPosts,
-} from '@/lib/posts'
-
-const HUBSPOT_DEMO = 'https://share-eu1.hsforms.com/1QmfwKDraSVOGP3_N6WSMHAft3vh'
+import { HUBSPOT_DEMO_URL } from '@/lib/constants'
+import { CTA_HEADLINE, CTA_SUBHEADLINE } from '@/lib/cta'
+import { authorSchema, getAuthor } from '@/lib/authors'
+import { categoryLabels, categoryWallpaper, getAllPosts, getPost, getRelatedPosts } from '@/lib/posts'
 
 export async function generateStaticParams() {
   const posts = await getAllPosts()
   return posts.map((p) => ({ slug: p.slug }))
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>
-}) {
+const SITE_URL = 'https://www.verbalist.it'
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const post = await getPost(slug)
   if (!post) return {}
@@ -41,17 +37,16 @@ export async function generateMetadata({
       url: `/blog/${slug}`,
       type: 'article',
       publishedTime: new Date(post.frontmatter.publishedAt).toISOString(),
+      modifiedTime: new Date(
+        post.frontmatter.updatedAt ?? post.frontmatter.publishedAt,
+      ).toISOString(),
       authors: [post.frontmatter.author ?? 'Team Verbalist'],
       tags: post.frontmatter.tags,
     },
   }
 }
 
-export default async function BlogPostPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>
-}) {
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const post = await getPost(slug)
   if (!post) notFound()
@@ -67,8 +62,8 @@ export default async function BlogPostPage({
     .format(new Date(post.frontmatter.publishedAt))
     .replace(/\//g, '.')
 
-  const SITE_URL = 'https://www.verbalist.it'
   const canonicalUrl = `${SITE_URL}/blog/${slug}`
+  const author = getAuthor(post.frontmatter.author)
   const articleSchema = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -77,18 +72,15 @@ export default async function BlogPostPage({
         headline: post.frontmatter.title,
         description: post.frontmatter.description,
         datePublished: new Date(post.frontmatter.publishedAt).toISOString(),
-        dateModified: new Date(post.frontmatter.publishedAt).toISOString(),
-        image: `${canonicalUrl}/opengraph-image`,
+        dateModified: new Date(
+          post.frontmatter.updatedAt ?? post.frontmatter.publishedAt,
+        ).toISOString(),
         inLanguage: 'it-IT',
-        author: {
-          '@type': 'Organization',
-          name: post.frontmatter.author ?? 'Team Verbalist',
-          url: SITE_URL,
-        },
+        author: authorSchema(author),
         publisher: { '@id': `${SITE_URL}/#organization` },
         mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalUrl },
         articleSection: categoryLabels[post.frontmatter.category] ?? post.frontmatter.category,
-        keywords: post.frontmatter.tags?.join(', '),
+        keywords: post.frontmatter.tags?.join(','),
       },
       {
         '@type': 'BreadcrumbList',
@@ -112,70 +104,90 @@ export default async function BlogPostPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
       />
-      {/* Hero wallpaper a tutta larghezza */}
+
       <section className="relative">
-        <Wallpaper color={wallpaperColor} className="min-h-[480px]">
-          <Container className="flex min-h-[480px] flex-col justify-end gap-6 py-16">
+        <Wallpaper color={wallpaperColor} className="min-h-[clamp(360px,60svh,480px)]">
+          <Container className="flex min-h-[clamp(360px,60svh,480px)] flex-col justify-end gap-6 py-16">
             <nav aria-label="Breadcrumb">
               <ol className="flex flex-wrap items-center gap-2 text-sm/7">
                 <li>
-                  <Link
-                    href="/blog"
-                    className="text-white/70 hover:text-white"
-                  >
+                  <a href="/blog" className="text-white/90 hover:text-white">
                     Blog
-                  </Link>
+                  </a>
                 </li>
                 <li aria-hidden="true" className="text-white/40">
                   /
                 </li>
-                <li
-                  aria-current="page"
-                  className="font-semibold text-white/90"
-                >
+                <li aria-current="page" className="font-semibold text-white/90">
                   {categoryLabels[post.frontmatter.category] ?? post.frontmatter.category}
                 </li>
               </ol>
             </nav>
-            <h1 className="max-w-3xl font-display text-4xl/12 font-medium tracking-[-0.03em] text-balance text-white sm:text-5xl/14">
+            <Heading color="light" size="md" className="max-w-3xl">
               {post.frontmatter.title}
-            </h1>
-            <p className="max-w-2xl text-lg text-white/90">
-              {post.frontmatter.description}
-            </p>
-            <span className="text-sm text-white/70">{dateNumeric}</span>
+            </Heading>
+            <p className="max-w-2xl text-lg/8 text-white/90">{post.frontmatter.description}</p>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm/7 text-white/90">
+              <span className="font-medium">{author.name}</span>
+              {author.jobTitle && (
+                <>
+                  <span aria-hidden="true" className="text-white/40">·</span>
+                  <span className="text-white/80">{author.jobTitle}</span>
+                </>
+              )}
+              <span aria-hidden="true" className="text-white/40">·</span>
+              <span className="tabular-nums">{dateNumeric}</span>
+            </div>
           </Container>
         </Wallpaper>
       </section>
 
-      {/* Corpo articolo centrato */}
       <article className="py-16">
         <Container className="max-w-3xl lg:max-w-3xl">
           {post.frontmatter.summary && (
-            <aside className="mt-8 border-l-2 border-mist-300 pl-6 dark:border-mist-700">
-              <p className="text-sm/7 font-semibold text-mist-700 dark:text-mist-400">
-                TL;DR
-              </p>
-              <p className="mt-2 text-base text-mist-800 dark:text-mist-200">
-                {post.frontmatter.summary}
-              </p>
+            <aside className="mt-8 flex flex-col gap-2 border-l border-mist-950/10 pl-6">
+              <Eyebrow>TL;DR</Eyebrow>
+              <Text>{post.frontmatter.summary}</Text>
             </aside>
           )}
 
-          <Document
-            className="mt-12"
-            dangerouslySetInnerHTML={{ __html: post.html }}
-          />
+          <LongFormDocument className="mt-12" dangerouslySetInnerHTML={{ __html: post.html }} />
+
+          {/* Author bio — minimal footer */}
+          <aside className="mt-16 border-t border-mist-200 pt-6">
+            <Eyebrow>Scritto da</Eyebrow>
+            <div className="mt-3 flex flex-col gap-3 text-sm/7 text-mist-700">
+              <p>
+                <span className="font-medium text-mist-950">{author.name}</span>
+                {author.jobTitle && <>, {author.jobTitle}</>}
+              </p>
+              <p>{author.bio}</p>
+              {author.sameAs && author.sameAs.length > 0 && (
+                <p>
+                  {author.sameAs.map((url, i) => (
+                    <span key={url}>
+                      {i > 0 && '·'}
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium text-mist-950 underline decoration-mist-950/30 underline-offset-4 hover:decoration-mist-950"
+                      >
+                        {new URL(url).hostname.replace(/^www\./, '')}
+                      </a>
+                    </span>
+                  ))}
+                </p>
+              )}
+            </div>
+          </aside>
         </Container>
       </article>
 
-      {/* Articoli correlati */}
       {related.length > 0 && (
-        <section className="border-t border-mist-200 py-16 dark:border-mist-800">
+        <section className="border-t border-mist-950/10 py-16">
           <Container className="flex flex-col gap-8">
-            <h2 className="font-display text-3xl/9 font-medium tracking-[-0.03em] text-mist-950 sm:text-4xl/10 dark:text-white">
-              Articoli correlati
-            </h2>
+            <Subheading>Articoli correlati</Subheading>
             <ul role="list" className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
               {related.map((p) => (
                 <PostCard key={p.slug} post={p} />
@@ -187,19 +199,14 @@ export default async function BlogPostPage({
 
       <CallToActionSimple
         id="call-to-action"
-        headline="Sii visibile su Google e nelle risposte AI"
-        subheadline={
-          <p>
-            1 mese di prova con 15 contenuti e accesso completo a tutte le
-            funzionalità. Nessun pagamento anticipato.
-          </p>
-        }
+        headline={CTA_HEADLINE}
+        subheadline={<p>{CTA_SUBHEADLINE}</p>}
         cta={
           <div className="flex items-center gap-4">
             <ButtonLink href="/signup" size="lg">
-              Inizia la prova
+              Prova gratis 1 mese
             </ButtonLink>
-            <PlainButtonLink href={HUBSPOT_DEMO} size="lg">
+            <PlainButtonLink href={HUBSPOT_DEMO_URL} size="lg">
               Prenota una demo <ChevronIcon />
             </PlainButtonLink>
           </div>

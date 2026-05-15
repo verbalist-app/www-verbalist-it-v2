@@ -1,266 +1,200 @@
 import Image from 'next/image'
 
-import { AnnouncementBadge } from '@/components/elements/announcement-badge'
 import { ButtonLink, PlainButtonLink, SoftButtonLink } from '@/components/elements/button'
 import { Link } from '@/components/elements/link'
-import { Logo, LogoGrid } from '@/components/elements/logo-grid'
 import { Screenshot } from '@/components/elements/screenshot'
+import { AnalisiSerpVisual } from '@/components/elements/analisi-serp-visual'
+import { DashboardVisual } from '@/components/elements/dashboard-visual'
+import { GenerazioneContenutiVisual } from '@/components/elements/generazione-contenuti-visual'
 import { ArrowNarrowRightIcon } from '@/components/icons/arrow-narrow-right-icon'
 import { ChevronIcon } from '@/components/icons/chevron-icon'
-import { CloudArrowDownIcon } from '@/components/icons/cloud-arrow-down-icon'
-import { CompassIcon } from '@/components/icons/compass-icon'
-import { PencilOnSquareIcon } from '@/components/icons/pencil-on-square-icon'
-import { PhotoIcon } from '@/components/icons/photo-icon'
-import { RepeatIcon } from '@/components/icons/repeat-icon'
 import { CallToActionSimple } from '@/components/sections/call-to-action-simple'
+import { CustomerLogosGrid } from '@/components/sections/customer-logos'
+import { HUBSPOT_DEMO_URL } from '@/lib/constants'
+import { CTA_HEADLINE, CTA_SUBHEADLINE } from '@/lib/cta'
 import { FAQsTwoColumnAccordion, Faq } from '@/components/sections/faqs-two-column-accordion'
 import { Feature, FeaturesTwoColumnWithDemos } from '@/components/sections/features-two-column-with-demos'
-import { HeroLeftAlignedWithDemo } from '@/components/sections/hero-left-aligned-with-demo'
+import { HeroWithDemoOnBackground } from '@/components/sections/hero-with-demo-on-background'
 import { Plan, PricingMultiTier } from '@/components/sections/pricing-multi-tier'
 import { Stat, StatsWithGraph } from '@/components/sections/stats-with-graph'
 import { Testimonial, TestimonialThreeColumnGrid } from '@/components/sections/testimonials-three-column-grid'
 
-export const metadata = {
+const faqs = [
+  {
+    id: 'faq-1',
+    question: 'Cos\'è la GEO e perché serve oggi?',
+    answer:
+      "La GEO (Generative Engine Optimization) è la pratica di ottimizzare i contenuti perché vengano citati nelle risposte di ChatGPT, Perplexity, Google AI Overview e Gemini. La SEO classica punta al click dal motore di ricerca. La GEO punta alla citazione nella risposta AI. Verbalist applica entrambe nello stesso flusso editoriale. Abbiamo una guida completa nel blog post Cos'è la GEO.",
+    answerNode: (
+      <p>
+        La GEO (Generative Engine Optimization) è la pratica di ottimizzare i contenuti
+        perché vengano citati nelle risposte di ChatGPT, Perplexity, Google AI Overview e
+        Gemini. La SEO classica punta al click dal motore di ricerca. La GEO punta alla
+        citazione nella risposta AI. Verbalist applica entrambe nello stesso flusso
+        editoriale. Abbiamo una guida completa nel blog post{' '}
+        <Link href="/blog/cos-e-la-geo">Cos&apos;è la GEO</Link>.
+      </p>
+    ),
+  },
+  {
+    id: 'faq-2',
+    question: 'Serve la carta di credito per provarlo?',
+    answer:
+      'No. Il free trial parte senza inserire metodi di pagamento. La carta si aggiunge solo al passaggio a un piano a pagamento.',
+  },
+  {
+    id: 'faq-3',
+    question: 'In cosa è diverso da ChatGPT o Gemini?',
+    answer:
+      "ChatGPT e Gemini scrivono a partire da un prompt generico. Verbalist parte da un'analisi SEO strutturata: top 10 di Google sulla keyword, estrazione dei competitor, brief operativo. Il testo arriva sopra dati di ricerca reali. Risultato: pagine pensate per posizionarsi su Google e per farsi citare nelle risposte AI di Perplexity, ChatGPT e AI Overview.",
+  },
+  {
+    id: 'faq-4',
+    question: 'Posso usare i contenuti nel mio CMS?',
+    answer:
+      "Sì. L'output esce in Markdown o HTML pulito, pronto per copia-incolla in WordPress, Webflow, Shopify o nel tuo CMS di riferimento.",
+  },
+  {
+    id: 'faq-5',
+    question: 'Il testo rispetta il mio tone of voice?',
+    answer:
+      "Sì. Imposti il brand tone una volta nella sezione Impostazioni e Verbalist lo applica a ogni nuovo contenuto. Resta rifinibile prima della pubblicazione, l'editor finale sei tu.",
+  },
+  {
+    id: 'faq-6',
+    question: 'Devo avere esperienza in SEO o GEO per usarlo?',
+    answer:
+      "No. Verbalist guida ogni passaggio dalla keyword alla bozza: scegli il tono e il pubblico target, il prodotto fa l'analisi SEO e GEO tecnica. Funziona anche se non hai mai sentito parlare di Generative Engine Optimization.",
+  },
+]
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.question,
+    acceptedAnswer: { '@type': 'Answer', text: f.answer },
+  })),
+}
+
+const SITE_URL = 'https://www.verbalist.it'
+
+const softwareSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  '@id': `${SITE_URL}/#software`,
+  name: 'Verbalist',
+  applicationCategory: 'BusinessApplication',
+  applicationSubCategory: 'SEO software',
+  operatingSystem: 'Web',
+  inLanguage: 'it-IT',
   description:
-    'Verbalist trasforma keyword, SERP e competitor in contenuti SEO e GEO strutturati, pronti anche per la ricerca con AI come ChatGPT e Perplexity.',
-  alternates: { canonical: '/' },
+    'Software SEO e GEO con AI. Verbalist trasforma SERP, keyword e competitor in contenuti pronti per Google, ChatGPT e Perplexity.',
+  url: SITE_URL,
+  publisher: { '@id': `${SITE_URL}/#organization` },
+  offers: {
+    '@type': 'AggregateOffer',
+    url: `${SITE_URL}/pricing`,
+    priceCurrency: 'EUR',
+    lowPrice: '270',
+    highPrice: '500',
+    offerCount: 2,
+    availability: 'https://schema.org/InStock',
+  },
+  featureList: [
+    'Analisi SERP per content engineering',
+    'Generazione contenuti SEO',
+    'Ottimizzazione contenuti SEO',
+    'Brand tone of voice',
+    'Multi-lingua (30+ lingue)',
+  ],
+  screenshot: `${SITE_URL}/img/screenshots/dashboard.webp`,
 }
 
 export default function Page() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }}
+      />
       {/* Hero */}
-      <HeroLeftAlignedWithDemo
+      <HeroWithDemoOnBackground
         id="hero"
-        eyebrow={
-          <div aria-hidden="true" className="invisible">
-            <AnnouncementBadge href="/blog/come-farsi-citare-motori-ai" text="Come farsi citare da ChatGPT e Perplexity" cta="Leggi la guida" />
-          </div>
-        }
-        headline={<>Crea contenuti <br /> a partire dai dati di ricerca</>}
-        subheadline={
-          <p>
-            Verbalist trasforma keyword, risultati Google e competitor in contenuti
-            SEO strutturati, completi e pronti anche per la ricerca con AI.
-          </p>
-        }
+        headline="Lo strumento che fa SEO e GEO su dati reali"
+        subheadline="Verbalist analizza i top competitor della tua keyword e produce contenuti ottimizzati per SEO e GEO. Pronti per Google, ChatGPT e Perplexity."
         cta={
           <div className="flex items-center gap-4">
-            <ButtonLink href="#" size="lg">
-              Inizia subito
+            <ButtonLink color="light" href="/signup" size="lg">
+              Prova gratis 1 mese
             </ButtonLink>
-
-            <PlainButtonLink href="#" size="lg">
+            <PlainButtonLink color="light" href="#features" size="lg">
               Come funziona <ArrowNarrowRightIcon />
             </PlainButtonLink>
           </div>
         }
         demo={
-          <>
-            <Screenshot className="rounded-md lg:hidden" wallpaper="blue" placement="bottom-right">
-              <Image
-                src="/img/screenshots/dashboard-1670-1408.webp"
-                alt=""
-                width={1670}
-                height={1408}
-                className="bg-white/75 md:hidden dark:hidden"
-              />
-              <Image
-                src="/img/screenshots/1-color-mist-left-1670-top-1408.webp"
-                alt=""
-                width={1670}
-                height={1408}
-                className="bg-black/75 not-dark:hidden md:hidden"
-              />
-              <Image
-                src="/img/screenshots/dashboard-2000-1408.webp"
-                alt=""
-                width={2000}
-                height={1408}
-                className="bg-white/75 max-md:hidden dark:hidden"
-              />
-              <Image
-                src="/img/screenshots/1-color-mist-left-2000-top-1408.webp"
-                alt=""
-                width={2000}
-                height={1408}
-                className="bg-black/75 not-dark:hidden max-md:hidden"
-              />
-            </Screenshot>
-            <Screenshot className="rounded-lg max-lg:hidden" wallpaper="blue" placement="bottom">
-              <Image
-                src="/img/screenshots/dashboard.webp"
-                alt=""
-                className="bg-white/75 dark:hidden"
-                width={3440}
-                height={1990}
-              />
-              <Image
-                className="bg-black/75 not-dark:hidden"
-                src="/img/screenshots/1-color-mist.webp"
-                alt=""
-                width={3440}
-                height={1990}
-              />
-            </Screenshot>
-          </>
+          <div className="aspect-[1709/990] h-full overflow-hidden ring-1 ring-black/10">
+            <DashboardVisual className="h-full w-full" />
+          </div>
         }
-        footer={
-          <LogoGrid>
-            <Logo>
-              <Image
-                src="/img/logos/rentokil.svg"
-                alt="Rentokil"
-                width={100}
-                height={32}
-                className="brightness-0 dark:invert"
-              />
-            </Logo>
-            <Logo>
-              <Image
-                src="/img/logos/pompea.svg"
-                alt="Pompea"
-                width={100}
-                height={32}
-                className="brightness-0 dark:invert"
-              />
-            </Logo>
-            <Logo>
-              <Image
-                src="/img/logos/meccanotecnica.svg"
-                alt="Meccanotecnica"
-                width={100}
-                height={32}
-                className="brightness-0 dark:invert"
-              />
-            </Logo>
-            <Logo>
-              <Image
-                src="/img/logos/plastisac.svg"
-                alt="Plastisac"
-                width={100}
-                height={32}
-                className="brightness-0 dark:invert"
-              />
-            </Logo>
-            <Logo>
-              <Image
-                src="/img/logos/sogese.svg"
-                alt="Sogese"
-                width={100}
-                height={32}
-                className="brightness-0 dark:invert"
-              />
-            </Logo>
-            <Logo>
-              <Image
-                src="/img/logos/jurny.svg"
-                alt="Jurny"
-                width={100}
-                height={32}
-                className="brightness-0 dark:invert"
-              />
-            </Logo>
-          </LogoGrid>
-        }
+        footer={<CustomerLogosGrid />}
       />
       {/* Features */}
       <FeaturesTwoColumnWithDemos
         id="features"
         eyebrow="Funzionalità"
-        headline="Verbalist legge SERP, competitor e benchmark prima di scrivere il contenuto"
+        headline="Verbalist analizza SERP e competitor prima di scrivere un contenuto"
         subheadline={
           <p>
-              Quando arrivi alla scrittura, brief e scaletta sono già pronti. Tutto costruito sui principali risultati della tua keyword, 
-              in italiano e altre lingue. 
+            Quando arrivi alla scrittura, brief e scaletta sono già pronti. Costruiti sulle pagine
+            in posizione organica per la tua keyword e sulle fonti che ChatGPT e Perplexity citano
+            nelle risposte. In italiano e in oltre 30 lingue.
           </p>
         }
         features={
           <>
             <Feature
               demo={
-                <Screenshot wallpaper="purple" placement="bottom-right">
-                  <Image
-                    src="/img/screenshots/docs-left-1000-800.webp"
-                    alt=""
-                    className="bg-white/75 sm:hidden"
-                    width={1000}
-                    height={800}
-                  />
-                  <Image
-                    src="/img/screenshots/docs-left-1800-660.webp"
-                    alt=""
-                    className="bg-white/75 max-sm:hidden lg:hidden"
-                    width={1800}
-                    height={660}
-                  />
-                  <Image
-                    src="/img/screenshots/docs-left-1300-1300.webp"
-                    alt=""
-                    className="bg-white/75 max-lg:hidden xl:hidden"
-                    width={1300}
-                    height={1300}
-                  />
-                  <Image
-                    src="/img/screenshots/docs-left-1800-1250.webp"
-                    alt=""
-                    className="bg-white/75 max-xl:hidden"
-                    width={1800}
-                    height={1250}
-                  />
+                <Screenshot wallpaper="purple" placement="bottom-left">
+                  <AnalisiSerpVisual className="w-full" />
                 </Screenshot>
               }
               headline="Analisi SERP"
               subheadline={
                 <p>
-                  Hai un brief con argomenti, struttura e domande coperte dai primi 10 di Google sulla tua keyword. 
+                  Inserisci una keyword. Verbalist legge i primi 10 risultati di Google, estrae
+                  argomenti, struttura e domande coperte. Tu ottieni un brief completo prima di
+                  iniziare a scrivere.
                 </p>
               }
               cta={
-                <Link href="#">
+                <Link href="/prodotto/analisi-serp">
                   Scopri come funziona <ArrowNarrowRightIcon />
                 </Link>
               }
             />
             <Feature
               demo={
-                <Screenshot wallpaper="blue" placement="bottom-left">
-                  <Image
-                    src="/img/screenshots/docs-right-1000-800.webp"
-                    alt=""
-                    className="bg-white/75 sm:hidden"
-                    width={1000}
-                    height={800}
-                  />
-                  <Image
-                    src="/img/screenshots/docs-right-1800-660.webp"
-                    alt=""
-                    className="bg-white/75 max-sm:hidden lg:hidden"
-                    width={1800}
-                    height={660}
-                  />
-                  <Image
-                    src="/img/screenshots/docs-right-1300-1300.webp"
-                    alt=""
-                    className="bg-white/75 max-lg:hidden xl:hidden"
-                    width={1300}
-                    height={1300}
-                  />
-                  <Image
-                    src="/img/screenshots/docs-right-1800-1250.webp"
-                    alt=""
-                    className="bg-white/75 max-xl:hidden"
-                    width={1800}
-                    height={1250}
-                  />
+                <Screenshot wallpaper="blue" placement="bottom-right">
+                  <GenerazioneContenutiVisual className="w-full" />
                 </Screenshot>
               }
-              headline="Generazione Contenuti "
+              headline="Generazione contenuti"
               subheadline={
-                <p>Articolo, scheda prodotto o landing pronti per l'editing in pochi minuti, sopra la SERP della tua keyword.</p>
+                <p>
+                  Verbalist parte dal brief e scrive un articolo, una scheda prodotto o una
+                  landing nel tone of voice del tuo brand. In 5 minuti hai una prima bozza pronta
+                  per l&rsquo;editing.
+                </p>
               }
               cta={
-                <Link href="#">
+                <Link href="/prodotto/generazione-contenuti">
                   Scopri come funziona <ArrowNarrowRightIcon />
                 </Link>
               }
@@ -271,148 +205,174 @@ export default function Page() {
       {/* Stats */}
       <StatsWithGraph
         id="stats"
-        eyebrow="Costruito per scalare"
-        headline="Stesso lavoro, indipendentemente dall'effort"
+        eyebrow="Cinque agenti, un solo flusso"
+        headline="Da keyword a bozza in cinque minuti"
         subheadline={
           <p>
-            La pipeline non cambia in base al volume: analisi SERP, brief, generazione e ottimizzazione restano uguali per ogni contenuto. Cambia solo il numero di articoli che produci, in italiano e in tutte le altre lingue supportate dal sistema.
+            Analisi della SERP, brief sopra le evidenze, generazione del contenuto, ottimizzazione
+            finale. Lo stesso flusso editoriale per ogni mercato, in oltre trenta lingue.
           </p>
         }
       >
-        <Stat stat="30+" text="Lingue supportate, dall'analisi della SERP alla generazione del testo finale." />
-        <Stat stat="~5 min" text="Tempo medio dalla keyword al brief con prima bozza pronta." />
+        <Stat stat="5 agenti" text="Per ogni passaggio del flusso, dalla SERP alla pubblicazione." />
+        <Stat stat="30+" text="Lingue supportate, dalla SERP locale all'output finale." />
+        <Stat stat="5 min" text="Dalla keyword alla prima bozza pronta per l'editing." />
       </StatsWithGraph>
       {/* Testimonial */}
       <TestimonialThreeColumnGrid
         id="testimonial"
-        headline="Un agente per ogni scopo"
-        subheadline={<p>Architettura multi-agente: ogni fase del flusso editoriale è gestita da un agente specialista dedicato.</p>}
+        headline="Aziende che producono contenuti con Verbalist"
+        subheadline={
+          <p>Marketing, e-commerce, manifatturiero, servizi B2B, PropTech. Volumi e mercati diversi, stesso flusso.</p>
+        }
       >
         <Testimonial
           quote={
             <p>
-              Legge le prime 10 posizioni di Google per la keyword target. Estrae argomenti ricorrenti, struttura editoriale e domande coperte dai competitor, costruendo il brief di base.
+              Con Verbalist abbiamo ridotto drasticamente il tempo per produrre articoli SEO
+              multilingua, mantenendo la coerenza editoriale tra i mercati.
             </p>
           }
           img={
-            <div className="flex items-center justify-center bg-mist-200 dark:bg-mist-800">
-              <CompassIcon className="size-6 text-mist-700 dark:text-mist-300" />
+            <div className="flex items-center justify-center px-2">
+              <Image
+                src="/img/logos/rentokil.svg"
+                alt="Rentokil"
+                width={100}
+                height={32}
+                className="h-auto w-full"
+              />
             </div>
           }
-          name="Esploratore"
-          byline="Analisi"
+          name="Rentokil"
+          byline="Pest control · 56.000+ dipendenti"
         />
         <Testimonial
           quote={
             <p>
-              Scarica il contenuto dei top competitor in modalità stealth. Pulisce l'HTML, rimuove navigazione e ads, mantiene solo il testo utile per la fase di analisi.
+              Con Verbalist le nostre schede prodotto e gli articoli del blog escono più
+              rapidamente, senza perdere il tono di voce del brand.
             </p>
           }
           img={
-            <div className="flex items-center justify-center bg-mist-200 dark:bg-mist-800">
-              <CloudArrowDownIcon className="size-6 text-mist-700 dark:text-mist-300" />
+            <div className="flex items-center justify-center px-2">
+              <Image
+                src="/img/logos/pompea.svg"
+                alt="Pompea"
+                width={100}
+                height={32}
+                className="h-auto w-full"
+              />
             </div>
           }
-          name="Estrattore"
-          byline="Scraping"
+          name="Pompea"
+          byline="E-commerce moda · 200+ dipendenti"
         />
         <Testimonial
           quote={
             <p>
-              Accetta in input gli URL forniti dall'utente, ne legge il contenuto e lo aggiunge al contesto di generazione, accanto ai dati raccolti dalla SERP e dai competitor.
+              Verbalist ci aiuta a produrre contenuti tecnici in più lingue mantenendo precisione
+              terminologica e tono di voce corporate.
             </p>
           }
           img={
-            <div className="flex items-center justify-center bg-mist-200 dark:bg-mist-800">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="size-6 text-mist-700 dark:text-mist-300"
-              >
-                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-              </svg>
+            <div className="flex items-center justify-center px-2">
+              <Image
+                src="/img/logos/meccanotecnica.svg"
+                alt="Meccanotecnica"
+                width={100}
+                height={32}
+                className="h-auto w-full"
+              />
             </div>
           }
-          name="Importatore"
-          byline="Input custom"
+          name="Meccanotecnica"
+          byline="Manifatturiero · 150+ dipendenti"
         />
         <Testimonial
           quote={
             <p>
-              Genera il primo testo a partire dalle evidenze raccolte: articolo, scheda prodotto, guida o landing. Output in Markdown o HTML, in italiano e nelle altre lingue supportate.
+              Con Verbalist riusciamo a tenere aggiornate centinaia di schede prodotto del nostro
+              catalogo packaging senza sovraccaricare il team.
             </p>
           }
           img={
-            <div className="flex items-center justify-center bg-mist-200 dark:bg-mist-800">
-              <PencilOnSquareIcon className="size-6 text-mist-700 dark:text-mist-300" />
+            <div className="flex items-center justify-center px-2">
+              <Image
+                src="/img/logos/plastisac.svg"
+                alt="Plastisac"
+                width={100}
+                height={32}
+                className="h-auto w-full"
+              />
             </div>
           }
-          name="Redattore"
-          byline="Generazione"
+          name="Plastisac"
+          byline="Packaging industriale · 100+ dipendenti"
         />
         <Testimonial
           quote={
             <p>
-              Confronta il testo generato con la SERP corrente per la keyword target. Segnala argomenti mancanti, sezioni datate e gap di copertura rispetto ai top result.
+              Con Verbalist il nostro team scrive di più. La parte di ricerca SERP e brief la fa
+              il prodotto, noi ci concentriamo sulla scrittura e sulla revisione.
             </p>
           }
           img={
-            <div className="flex items-center justify-center bg-mist-200 dark:bg-mist-800">
-              <RepeatIcon className="size-6 text-mist-700 dark:text-mist-300" />
+            <div className="flex items-center justify-center px-2">
+              <Image
+                src="/img/logos/sogese.svg"
+                alt="Sogese"
+                width={100}
+                height={32}
+                className="h-auto w-full"
+              />
             </div>
           }
-          name="Revisore"
-          byline="Ottimizzazione"
+          name="Sogese"
+          byline="Servizi B2B · 300+ dipendenti"
         />
         <Testimonial
           quote={
             <p>
-              Genera le immagini a corredo del testo: asset per il blog, copertine per il social, infografiche dei dati. Output coerente con il tono editoriale del contenuto.
+              Verbalist ci permette di produrre contenuti SEO localizzati per ogni mercato in cui
+              operiamo, senza moltiplicare i tempi del team.
             </p>
           }
           img={
-            <div className="flex items-center justify-center bg-mist-200 dark:bg-mist-800">
-              <PhotoIcon className="size-6 text-mist-700 dark:text-mist-300" />
+            <div className="flex items-center justify-center px-2">
+              <Image
+                src="/img/logos/jurny.svg"
+                alt="Jurny"
+                width={100}
+                height={32}
+                className="h-auto w-full"
+              />
             </div>
           }
-          name="Illustratore"
-          byline="Media"
+          name="Jurny"
+          byline="PropTech · Los Angeles, US"
         />
       </TestimonialThreeColumnGrid>
       {/* FAQs */}
       <FAQsTwoColumnAccordion id="faqs" headline="Domande e risposte">
-        <Faq
-          id="faq-1"
-          question="Serve la carta di credito per provarlo?"
-          answer="No. Il free trial parte senza inserire metodi di pagamento. La carta si aggiunge solo al passaggio a un piano a pagamento."
-        />
-        <Faq
-          id="faq-2"
-          question="In cosa è diverso da ChatGPT o Gemini?"
-          answer="ChatGPT e Gemini scrivono a partire da un prompt. Verbalist parte da una pipeline di analisi: SERP della keyword, scraping dei competitor, brief strutturato. Il testo arriva sopra dati reali, non sull'addestramento generico del modello."
-        />
-        <Faq
-          id="faq-3"
-          question="Posso usare i contenuti nel mio CMS?"
-          answer="Sì. L'output esce in Markdown o HTML pulito, pronto per copia-incolla in WordPress, Webflow, Shopify o nel tuo CMS headless di riferimento."
-        />
-        <Faq
-          id="faq-4"
-          question="Il testo rispetta il mio tone of voice?"
-          answer="Sì. Imposti il brand tone una volta nella sezione Impostazioni e Verbalist lo applica a ogni nuovo contenuto. Resta rifinibile prima della pubblicazione, l'editor finale sei tu."
-        />
+        {faqs.map((f) => (
+          <Faq
+            key={f.id}
+            id={f.id}
+            question={f.question}
+            answer={'answerNode' in f && f.answerNode ? f.answerNode : f.answer}
+          />
+        ))}
       </FAQsTwoColumnAccordion>
       {/* Pricing */}
       <PricingMultiTier
         id="pricing"
         headline="Prezzi basati sui contenuti che produci"
+        subheadline={
+          <p>
+            Nessun abbonamento. Compri il volume che ti serve, lo usi quando vuoi.
+          </p>
+        }
         plans={
           <>
             <Plan
@@ -423,7 +383,7 @@ export default function Page() {
               features={[
                 '30 contenuti',
                 'Crediti validi 12 mesi',
-                'Analisi SERP, scraping e ottimizzazione',
+                'Analisi SERP, estrazione competitor e ottimizzazione',
                 'Multi-lingua e multi-mercato',
                 'Brand & tone of voice (1 brand)',
                 '1 utente del team',
@@ -431,7 +391,7 @@ export default function Page() {
               ]}
               cta={
                 <SoftButtonLink href="/signup" size="lg">
-                  Inizia la prova
+                  Prova gratis 1 mese
                 </SoftButtonLink>
               }
             />
@@ -450,7 +410,7 @@ export default function Page() {
               ]}
               cta={
                 <ButtonLink href="/signup" size="lg">
-                  Inizia la prova
+                  Prova gratis 1 mese
                 </ButtonLink>
               }
             />
@@ -466,7 +426,7 @@ export default function Page() {
                 'Onboarding white-glove',
               ]}
               cta={
-                <SoftButtonLink href="https://share-eu1.hsforms.com/1QmfwKDraSVOGP3_N6WSMHAft3vh" size="lg">
+                <SoftButtonLink href={HUBSPOT_DEMO_URL} size="lg">
                   Contattaci
                 </SoftButtonLink>
               }
@@ -477,20 +437,15 @@ export default function Page() {
       {/* Call To Action */}
       <CallToActionSimple
         id="call-to-action"
-        headline="Pronto a comparire nelle ricerche AI?"
-        subheadline={
-          <p>
-            1 mese di prova con 15 contenuti e accesso completo a tutte le
-            funzionalità. Nessun pagamento anticipato.
-          </p>
-        }
+        headline={CTA_HEADLINE}
+        subheadline={<p>{CTA_SUBHEADLINE}</p>}
         cta={
           <div className="flex items-center gap-4">
             <ButtonLink href="/signup" size="lg">
-              Inizia la prova
+              Prova gratis 1 mese
             </ButtonLink>
 
-            <PlainButtonLink href="https://share-eu1.hsforms.com/1QmfwKDraSVOGP3_N6WSMHAft3vh" size="lg">
+            <PlainButtonLink href={HUBSPOT_DEMO_URL} size="lg">
               Prenota una demo <ChevronIcon />
             </PlainButtonLink>
           </div>

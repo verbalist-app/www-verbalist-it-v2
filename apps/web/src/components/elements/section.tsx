@@ -20,7 +20,7 @@ export function Section({
   cta?: ReactNode
 } & ComponentProps<'section'>) {
   return (
-    <section className={clsx('py-16', className)} {...props}>
+    <section className={clsx('py-12 sm:py-16 lg:py-20', className)} {...props}>
       <Container className="flex flex-col gap-10 sm:gap-16">
         {headline && (
           <div className="flex max-w-2xl flex-col gap-6">

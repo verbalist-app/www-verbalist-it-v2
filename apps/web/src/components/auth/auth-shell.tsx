@@ -20,14 +20,14 @@ export function AuthShell({
   side: { color: 'blue' | 'purple' | 'green' | 'brown' }
 }) {
   return (
-    <section className="grid min-h-[calc(100vh-5.25rem)] grid-cols-1 lg:grid-cols-2">
+    <section className="grid min-h-[calc(100svh-5.25rem)] grid-cols-1 lg:grid-cols-2">
       <div className="flex items-center justify-center px-6 py-16 lg:px-12">
         <div className="w-full max-w-md">{children}</div>
       </div>
       <div className="relative hidden lg:block">
         <Wallpaper color={side.color} className="h-full w-full" />
         <div className="absolute inset-x-0 bottom-0 z-10 px-12 pb-12">
-          <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-4">
             {customerLogos.map((logo) => (
               <Image
                 key={logo.name}
@@ -35,7 +35,7 @@ export function AuthShell({
                 alt={logo.name}
                 width={100}
                 height={32}
-                className="h-6 w-auto opacity-90 [filter:brightness(0)_invert(1)]"
+                className="h-6 w-auto opacity-90 brightness-0 invert"
               />
             ))}
           </div>

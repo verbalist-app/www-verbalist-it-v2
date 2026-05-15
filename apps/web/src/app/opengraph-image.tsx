@@ -1,57 +1,90 @@
 import { readFile } from 'node:fs/promises'
-import { join } from 'node:path'
+import path from 'node:path'
 
 import { ImageResponse } from 'next/og'
 
-export const alt = 'Verbalist — Contenuti SEO a partire dai dati di ricerca'
+export const alt =
+  'Verbalist — software di content engineering per Generative Experience Optimization e SEO'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
-async function loadFont(): Promise<ArrayBuffer> {
-  const buf = await readFile(join(process.cwd(), 'src', 'app', '_fonts', 'FamiljenGrotesk-Medium.ttf'))
-  return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer
-}
-
-async function loadLogo(): Promise<string> {
-  const buf = await readFile(join(process.cwd(), 'public', 'img', 'brand', 'verbalist-logotype-light.svg'))
-  return `data:image/svg+xml;base64,${buf.toString('base64')}`
-}
-
-export default async function OpenGraphImage() {
-  const [fontData, logo] = await Promise.all([loadFont(), loadLogo()])
+export default async function OpengraphImage() {
+  const logoPath = path.join(process.cwd(), 'public/img/logos/verbalist-logotype-light.svg')
+  const logoBuffer = await readFile(logoPath)
+  const logoDataUrl = `data:image/svg+xml;base64,${logoBuffer.toString('base64')}`
 
   return new ImageResponse(
     (
       <div
         style={{
-          height: '100%',
           width: '100%',
+          height: '100%',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          padding: '80px',
-          background: 'linear-gradient(180deg, #637c86 0%, #778599 100%)',
+          padding: 80,
+          background: 'linear-gradient(135deg, #5a7280 0%, #6b7d92 50%, #8b6f80 100%)',
+          fontFamily: 'sans-serif',
         }}
       >
-        <img src={logo} alt="Verbalist" width={220} height={64} />
+        <img
+          src={logoDataUrl}
+          alt="Verbalist"
+          width={200}
+          height={58}
+          style={{ display: 'block' }}
+        />
+
         <div
           style={{
-            color: 'white',
-            fontFamily: 'Familjen Grotesk',
-            fontWeight: 500,
-            fontSize: 72,
-            letterSpacing: '-0.03em',
-            lineHeight: 1.05,
-            maxWidth: 1000,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 28,
           }}
         >
-          Contenuti SEO a partire dai dati di ricerca
+          <div
+            style={{
+              fontSize: 92,
+              fontWeight: 600,
+              lineHeight: 0.98,
+              letterSpacing: -3.5,
+              color: '#ffffff',
+              maxWidth: 1040,
+            }}
+          >
+            Content engineering per Google e i motori AI.
+          </div>
+
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 18,
+            }}
+          >
+            <span
+              style={{
+                display: 'block',
+                width: 48,
+                height: 1,
+                background: 'rgba(255, 255, 255, 0.5)',
+              }}
+            />
+            <span
+              style={{
+                fontSize: 22,
+                fontWeight: 600,
+                letterSpacing: 2,
+                textTransform: 'uppercase',
+                color: 'rgba(255, 255, 255, 0.85)',
+              }}
+            >
+              Generative Experience Optimization e SEO
+            </span>
+          </div>
         </div>
       </div>
     ),
-    {
-      ...size,
-      fonts: [{ name: 'Familjen Grotesk', data: fontData, weight: 500, style: 'normal' }],
-    },
+    { ...size },
   )
 }

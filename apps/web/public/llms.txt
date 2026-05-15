@@ -1,0 +1,46 @@
+# Verbalist
+
+> Verbalist trasforma SERP e competitor in brief e contenuti SEO strutturati, in italiano e in oltre 30 lingue. È un prodotto di NUR S.r.l. (San Giorgio Bigarello, Mantova, Italia).
+
+Verbalist analizza i primi 10 risultati di Google per una keyword target ed estrae argomenti, struttura editoriale e domande coperte dai competitor. Su questi dati costruisce brief e articoli pronti per il copia-incolla nel CMS, in formato Markdown o HTML, con dati strutturati Schema.org allineati a Google e ai motori AI (ChatGPT, Perplexity).
+
+## Posizionamento
+Verbalist non è un wrapper di ChatGPT. La pipeline parte dai dati di ricerca (SERP, competitor, brief) e non da un prompt generico. È pensato per team marketing, agenzie e content house che producono articoli, schede prodotto e landing su scala.
+
+## Pagine principali
+- Home: https://www.verbalist.it/
+- Prezzi (una tantum, niente abbonamento): https://www.verbalist.it/pricing
+- Chi siamo: https://www.verbalist.it/about
+- Blog: https://www.verbalist.it/blog
+
+## Pagine prodotto (workflow editoriale)
+- Analisi SERP: https://www.verbalist.it/prodotto/analisi-serp
+- Generazione contenuti: https://www.verbalist.it/prodotto/generazione-contenuti
+- Ottimizzazione contenuti: https://www.verbalist.it/prodotto/ottimizzazione-contenuti
+- Brand tone of voice: https://www.verbalist.it/prodotto/brand-tone-of-voice
+- Multi-lingua: https://www.verbalist.it/prodotto/multi-lingua
+
+## Articoli (GEO e AI search)
+- https://www.verbalist.it/blog/cos-e-la-geo
+- https://www.verbalist.it/blog/come-farsi-citare-motori-ai
+- https://www.verbalist.it/blog/answer-engine-optimization
+- https://www.verbalist.it/blog/eeat-motori-generativi
+- https://www.verbalist.it/blog/geo-ottimizzazione-ai
+- https://www.verbalist.it/blog/geo-vs-seo
+
+## Modello di pricing
+- Starter: €270 una tantum, 30 contenuti, crediti validi 12 mesi
+- Pro: €500 una tantum, 70 contenuti, crediti validi 12 mesi
+- Custom: su richiesta
+- Free trial: 1 mese, 15 contenuti, niente carta di credito
+
+## Facts
+- Fondazione Verbalist: 2026
+- Parent company: NUR Digital Marketing (S.r.l.), fondata nel 1999
+- Sede legale: Via del Commercio 1/N, San Giorgio Bigarello (Mantova), Italia
+- Clienti enterprise di NUR Digital Marketing: EY, Mercedes-Benz, LVMH, SDA Bocconi (430+ clienti totali dal 1999)
+- Partnership ufficiali: Google Premier Partner, HubSpot Platinum Partner, Microsoft Partner, Semrush Partner
+- Pubblicazione editoriale: primo libro italiano sulla Generative Engine Optimization, autore Rinaldo Zambello (CEO NUR), pubblicato 2024
+- Lingue supportate per generazione contenuti: 30+ (codice ISO 2)
+- Architettura: cinque agenti specializzati (analisi SERP, brief, generazione, ottimizzazione, esportazione)
+- Modello commerciale: pacchetti di contenuti a consumo, no abbonamento ricorrente, crediti validi 12 mesi

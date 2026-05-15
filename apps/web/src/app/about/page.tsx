@@ -2,87 +2,151 @@ import Image from 'next/image'
 
 import { ButtonLink, PlainButtonLink } from '@/components/elements/button'
 import { ChevronIcon } from '@/components/icons/chevron-icon'
-import { CallToActionSimple } from '@/components/sections/call-to-action-simple'
-import { HeroLeftAlignedWithPhoto } from '@/components/sections/hero-left-aligned-with-photo'
-import { Stat, StatsWithGraph } from '@/components/sections/stats-with-graph'
+import { CallToActionSimpleCentered } from '@/components/sections/call-to-action-simple-centered'
+import { HeroSimpleCentered } from '@/components/sections/hero-simple-centered'
+import { Stat, StatsThreeColumnWithDescription } from '@/components/sections/stats-three-column-with-description'
 import { TeamFourColumnGrid, TeamMember } from '@/components/sections/team-four-column-grid'
-import { TestimonialTwoColumnWithLargePhoto } from '@/components/sections/testimonial-two-column-with-large-photo'
+import { TestimonialLargeQuote } from '@/components/sections/testimonial-with-large-quote'
+import { HUBSPOT_DEMO_URL } from '@/lib/constants'
+import { CTA_HEADLINE, CTA_SUBHEADLINE } from '@/lib/cta'
+
+const SITE_URL = 'https://www.verbalist.it'
 
 export const metadata = {
   title: 'Chi siamo',
   description:
-    'Verbalist è il prodotto di NUR S.r.l. Costruiamo strumenti di SEO automation e content engineering per team marketing, agenzie e content house.',
+    "Verbalist è il software di content engineering di NUR Digital Marketing. 430+ clienti dal 1999. La stessa metodologia SEO enterprise, ora in piattaforma per agenzie e team marketing in-house.",
   alternates: { canonical: '/about' },
+  openGraph: {
+    title: 'Chi siamo — Verbalist',
+    description:
+      "Verbalist è il software di content engineering di NUR Digital Marketing. 430+ clienti dal 1999.",
+    url: `${SITE_URL}/about`,
+    type: 'website',
+  },
+}
+
+const aboutPageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  '@id': `${SITE_URL}/about#aboutpage`,
+  url: `${SITE_URL}/about`,
+  name: 'Chi siamo — Verbalist',
+  description:
+    "Verbalist è il software di content engineering di NUR Digital Marketing. 430+ clienti dal 1999.",
+  isPartOf: { '@id': `${SITE_URL}/#website` },
+  about: { '@id': `${SITE_URL}/#organization` },
+  inLanguage: 'it-IT',
+}
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+    { '@type': 'ListItem', position: 2, name: 'Chi siamo', item: `${SITE_URL}/about` },
+  ],
 }
 
 export default function Page() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutPageSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       {/* Hero */}
-      <HeroLeftAlignedWithPhoto
+      <HeroSimpleCentered
         id="hero"
-        headline="Your customer success is our mission."
+        headlineSize="md"
+        headline="25 anni di SEO enterprise, ora una piattaforma"
         subheadline={
           <p>
-            We're on a mission to take the human element completely out of customer support — so your team can focus on
-            what matters most, profitability.
+            Verbalist è il prodotto di NUR Digital Marketing. 430+ clienti dal 1999. La stessa
+            metodologia è ora disponibile per agenzie SEO e team marketing in-house.
           </p>
-        }
-        photo={
-          <Image
-            src="/img/photos/1.webp"
-            alt=""
-            width={1800}
-            height={945}
-            className="not-dark:bg-white/75 dark:bg-black/75"
-          />
         }
       />
+
       {/* Stats */}
-      <StatsWithGraph
+      <StatsThreeColumnWithDescription
         id="stats"
-        eyebrow="Built for scale"
-        headline="The inbox powering customer conversations everywhere."
-        subheadline={
-          <p>
-            Oatmeal helps teams deliver personal, organized, and fast customer support across the world. From small
-            startups to enterprise teams, we process millions of messages each month — using a massive network of low
-            wage workers stationed around the globe.
-          </p>
+        heading="NUR Digital Marketing"
+        description={
+          <>
+            <p>
+              Dal 1999 lavoriamo con clienti come EY, Mercedes-Benz, LVMH e SDA Bocconi. Abbiamo
+              pubblicato il{' '}
+              <a
+                href="https://www.amazon.it/-/en/Rinaldo-Zambello-ebook/dp/B0FPBTC7WV"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-mist-950 underline decoration-mist-950/30 underline-offset-4 hover:decoration-mist-950"
+              >
+                primo libro italiano sulla Generative Engine Optimization
+              </a>
+              . Siamo HubSpot Partner Platinum.
+            </p>
+            <p>
+              Abbiamo messo assieme le nostre conoscenze su SEO, content e GEO in un solo
+              software. Cinque agenti specializzati che coprono ogni passaggio del flusso
+              editoriale, dalla keyword al contenuto pronto per il CMS.
+            </p>
+            <p>
+              Verbalist automatizza le metodologie che usiamo ogni giorno con i nostri clienti
+              enterprise. Ogni funzionalità nasce da un pattern testato su migliaia di campagne
+              reali.
+            </p>
+            <p>
+              Le stesse tecniche, ora anche per agenzie SEO e team marketing in-house. Non solo
+              per chi ha budget enterprise.
+            </p>
+          </>
         }
       >
-        <Stat stat="2M+" text="Emails manually processed every week across thousands of teams." />
-        <Stat stat="99.98%" text="Uptime — because your customers never stop complaining." />
-      </StatsWithGraph>
+        <Stat stat="25 anni" text="SEO enterprise per clienti come EY, Mercedes-Benz, LVMH." />
+        <Stat stat="TOP 3%" text="Agenzie Google Premier Partner in Italia." />
+        <Stat
+          stat="4 partnership"
+          text="Google Premier, HubSpot Platinum, Microsoft, Semrush."
+        />
+      </StatsThreeColumnWithDescription>
+
       {/* Testimonial */}
-      <TestimonialTwoColumnWithLargePhoto
+      <TestimonialLargeQuote
         id="testimonial"
         quote={
           <p>
-            Ever since we started using Oatmeal, our customer satisfaction scores have skyrocketed. The personal touch
-            that their human-AI hybrid support provides is unparalleled.
+            Con Verbalist le nostre schede prodotto e gli articoli del blog escono più rapidamente,
+            senza perdere il tone of voice del brand.
           </p>
         }
         img={
-          <Image
-            src="/img/avatars/16-h-1000-w-1400.webp"
-            alt=""
-            className="not-dark:bg-white/75 dark:bg-black/75"
-            width={1400}
-            height={1000}
-          />
+          <div className="flex items-center justify-center px-2">
+            <Image
+              src="/img/logos/pompea.svg"
+              alt="Pompea"
+              width={100}
+              height={32}
+              className="h-auto w-full"
+            />
+          </div>
         }
-        name="Lynn Marshall"
-        byline="Founder at Pine Labs"
+        name="Pompea"
+        byline="E-commerce moda · 200+ dipendenti"
       />
+
       {/* Team */}
       <TeamFourColumnGrid
         id="team"
-        headline="Our leadership team"
+        headline="Chi ha contribuito a Verbalist"
         subheadline={
           <p>
-            Oatmeals's leadership team combines decades of experience in private equity, where they honed their skills
-            in cost-cutting and maximizing shareholder value.
+            Il team che ha costruito Verbalist, tra le sedi di Mantova e Milano.
           </p>
         }
       >
@@ -91,121 +155,81 @@ export default function Page() {
             <Image
               src="/img/avatars/1-h-1000-w-800.webp"
               alt=""
-              className="not-dark:bg-white/75 dark:bg-black/75"
+              className="bg-white/75"
               width={800}
               height={1000}
             />
           }
-          name="Leslie Alexander"
-          byline="Co-Founder / CEO"
+          name="Rinaldo Zambello"
+          byline="CEO"
         />
         <TeamMember
           img={
             <Image
               src="/img/avatars/2-h-1000-w-800.webp"
               alt=""
-              className="not-dark:bg-white/75 dark:bg-black/75"
+              className="bg-white/75"
               width={800}
               height={1000}
             />
           }
-          name="Michael Foster"
-          byline="Co-Founder / CTO"
-        />
-        <TeamMember
-          img={
-            <Image
-              src="/img/avatars/7-h-1000-w-800.webp"
-              alt=""
-              className="not-dark:bg-white/75 dark:bg-black/75"
-              width={800}
-              height={1000}
-            />
-          }
-          name="Dries Vincent"
-          byline="Business Relations"
+          name="Filippo Danesi"
+          byline="Product Owner"
         />
         <TeamMember
           img={
             <Image
               src="/img/avatars/4-h-1000-w-800.webp"
               alt=""
-              className="not-dark:bg-white/75 dark:bg-black/75"
+              className="bg-white/75"
               width={800}
               height={1000}
             />
           }
-          name="Lindsay Walton"
-          byline="Front-end Developer"
+          name="Niccolò Guiducci"
+          byline="Backend Developer"
         />
         <TeamMember
           img={
             <Image
               src="/img/avatars/5-h-1000-w-800.webp"
               alt=""
-              className="not-dark:bg-white/75 dark:bg-black/75"
+              className="bg-white/75"
               width={800}
               height={1000}
             />
           }
-          name="Noor Hasan"
-          byline="Designer"
+          name="Giulia Fiorini"
+          byline="Frontend Developer"
         />
         <TeamMember
           img={
             <Image
               src="/img/avatars/6-h-1000-w-800.webp"
               alt=""
-              className="not-dark:bg-white/75 dark:bg-black/75"
+              className="bg-white/75"
               width={800}
               height={1000}
             />
           }
-          name="Tom Cook"
-          byline="Director of Product"
-        />
-        <TeamMember
-          img={
-            <Image
-              src="/img/avatars/8-h-1000-w-800.webp"
-              alt=""
-              className="not-dark:bg-white/75 dark:bg-black/75"
-              width={800}
-              height={1000}
-            />
-          }
-          name="Whitney Francis"
-          byline="Copywriter"
-        />
-        <TeamMember
-          img={
-            <Image
-              src="/img/avatars/3-h-1000-w-800.webp"
-              alt=""
-              className="not-dark:bg-white/75 dark:bg-black/75"
-              width={800}
-              height={1000}
-            />
-          }
-          name="Leonard Wu"
-          byline="Senior Designer"
+          name="Gino Cappelli"
+          byline="Senior Web Developer / Tech Lead"
         />
       </TeamFourColumnGrid>
+
       {/* Call To Action */}
-      <CallToActionSimple
+      <CallToActionSimpleCentered
         id="call-to-action"
-        headline="Have anymore questions?"
-        subheadline={
-          <p>Chat to someone on our sales team, who will make promises about our roadmap that we won't keep.</p>
-        }
+        headline={CTA_HEADLINE}
+        subheadline={<p>{CTA_SUBHEADLINE}</p>}
         cta={
           <div className="flex items-center gap-4">
-            <ButtonLink href="#" size="lg">
-              Chat with us
+            <ButtonLink href="/signup" size="lg">
+              Prova gratis 1 mese
             </ButtonLink>
 
-            <PlainButtonLink href="#" size="lg">
-              Book a demo <ChevronIcon />
+            <PlainButtonLink href={HUBSPOT_DEMO_URL} size="lg">
+              Prenota una demo <ChevronIcon />
             </PlainButtonLink>
           </div>
         }

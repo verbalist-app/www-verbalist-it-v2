@@ -2,15 +2,11 @@ import Image from 'next/image'
 
 import { ButtonLink, PlainButtonLink } from '@/components/elements/button'
 import { Main } from '@/components/elements/main'
-import { GitHubIcon } from '@/components/icons/social/github-icon'
-import { XIcon } from '@/components/icons/social/x-icon'
-import { YouTubeIcon } from '@/components/icons/social/youtube-icon'
 import {
   FooterCategory,
   FooterLink,
   FooterWithNewsletterFormCategoriesAndSocialIcons,
   NewsletterForm,
-  SocialLink,
 } from '@/components/sections/footer-with-newsletter-form-categories-and-social-icons'
 import {
   NavbarDropdown,
@@ -19,22 +15,38 @@ import {
   NavbarLogo,
   NavbarWithLinksActionsAndCenteredLogo,
 } from '@/components/sections/navbar-with-links-actions-and-centered-logo'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 const SITE_URL = 'https://www.verbalist.it'
 
+const SITE_DESCRIPTION =
+  'Verbalist trasforma SERP, keyword e competitor in contenuti SEO e GEO pronti per Google, ChatGPT e Perplexity. Pacchetti a consumo, niente abbonamento.'
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+}
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'AI per content engineering SEO e GEO \\ Verbalist',
+    default: 'Software SEO con AI per content engineering \\ Verbalist',
     template: '%s \\ Verbalist',
   },
-  description:
-    'Verbalist trasforma keyword, SERP e competitor in contenuti SEO e GEO strutturati, pronti anche per la ricerca con AI come ChatGPT e Perplexity.',
+  description: SITE_DESCRIPTION,
   applicationName: 'Verbalist',
   generator: 'Next.js',
-  keywords: ['SEO', 'GEO', 'AI search', 'content marketing', 'AEO', 'generazione contenuti', 'analisi SERP'],
+  keywords: [
+    'SEO',
+    'GEO',
+    'AI search',
+    'content marketing',
+    'AEO',
+    'generazione contenuti',
+    'analisi SERP',
+  ],
   authors: [{ name: 'NUR S.r.l.', url: 'https://nur.it' }],
   creator: 'NUR S.r.l.',
   publisher: 'NUR S.r.l.',
@@ -46,15 +58,14 @@ export const metadata: Metadata = {
     locale: 'it_IT',
     url: SITE_URL,
     siteName: 'Verbalist',
-    title: 'AI per content engineering SEO e GEO \\ Verbalist',
-    description:
-      'Verbalist trasforma keyword, SERP e competitor in contenuti SEO e GEO strutturati, pronti anche per la ricerca con AI come ChatGPT e Perplexity.',
+    title: 'Software SEO con AI per content engineering \\ Verbalist',
+    description: SITE_DESCRIPTION,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AI per content engineering SEO e GEO \\ Verbalist',
-    description:
-      'Verbalist trasforma keyword, SERP e competitor in contenuti SEO e GEO strutturati, pronti anche per la ricerca con AI come ChatGPT e Perplexity.',
+    title: 'Software SEO con AI per content engineering \\ Verbalist',
+    description: SITE_DESCRIPTION,
+    images: ['/opengraph-image'],
   },
   robots: {
     index: true,
@@ -72,6 +83,49 @@ export const metadata: Metadata = {
     email: false,
     address: false,
   },
+}
+
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${SITE_URL}/#organization`,
+      name: 'Verbalist',
+      legalName: 'NUR S.r.l.',
+      url: SITE_URL,
+      logo: `${SITE_URL}/img/logos/verbalist-logotype-dark.svg`,
+      sameAs: ['https://nur.it'],
+      parentOrganization: {
+        '@type': 'Organization',
+        name: 'NUR S.r.l.',
+        url: 'https://nur.it',
+        foundingDate: '1999',
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: 'Via del Commercio 1/N',
+          addressLocality: 'San Giorgio Bigarello',
+          addressRegion: 'MN',
+          addressCountry: 'IT',
+        },
+        award: [
+          'Google Premier Partner',
+          'HubSpot Platinum Partner',
+          'Microsoft Partner',
+          'Semrush Partner',
+        ],
+      },
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: 'Verbalist',
+      description: SITE_DESCRIPTION,
+      publisher: { '@id': `${SITE_URL}/#organization` },
+      inLanguage: 'it-IT',
+    },
+  ],
 }
 
 export default function RootLayout({
@@ -96,44 +150,7 @@ export default function RootLayout({
       <body>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@graph': [
-                {
-                  '@type': 'Organization',
-                  '@id': `${SITE_URL}/#organization`,
-                  name: 'Verbalist',
-                  legalName: 'NUR S.r.l.',
-                  url: SITE_URL,
-                  logo: `${SITE_URL}/img/brand/verbalist-logotype-dark.svg`,
-                  sameAs: ['https://nur.it'],
-                  parentOrganization: {
-                    '@type': 'Organization',
-                    name: 'NUR S.r.l.',
-                    url: 'https://nur.it',
-                    address: {
-                      '@type': 'PostalAddress',
-                      streetAddress: 'Via del Commercio 1/N',
-                      addressLocality: 'San Giorgio Bigarello',
-                      addressRegion: 'MN',
-                      addressCountry: 'IT',
-                    },
-                  },
-                },
-                {
-                  '@type': 'WebSite',
-                  '@id': `${SITE_URL}/#website`,
-                  url: SITE_URL,
-                  name: 'Verbalist',
-                  description:
-                    'Verbalist trasforma keyword, SERP e competitor in contenuti SEO e GEO strutturati, pronti anche per la ricerca con AI come ChatGPT e Perplexity.',
-                  publisher: { '@id': `${SITE_URL}/#organization` },
-                  inLanguage: 'it-IT',
-                },
-              ],
-            }),
-          }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
         <>
           <NavbarWithLinksActionsAndCenteredLogo
@@ -147,14 +164,11 @@ export default function RootLayout({
                   <NavbarDropdownLink href="/prodotto/brand-tone-of-voice">Brand & Tone of voice</NavbarDropdownLink>
                   <NavbarDropdownLink href="/prodotto/multi-lingua">Multi-lingua</NavbarDropdownLink>
                 </NavbarDropdown>
-                <NavbarLink href="/clienti">Clienti</NavbarLink>
-                <NavbarLink href="/prezzi">Prezzi</NavbarLink>
+                <NavbarLink href="/pricing">Prezzi</NavbarLink>
                 <NavbarLink href="/blog">Blog</NavbarLink>
-                <NavbarLink href="https://docs.verbalist.it" target="_blank" rel="noopener noreferrer">
-                  Docs
-                </NavbarLink>
+                <NavbarLink href="#">Docs</NavbarLink>
                 <NavbarLink href="/login" className="sm:hidden">
-                  Log in
+                  Accedi
                 </NavbarLink>
               </>
             }
@@ -163,14 +177,6 @@ export default function RootLayout({
                 <Image
                   src="/img/logos/verbalist-logotype-dark.svg"
                   alt="Verbalist"
-                  className="dark:hidden"
-                  width={96}
-                  height={28}
-                />
-                <Image
-                  src="/img/logos/verbalist-logotype-light.svg"
-                  alt="Verbalist"
-                  className="not-dark:hidden"
                   width={96}
                   height={28}
                 />
@@ -179,9 +185,9 @@ export default function RootLayout({
             actions={
               <>
                 <PlainButtonLink href="/login" className="max-sm:hidden">
-                  Log in
+                  Accedi
                 </PlainButtonLink>
-                <ButtonLink href="/signup">Get started</ButtonLink>
+                <ButtonLink href="/signup">Prova gratis 1 mese</ButtonLink>
               </>
             }
           />
@@ -192,11 +198,11 @@ export default function RootLayout({
             id="footer"
             cta={
               <NewsletterForm
-                headline="Stay in the loop"
+                headline="Newsletter"
                 subheadline={
                   <p>
-                    Get customer support tips, product updates and customer stories that you can archive as soon as they
-                    arrive.
+                    Pattern di content engineering, casi di studio e aggiornamenti del prodotto. Una
+                    mail al mese, senza spam.
                   </p>
                 }
                 action="#"
@@ -204,44 +210,28 @@ export default function RootLayout({
             }
             links={
               <>
-                <FooterCategory title="Product">
-                  <FooterLink href="#">Features</FooterLink>
-                  <FooterLink href="#">Pricing</FooterLink>
-                  <FooterLink href="#">Integrations</FooterLink>
+                <FooterCategory title="Prodotto">
+                  <FooterLink href="/prodotto/analisi-serp">Analisi SERP</FooterLink>
+                  <FooterLink href="/prodotto/generazione-contenuti">Generazione contenuti</FooterLink>
+                  <FooterLink href="/prodotto/ottimizzazione-contenuti">Ottimizzazione contenuti</FooterLink>
+                  <FooterLink href="/prodotto/brand-tone-of-voice">Brand & Tone of voice</FooterLink>
+                  <FooterLink href="/prodotto/multi-lingua">Multi-lingua</FooterLink>
+                  <FooterLink href="/pricing">Prezzi</FooterLink>
+                  <FooterLink href="/manifesto">Manifesto</FooterLink>
                 </FooterCategory>
-                <FooterCategory title="Company">
-                  <FooterLink href="#">About</FooterLink>
-                  <FooterLink href="#">Careers</FooterLink>
-                  <FooterLink href="#">Blog</FooterLink>
-                  <FooterLink href="#">Press Kit</FooterLink>
+                <FooterCategory title="Azienda">
+                  <FooterLink href="/about">Chi siamo</FooterLink>
+                  <FooterLink href="/blog">Blog</FooterLink>
+                  <FooterLink href="mailto:info@nur.it">Contatti</FooterLink>
                 </FooterCategory>
-                <FooterCategory title="Resources">
-                  <FooterLink href="#">Help Center</FooterLink>
-                  <FooterLink href="#">API Docs</FooterLink>
-                  <FooterLink href="#">Status</FooterLink>
-                  <FooterLink href="#">Contact</FooterLink>
-                </FooterCategory>
-                <FooterCategory title="Legal">
-                  <FooterLink href="/privacy">Privacy Policy</FooterLink>
-                  <FooterLink href="/cookie">Cookie Policy</FooterLink>
-                  <FooterLink href="/termini">Termini di servizio</FooterLink>
+                <FooterCategory title="Legale">
+                  <FooterLink href="/privacy-policy">Privacy Policy</FooterLink>
+                  <FooterLink href="/cookie-policy">Cookie Policy</FooterLink>
+                  <FooterLink href="/termini-e-condizioni">Termini di servizio</FooterLink>
                 </FooterCategory>
               </>
             }
-            fineprint={<>© {new Date().getFullYear()} <a href="https://nur.it" target="_blank" rel="noopener noreferrer">NUR S.r.l.</a></>}
-            socialLinks={
-              <>
-                <SocialLink href="https://x.com" name="X">
-                  <XIcon />
-                </SocialLink>
-                <SocialLink href="https://github.com" name="GitHub">
-                  <GitHubIcon />
-                </SocialLink>
-                <SocialLink href="https://www.youtube.com" name="YouTube">
-                  <YouTubeIcon />
-                </SocialLink>
-              </>
-            }
+            fineprint={`© ${new Date().getFullYear()} NUR S.r.l.`}
           />
         </>
       </body>
