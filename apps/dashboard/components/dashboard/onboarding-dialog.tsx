@@ -15,6 +15,14 @@ import { cn } from "@/lib/utils"
 import { useDashboardLocale } from "@/app/dashboard/_lib/dashboard-locale"
 
 const STORAGE_KEY = "verbalist:onboarding-completed"
+const REOPEN_EVENT = "verbalist:open-onboarding"
+
+/** Re-open the onboarding tour from anywhere (e.g. the "Rivedi il tour" button in /dashboard/help). */
+export function openOnboardingTour() {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event(REOPEN_EVENT))
+  }
+}
 
 const text = {
   it: {
@@ -89,6 +97,16 @@ export function OnboardingDialog() {
     if (typeof window === "undefined") return
     const done = window.localStorage.getItem(STORAGE_KEY)
     if (!done) setOpen(true)
+  }, [])
+
+  // Allow re-opening the tour on demand (from the Help page).
+  React.useEffect(() => {
+    const reopen = () => {
+      setStep(0)
+      setOpen(true)
+    }
+    window.addEventListener(REOPEN_EVENT, reopen)
+    return () => window.removeEventListener(REOPEN_EVENT, reopen)
   }, [])
 
   const total = labels.steps.length

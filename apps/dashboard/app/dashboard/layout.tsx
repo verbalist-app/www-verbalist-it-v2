@@ -18,6 +18,8 @@ import {
   ExternalLink,
   Globe,
   Zap,
+  LifeBuoy,
+  GraduationCap,
 } from 'lucide-react'
 import { cn } from "@/lib/utils"
 import {
@@ -87,6 +89,8 @@ const layoutContent = {
     newDoc: "Nuovo documento",
     menu: "Menu",
     account: "Account",
+    support: "Supporto",
+    help: "Aiuto",
     logout: "Esci",
     search: "Cerca...",
     site: "Sito",
@@ -102,6 +106,9 @@ const layoutContent = {
       goDocs: "Vai ai documenti",
       recentDocs: "Documenti recenti",
       settings: "Impostazioni",
+      support: "Supporto",
+      guide: "Guide",
+      assistance: "Assistenza",
     },
   },
   en: {
@@ -119,6 +126,8 @@ const layoutContent = {
     newDoc: "New document",
     menu: "Menu",
     account: "Account",
+    support: "Support",
+    help: "Help",
     logout: "Log out",
     search: "Search...",
     site: "Website",
@@ -134,6 +143,9 @@ const layoutContent = {
       goDocs: "Go to documents",
       recentDocs: "Recent documents",
       settings: "Settings",
+      support: "Support",
+      guide: "Guides",
+      assistance: "Assistance",
     },
   },
 }
@@ -385,6 +397,27 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
+
+          {/* Support */}
+          <SidebarGroup>
+            <SidebarGroupLabel>{txt.support}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={pathname.startsWith("/dashboard/help")}
+                    tooltip={txt.help}
+                  >
+                    <Link href="/dashboard/help">
+                      <LifeBuoy className="size-4" />
+                      <span>{txt.help}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
         </SidebarContent>
 
         <SidebarFooter className="border-t border-border">
@@ -535,6 +568,17 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
             <CommandItem onSelect={() => runCommand(() => router.push("/dashboard/subscription"))}>
               <CreditCard className="mr-2 size-4" />
               {txt.secondary.subscription}
+            </CommandItem>
+          </CommandGroup>
+          <CommandSeparator />
+          <CommandGroup heading={txt.command.support}>
+            <CommandItem onSelect={() => runCommand(() => router.push("/dashboard/help?tab=guide"))}>
+              <GraduationCap className="mr-2 size-4" />
+              {txt.command.guide}
+            </CommandItem>
+            <CommandItem onSelect={() => runCommand(() => router.push("/dashboard/help?tab=assistenza"))}>
+              <LifeBuoy className="mr-2 size-4" />
+              {txt.command.assistance}
             </CommandItem>
           </CommandGroup>
         </CommandList>
