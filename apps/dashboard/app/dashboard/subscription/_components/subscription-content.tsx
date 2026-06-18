@@ -316,7 +316,7 @@ export function SubscriptionContent() {
 
       {/* All Plans */}
       <div>
-        <h2 className="text-lg font-display mb-4">{text.allPlans}</h2>
+        <h2 className="text-lg mb-4">{text.allPlans}</h2>
         <div className="grid gap-4 md:grid-cols-3">
           {plans.map((plan) => (
             <Card

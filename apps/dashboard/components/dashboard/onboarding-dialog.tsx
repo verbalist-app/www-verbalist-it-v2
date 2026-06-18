@@ -1,7 +1,8 @@
 "use client"
 
 import * as React from "react"
-import { Folder, Sparkles, Pencil, Zap, ArrowRight, ArrowLeft } from "lucide-react"
+import Link from "next/link"
+import { Folder, Sparkles, Pencil, Zap, ArrowRight, ArrowLeft, HelpCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -32,6 +33,7 @@ const text = {
     back: "Indietro",
     next: "Avanti",
     done: "Inizia",
+    watchVideos: "Guarda i video",
     steps: [
       {
         icon: Folder,
@@ -62,6 +64,7 @@ const text = {
     back: "Back",
     next: "Next",
     done: "Get started",
+    watchVideos: "Watch the videos",
     steps: [
       {
         icon: Folder,
@@ -153,6 +156,15 @@ export function OnboardingDialog() {
                 {step + 1} / {total}
               </p>
             </div>
+            <Link
+              href="/dashboard/help?tab=guide"
+              onClick={dismiss}
+              title={labels.watchVideos}
+              aria-label={labels.watchVideos}
+              className="ml-auto text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <HelpCircle className="size-5" />
+            </Link>
           </div>
           <p className="text-sm text-muted-foreground leading-relaxed">{current.body}</p>
 

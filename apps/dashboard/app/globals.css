@@ -84,8 +84,8 @@
 }
 
 @theme inline {
-  --font-sans: "Inter", system-ui, sans-serif;
-  --font-display: "Familjen Grotesk", "Inter", system-ui, sans-serif;
+  --font-sans: "Geist", system-ui, sans-serif;
+  --font-display: "Familjen Grotesk", "Geist", system-ui, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, "SF Mono", "Menlo", monospace;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;

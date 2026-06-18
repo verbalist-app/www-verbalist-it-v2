@@ -11,6 +11,7 @@ import {
   Plus,
   ArrowUpRight,
   ArrowDownRight,
+  HelpCircle,
 } from 'lucide-react'
 import { Bar, BarChart, Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts"
 import { Button } from "@/components/ui/button"
@@ -62,6 +63,7 @@ const content = {
     empty: {
       title: "Benvenuto in Verbalist",
       description: "Bastano tre passi per pubblicare il tuo primo contenuto ottimizzato.",
+      watchVideo: "Guarda il video tutorial",
       steps: [
         {
           title: "Crea un progetto",
@@ -110,6 +112,7 @@ const content = {
     empty: {
       title: "Welcome to Verbalist",
       description: "Three steps to publish your first optimized piece.",
+      watchVideo: "Watch the video tutorial",
       steps: [
         {
           title: "Create a project",
@@ -339,7 +342,7 @@ export function DashboardContent() {
                 </div>
                 <div className="mt-4">
                   <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-display tracking-tight tabular-nums">{stat.value}</span>
+                    <span className="text-2xl tracking-tight tabular-nums">{stat.value}</span>
                     {stat.total && (
                       <span className="text-sm text-muted-foreground">
                         /{stat.total}
@@ -517,8 +520,18 @@ export function DashboardContent() {
                   key={s.title}
                   className="rounded-lg border bg-background/60 p-4"
                 >
-                  <div className="flex size-7 items-center justify-center rounded-full bg-foreground text-background text-xs font-medium tabular-nums">
-                    {i + 1}
+                  <div className="flex items-center justify-between">
+                    <div className="flex size-7 items-center justify-center rounded-full bg-foreground text-background text-xs font-medium tabular-nums">
+                      {i + 1}
+                    </div>
+                    <Link
+                      href="/dashboard/help?tab=guide"
+                      title={txt.empty.watchVideo}
+                      aria-label={txt.empty.watchVideo}
+                      className="text-muted-foreground transition-colors hover:text-foreground"
+                    >
+                      <HelpCircle className="size-4" />
+                    </Link>
                   </div>
                   <p className="mt-3 font-medium text-sm">{s.title}</p>
                   <p className="mt-1 text-xs text-muted-foreground">{s.description}</p>

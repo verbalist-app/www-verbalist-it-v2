@@ -812,25 +812,25 @@ function DocumentDetailInner({
               <Card>
                 <CardContent className="p-4">
                   <p className="text-sm text-muted-foreground">{labels.competitorsAnalyzed}</p>
-                  <p className="text-2xl font-display tracking-tight tabular-nums mt-1">{analysisData.competitorCount}</p>
+                  <p className="text-2xl tracking-tight tabular-nums mt-1">{analysisData.competitorCount}</p>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-4">
                   <p className="text-sm text-muted-foreground">{labels.avgWordCount}</p>
-                  <p className="text-2xl font-display tracking-tight tabular-nums mt-1">{analysisData.avgWordCount.toLocaleString()}</p>
+                  <p className="text-2xl tracking-tight tabular-nums mt-1">{analysisData.avgWordCount.toLocaleString()}</p>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-4">
                   <p className="text-sm text-muted-foreground">{labels.topicsIdentified}</p>
-                  <p className="text-2xl font-display tracking-tight tabular-nums mt-1">{analysisData.topicsIdentified}</p>
+                  <p className="text-2xl tracking-tight tabular-nums mt-1">{analysisData.topicsIdentified}</p>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-4">
                   <p className="text-sm text-muted-foreground">{labels.yourWordCount}</p>
-                  <p className="text-2xl font-display tracking-tight tabular-nums mt-1">{document.wordCount.toLocaleString()}</p>
+                  <p className="text-2xl tracking-tight tabular-nums mt-1">{document.wordCount.toLocaleString()}</p>
                 </CardContent>
               </Card>
             </div>
