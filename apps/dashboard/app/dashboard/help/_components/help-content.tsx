@@ -206,12 +206,12 @@ export function HelpContent() {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <Card>
+            <Card className="flex flex-col">
               <CardHeader>
                 <CardTitle className="text-base">{text.guide.video1Title}</CardTitle>
                 <CardDescription>{text.guide.video1Desc}</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="mt-auto">
                 <VideoEmbed
                   src={VIDEO_NEW_DOC}
                   title={text.guide.video1Title}
@@ -220,12 +220,12 @@ export function HelpContent() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="flex flex-col">
               <CardHeader>
                 <CardTitle className="text-base">{text.guide.video2Title}</CardTitle>
                 <CardDescription>{text.guide.video2Desc}</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="mt-auto">
                 <VideoEmbed
                   src={VIDEO_OPTIMIZE}
                   title={text.guide.video2Title}
