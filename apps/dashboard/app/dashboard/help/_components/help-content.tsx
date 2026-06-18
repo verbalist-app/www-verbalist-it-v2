@@ -10,7 +10,7 @@ import {
   RotateCcw,
   BookOpen,
   History,
-  Sparkles,
+  Newspaper,
   Zap,
   Image as ImageIcon,
 } from "lucide-react"
@@ -115,7 +115,7 @@ export function HelpContent() {
         resourcesDesc: "Approfondimenti sul sito Verbalist.",
         helpCenter: "Centro assistenza",
         changelog: "Novità",
-        features: "Funzionalità",
+        blog: "Blog",
       },
     },
     en: {
@@ -165,15 +165,15 @@ export function HelpContent() {
         resourcesDesc: "Deep dives on the Verbalist website.",
         helpCenter: "Help Center",
         changelog: "What's new",
-        features: "Features",
+        blog: "Blog",
       },
     },
   })
 
   const resources = [
-    { label: text.support.helpCenter, href: siteUrl("/helpcenter/home"), icon: BookOpen },
-    { label: text.support.changelog, href: siteUrl("/changelog/home"), icon: History },
-    { label: text.support.features, href: siteUrl("/funzionalita/home"), icon: Sparkles },
+    { label: text.support.helpCenter, href: siteUrl("/help/"), icon: BookOpen },
+    { label: text.support.changelog, href: siteUrl("/changelog/"), icon: History },
+    { label: text.support.blog, href: siteUrl("/blog/"), icon: Newspaper },
   ]
 
   return (
@@ -282,7 +282,7 @@ export function HelpContent() {
                     </a>
                   </Button>
                   <Button asChild variant="outline" size="sm">
-                    <a href={siteUrl("/forms/contact")} target="_blank" rel="noreferrer">
+                    <a href={siteUrl("/contatti/")} target="_blank" rel="noreferrer">
                       <ExternalLink className="mr-2 size-4" />
                       {text.support.contactForm}
                     </a>
