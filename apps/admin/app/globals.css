@@ -1,0 +1,229 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* ─────────────────────────────────────────────────────────────────────
+   Verbalist Dashboard — Oatmeal "mist" monochrome palette.
+   All surfaces use the mist scale (acromatic with cool tint, hue ~213-228).
+   Primary follows "ink on paper" pattern: mist-950 on light backgrounds.
+   Status colors (success/warning/error) remain semantic.
+   ───────────────────────────────────────────────────────────────────── */
+:root {
+  /* Mist scale (Oatmeal) — single source of truth */
+  --color-mist-50: oklch(98.7% 0.002 197.1);
+  --color-mist-100: oklch(96.3% 0.002 197.1);
+  --color-mist-200: oklch(92.5% 0.005 214.3);
+  --color-mist-300: oklch(87.2% 0.007 219.6);
+  --color-mist-400: oklch(72.3% 0.014 214.4);
+  --color-mist-500: oklch(56% 0.021 213.5);
+  --color-mist-600: oklch(45% 0.017 213.2);
+  --color-mist-700: oklch(37.8% 0.015 216);
+  --color-mist-800: oklch(27.5% 0.011 216.9);
+  --color-mist-900: oklch(21.8% 0.008 223.9);
+  --color-mist-950: oklch(14.8% 0.004 228.8);
+
+  /* Surfaces — main bg sits between mist-50 and mist-100 for a soft cool tint
+     against white cards/sidebar. */
+  --background: oklch(98% 0.002 197.1);
+  --foreground: var(--color-mist-950);
+  --card: oklch(1 0 0);
+  --card-foreground: var(--color-mist-950);
+  --popover: oklch(1 0 0);
+  --popover-foreground: var(--color-mist-950);
+
+  /* Primary — pure black on paper */
+  --primary: oklch(0 0 0);
+  --primary-foreground: var(--color-mist-50);
+
+  /* Subtle surfaces */
+  --secondary: var(--color-mist-200);
+  --secondary-foreground: var(--color-mist-950);
+  --muted: var(--color-mist-200);
+  --muted-foreground: var(--color-mist-600);
+  --accent: var(--color-mist-200);
+  --accent-foreground: var(--color-mist-950);
+
+  /* Feedback */
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(1 0 0);
+
+  /* Borders / focus ring */
+  --border: var(--color-mist-200);
+  --input: var(--color-mist-200);
+  --ring: var(--color-mist-600);
+
+  /* Charts — desaturated blue accent + mist scale ramp.
+     chart-1 carries the primary series (visual hierarchy);
+     chart-2..5 are neutrals so multi-series remain calm. */
+  --chart-1: oklch(60% 0.13 245);
+  --chart-2: var(--color-mist-700);
+  --chart-3: var(--color-mist-500);
+  --chart-4: var(--color-mist-400);
+  --chart-5: var(--color-mist-300);
+
+  /* Sidebar */
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: var(--color-mist-950);
+  --sidebar-primary: oklch(0 0 0);
+  --sidebar-primary-foreground: var(--color-mist-50);
+  --sidebar-accent: var(--color-mist-200);
+  --sidebar-accent-foreground: var(--color-mist-950);
+  --sidebar-border: var(--color-mist-200);
+  --sidebar-ring: var(--color-mist-600);
+
+  /* Status (used by lib/status.ts) — desaturated for Linear/Profound mood */
+  --status-success: oklch(0.65 0.10 150);
+  --status-warning: oklch(0.78 0.10 80);
+  --status-error: oklch(0.60 0.13 25);
+
+  --radius: 0.5rem;
+}
+
+@keyframes progress-indeterminate {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(350%); }
+}
+
+@theme inline {
+  --font-sans: "Geist", system-ui, sans-serif;
+  --font-display: "Familjen Grotesk", "Geist", system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", "Menlo", monospace;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  /* Mist scale exposed as Tailwind tokens (bg-mist-100, text-mist-950, ...) */
+  --color-mist-50: var(--color-mist-50);
+  --color-mist-100: var(--color-mist-100);
+  --color-mist-200: var(--color-mist-200);
+  --color-mist-300: var(--color-mist-300);
+  --color-mist-400: var(--color-mist-400);
+  --color-mist-500: var(--color-mist-500);
+  --color-mist-600: var(--color-mist-600);
+  --color-mist-700: var(--color-mist-700);
+  --color-mist-800: var(--color-mist-800);
+  --color-mist-900: var(--color-mist-900);
+  --color-mist-950: var(--color-mist-950);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-status-success: var(--status-success);
+  --color-status-warning: var(--status-warning);
+  --color-status-error: var(--status-error);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --tracking-tighter: -0.05em;
+  --tracking-tight: -0.025em;
+
+  /* Animations used by shadcn primitives */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from { height: 0; }
+    to { height: var(--radix-accordion-content-height); }
+  }
+  @keyframes accordion-up {
+    from { height: var(--radix-accordion-content-height); }
+    to { height: 0; }
+  }
+}
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 2rem;
+}
+
+@layer components {
+  button {
+    cursor: pointer;
+  }
+
+  /* Allinea il peso delle icone Tabler/Lucide al feel editoriale del marketing site (Oatmeal,
+     strokeWidth 1 su viewBox 13). Tabler default è 2 su viewBox 24 — ridotto a 1.5 per
+     uniformità tra dashboard e marketing senza sostituire i set di icone. */
+  .tabler-icon,
+  .lucide {
+    stroke-width: 1.5;
+  }
+
+  /* Scale tipografiche allineate al kit Oatmeal (apps/web). Usabili su welcome screens,
+     onboarding, success/upgrade pages della dashboard quando serve display heading.
+     Per dense UI standard (Card.Title, label, body) restano le scale shadcn default. */
+  .typography-display {
+    @apply font-display text-5xl/12 tracking-[-0.04em] text-balance text-foreground sm:text-[4rem]/16;
+  }
+
+  .typography-heading {
+    @apply font-display text-3xl/9 font-medium tracking-[-0.03em] text-pretty text-foreground sm:text-[2.5rem]/10;
+  }
+
+  .typography-eyebrow {
+    @apply text-sm/7 font-semibold text-muted-foreground;
+  }
+
+  .typography-body-lg {
+    @apply text-lg/8 text-muted-foreground;
+  }
+
+  .typography-body {
+    @apply text-base/7 text-muted-foreground;
+  }
+}
+
+@layer base {
+  /* Do not @apply border-border on * — in Tailwind v4 it can resolve to a visible 1px border on every node. */
+  * {
+    @apply outline-none;
+  }
+  *,
+  ::before,
+  ::after {
+    border-color: var(--border);
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "cv01" 1, "ss03" 1, "rlig" 1, "calt" 1;
+    scrollbar-gutter: stable;
+  }
+}
+
+/* Radix remove-scroll sets inline styles on body[data-scroll-locked].
+   Inline styles can only be overridden with !important. */
+html body[data-scroll-locked] {
+  overflow-y: scroll !important;
+  --removed-body-scroll-bar-size: 0 !important;
+  margin-right: 0 !important;
+}
