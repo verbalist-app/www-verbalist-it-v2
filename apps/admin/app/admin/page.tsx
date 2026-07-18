@@ -87,7 +87,7 @@ export default function OverviewPage() {
               <CardTitle className="text-base font-medium">Task recenti</CardTitle>
               <CardDescription>Ultimi task ricevuti dal backend</CardDescription>
             </div>
-            <Link href="/tasks" className="text-sm text-muted-foreground hover:text-foreground">
+            <Link href="/admin/tasks" className="text-sm text-muted-foreground hover:text-foreground">
               Vedi tutti
             </Link>
           </CardHeader>
@@ -106,7 +106,7 @@ export default function OverviewPage() {
                   ? tasks.map((t) => (
                       <TableRow key={t.id} className="cursor-pointer">
                         <TableCell className="max-w-[220px] truncate font-medium">
-                          <Link href={`/tasks/${t.id}`} className="hover:underline">
+                          <Link href={`/admin/tasks/${t.id}`} className="hover:underline">
                             {t.name ?? t.id}
                           </Link>
                         </TableCell>

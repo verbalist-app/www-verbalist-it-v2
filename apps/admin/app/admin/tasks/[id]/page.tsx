@@ -65,7 +65,7 @@ export default function TaskDetailPage() {
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
-      <Link href="/tasks" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
+      <Link href="/admin/tasks" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
         <ArrowLeft className="size-4" /> Task
       </Link>
 

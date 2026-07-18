@@ -27,8 +27,8 @@ import {
 const BACKEND_URL = process.env.NEXT_PUBLIC_JOB_MANAGER_URL ?? ""
 
 const nav = [
-  { name: "Panoramica", href: "/", icon: LayoutDashboard, exact: true },
-  { name: "Task", href: "/tasks", icon: ListChecks, exact: false },
+  { name: "Panoramica", href: "/admin", icon: LayoutDashboard, exact: true },
+  { name: "Task", href: "/admin/tasks", icon: ListChecks, exact: false },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -41,7 +41,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <SidebarProvider>
       <Sidebar collapsible="icon">
         <SidebarHeader className="h-14 border-b border-border">
-          <Link href="/" className="flex items-center gap-2 px-2 text-foreground" aria-label="Verbalist Admin">
+          <Link href="/admin" className="flex items-center gap-2 px-2 text-foreground" aria-label="Verbalist Admin">
             <VerbalistMark className="size-6 shrink-0" />
             <span className="font-display font-medium tracking-tight group-data-[collapsible=icon]:hidden">
               Admin

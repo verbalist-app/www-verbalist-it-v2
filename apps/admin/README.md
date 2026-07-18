@@ -79,10 +79,11 @@ Prezzi segnaposto. Finché non c'è l'endpoint costi (richiesta 2), il calcolo u
 
 ```
 apps/admin/
-  app/(admin)/
+  app/page.tsx            redirect da / a /admin
+  app/admin/
     layout.tsx            barra laterale e barra in alto
-    page.tsx              Panoramica
-    tasks/page.tsx        lista task con filtri e azioni
+    page.tsx              Panoramica (/admin)
+    tasks/page.tsx        lista task con filtri e azioni (/admin/tasks)
     tasks/[id]/page.tsx   dettaglio: pipeline, grafo, timeline, token e costi
   components/admin/
     status-badge.tsx      stato -> badge colorato

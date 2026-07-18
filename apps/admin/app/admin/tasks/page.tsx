@@ -156,7 +156,7 @@ export default function TasksPage() {
                 rows.map((t) => (
                   <TableRow key={t.id}>
                     <TableCell className="max-w-[260px] truncate font-medium">
-                      <Link href={`/tasks/${t.id}`} className="hover:underline">
+                      <Link href={`/admin/tasks/${t.id}`} className="hover:underline">
                         {t.name ?? t.id}
                       </Link>
                     </TableCell>
