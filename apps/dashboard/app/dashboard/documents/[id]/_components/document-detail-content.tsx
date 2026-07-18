@@ -24,6 +24,8 @@ import {
   Save,
   X,
   ChevronDown,
+  Check,
+  GitCompare,
 } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -226,6 +228,93 @@ function renderMarkdown(content: string): React.ReactNode[] {
   return elements
 }
 
+// Seconda variante generata (mock): stesso tema, taglio e struttura diversi.
+const documentContentB = `
+# SEO nel 2025: la guida operativa
+
+Le regole del posizionamento cambiano in fretta, ma l'obiettivo resta lo stesso: farsi trovare dalle persone giuste al momento giusto. Qui andiamo dritti al punto, con priorità chiare e azioni concrete.
+
+## Da dove partire
+
+Prima di ottimizzare qualsiasi cosa, rispondi a tre domande: chi cerca, cosa cerca e perché. Senza questa base ogni tecnica SEO diventa un tentativo alla cieca.
+
+## I fattori che contano davvero
+
+- Intento di ricerca: rispondi alla domanda reale dietro la keyword, non alla keyword in sé.
+- Qualità percepita: struttura chiara, fonti verificabili, niente riempitivi.
+- Esperienza sulla pagina: velocità, leggibilità, nessun ostacolo tra l'utente e la risposta.
+
+## On-page, in pratica
+
+Un buon titolo promette qualcosa di specifico e la pagina mantiene la promessa. Usa sottotitoli che anticipano il contenuto, paragrafi brevi e una sola idea per blocco. Le parole chiave orientano, non saturano il testo.
+
+## Contenuti che chiudono la ricerca
+
+L'utente deve trovare quello che cercava e non tornare indietro. Copri il tema in modo completo, aggiungi esempi concreti e togli tutto ciò che non aiuta a decidere.
+
+## SEO tecnico essenziale
+
+Assicurati che le pagine siano indicizzabili, veloci e leggibili da mobile. Un sito lento o confuso vanifica anche i contenuti migliori.
+
+## Usare l'AI senza rischi
+
+L'intelligenza artificiale accelera la stesura, ma inventa se non le dai contesto. Fornisci dati reali, verifica numeri e citazioni, e aggiungi una revisione prima di pubblicare.
+`
+
+function VersionCompare({
+  versionA,
+  versionB,
+  onChoose,
+  labels,
+}: {
+  versionA: string
+  versionB: string
+  onChoose: (v: "A" | "B") => void
+  labels: {
+    twoVersionsTitle: string
+    twoVersionsDesc: string
+    versionA: string
+    versionB: string
+    useThisVersion: string
+  }
+}) {
+  const versions: { key: "A" | "B"; label: string; text: string }[] = [
+    { key: "A", label: labels.versionA, text: versionA },
+    { key: "B", label: labels.versionB, text: versionB },
+  ]
+  return (
+    <div className="space-y-4">
+      <div className="flex items-start gap-3 rounded-lg border border-border bg-muted/40 p-4">
+        <GitCompare className="mt-0.5 size-5 shrink-0 text-primary" />
+        <div>
+          <p className="text-sm font-medium">{labels.twoVersionsTitle}</p>
+          <p className="mt-0.5 text-sm text-muted-foreground">{labels.twoVersionsDesc}</p>
+        </div>
+      </div>
+      <div className="grid gap-4 lg:grid-cols-2">
+        {versions.map((v) => (
+          <Card key={v.key} className="flex flex-col">
+            <CardContent className="flex flex-col gap-4 p-5">
+              <div className="flex items-center justify-between gap-2">
+                <span className="rounded-md bg-muted px-2 py-0.5 text-sm font-medium">{v.label}</span>
+                <Button size="sm" onClick={() => onChoose(v.key)}>
+                  <Check className="mr-2 size-4" />
+                  {labels.useThisVersion}
+                </Button>
+              </div>
+              <div className="max-h-[460px] overflow-y-auto rounded-md border border-border/60 p-4">
+                <article className="prose prose-neutral prose-sm max-w-none prose-headings:font-medium prose-h1:text-lg prose-h2:text-base prose-h3:text-sm">
+                  {renderMarkdown(v.text)}
+                </article>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 const translations = {
   it: {
     documents: "Documenti",
@@ -235,6 +324,12 @@ const translations = {
     generatingDesc: "Stiamo analizzando la SERP e generando il contenuto ottimizzato",
     generationFailed: "Generazione non riuscita",
     generationFailedDesc: "Si è verificato un errore durante la generazione del contenuto. I crediti non sono stati addebitati.",
+    twoVersionsTitle: "Abbiamo generato due versioni",
+    twoVersionsDesc: "Confronta e scegli quella che preferisci. Dopo potrai modificarla ed esportarla.",
+    versionA: "Versione A",
+    versionB: "Versione B",
+    useThisVersion: "Usa questa versione",
+    versionChosen: "Versione scelta",
     retry: "Riprova",
     copied: "Copiato!",
     copy: "Copia",
@@ -298,6 +393,12 @@ const translations = {
     generatingDesc: "We're analyzing the SERP and generating optimized content",
     generationFailed: "Generation failed",
     generationFailedDesc: "An error occurred during content generation. Credits were not charged.",
+    twoVersionsTitle: "We generated two versions",
+    twoVersionsDesc: "Compare them and pick the one you prefer. You can edit and export it afterwards.",
+    versionA: "Version A",
+    versionB: "Version B",
+    useThisVersion: "Use this version",
+    versionChosen: "Version selected",
     retry: "Retry",
     copied: "Copied!",
     copy: "Copy",
@@ -391,6 +492,17 @@ function DocumentDetailInner({
   }, [isNew, isProcessing])
   const [isEditing, setIsEditing] = React.useState(false)
   const [editBuffer, setEditBuffer] = React.useState(document.content)
+  // A/B: due versioni generate; finché non se ne sceglie una si mostra il confronto.
+  const versionA = document.content
+  const versionB = documentContentB
+  const [chosen, setChosen] = React.useState<"A" | "B" | null>(isNew ? null : "A")
+  const handleChooseVersion = (v: "A" | "B") => {
+    const picked = v === "A" ? versionA : versionB
+    setChosen(v)
+    setContent(picked)
+    setEditBuffer(picked)
+    toast.success(labels.versionChosen)
+  }
 
   const startEditing = () => {
     setEditBuffer(content)
@@ -582,6 +694,7 @@ function DocumentDetailInner({
               )}
             </div>
           </div>
+          {chosen !== null && (
           <div className="flex items-center gap-2">
             {isEditing ? (
               <>
@@ -678,6 +791,7 @@ function DocumentDetailInner({
               </>
             )}
           </div>
+          )}
         </div>
       </div>
 
@@ -783,6 +897,14 @@ function DocumentDetailInner({
           </TabsList>
 
           <TabsContent value="content" className="space-y-6">
+            {chosen === null ? (
+              <VersionCompare
+                versionA={versionA}
+                versionB={versionB}
+                onChoose={handleChooseVersion}
+                labels={labels}
+              />
+            ) : (
             <Card>
               <CardContent className="p-6 lg:p-8">
                 {isEditing ? (
@@ -804,6 +926,7 @@ function DocumentDetailInner({
                 )}
               </CardContent>
             </Card>
+            )}
           </TabsContent>
 
           <TabsContent value="analysis" className="space-y-6">

@@ -19,9 +19,13 @@ import {
   ChevronsUpDown,
   Languages,
   MapPin,
+  Paperclip,
+  X,
+  TriangleAlert,
 } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -63,6 +67,8 @@ type DocumentDraft = {
   inputMode: "url" | "text"
   locationCode: string
   languageCode: string
+  additionalContext: string
+  contextFiles: string[]
   step: number
 }
 import { googleLanguages, getLanguageByCode } from "../../../_lib/google-languages"
@@ -141,6 +147,30 @@ function NewDocumentInner() {
     language: { it: "Lingua", en: "Language" },
     languagePlaceholder: { it: "Cerca lingua...", en: "Search language..." },
     languageEmpty: { it: "Nessuna lingua trovata.", en: "No language found." },
+    context: { it: "Contesto", en: "Context" },
+    contextRecommended: { it: "consigliato", en: "recommended" },
+    contextDescription: {
+      it: "Aggiungi info su brand, prodotto, tono da usare o cosa evitare. Più contesto dai, più il testo è accurato e meno inventa.",
+      en: "Add info about your brand, product, the tone to use or what to avoid. The more context you give, the more accurate the text and the less it makes up.",
+    },
+    contextPlaceholder: {
+      it: "Es. E-commerce di scarpe da running per triatleti. Tono tecnico ma diretto. Non citare prezzi né promozioni.",
+      en: "E.g. Running-shoe store for triathletes. Technical but direct tone. Don't mention prices or promos.",
+    },
+    contextAddFiles: { it: "Aggiungi PDF", en: "Add PDF" },
+    contextFilesHint: {
+      it: "Sitemap, schede prodotto, linee guida: fino a 3 PDF.",
+      en: "Sitemap, product sheets, guidelines: up to 3 PDFs.",
+    },
+    removeFile: { it: "Rimuovi file", en: "Remove file" },
+    contextSummary: { it: "Contesto", en: "Context" },
+    noContext: { it: "Nessun contesto", en: "No context" },
+    contextEmptyWarnTitle: { it: "Stai generando senza contesto", en: "You're generating without context" },
+    contextEmptyWarnBody: {
+      it: "Senza contesto il testo è più generico e può contenere imprecisioni. Vuoi aggiungerne?",
+      en: "Without context the text is more generic and may contain inaccuracies. Want to add some?",
+    },
+    addContext: { it: "Aggiungi contesto", en: "Add context" },
     projectOptional: { it: "Progetto", en: "Project" },
     projectRequiredHint: {
       it: "Ogni documento appartiene a un progetto. Scegline uno o creane uno nuovo.",
@@ -314,6 +344,9 @@ function NewDocumentInner() {
   const [languageCode, setLanguageCode] = React.useState("it")
   const [locationOpen, setLocationOpen] = React.useState(false)
   const [languageOpen, setLanguageOpen] = React.useState(false)
+  const [additionalContext, setAdditionalContext] = React.useState("")
+  const [contextFiles, setContextFiles] = React.useState<string[]>([])
+  const fileInputRef = React.useRef<HTMLInputElement>(null)
 
   const canProceedStep1 = outputType !== ""
   const canProceedStep2 =
@@ -327,9 +360,11 @@ function NewDocumentInner() {
         outputType ||
           keyword.trim() ||
           contentUrl.trim() ||
-          contentText.trim(),
+          contentText.trim() ||
+          additionalContext.trim() ||
+          contextFiles.length,
       ),
-    [outputType, keyword, contentUrl, contentText],
+    [outputType, keyword, contentUrl, contentText, additionalContext, contextFiles],
   )
 
   // Hydrate from sessionStorage on mount (only when no preselected params)
@@ -354,6 +389,8 @@ function NewDocumentInner() {
       }
       if (draft.locationCode) setLocationCode(draft.locationCode)
       if (draft.languageCode) setLanguageCode(draft.languageCode)
+      if (draft.additionalContext) setAdditionalContext(draft.additionalContext)
+      if (Array.isArray(draft.contextFiles)) setContextFiles(draft.contextFiles)
       if (typeof draft.step === "number" && draft.step >= 1 && draft.step <= 3) {
         setStep(draft.step)
       }
@@ -378,6 +415,8 @@ function NewDocumentInner() {
               setInputMode("url")
               setLocationCode("IT")
               setLanguageCode("it")
+              setAdditionalContext("")
+              setContextFiles([])
               setStep(1)
             },
           },
@@ -407,6 +446,8 @@ function NewDocumentInner() {
       inputMode,
       locationCode,
       languageCode,
+      additionalContext,
+      contextFiles,
       step,
     }
     window.sessionStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draft))
@@ -422,6 +463,8 @@ function NewDocumentInner() {
     inputMode,
     locationCode,
     languageCode,
+    additionalContext,
+    contextFiles,
     step,
   ])
 
@@ -472,6 +515,9 @@ function NewDocumentInner() {
           keyword: keyword.trim(),
           type: outputType,
           project: project,
+          additionalContext: additionalContext.trim(),
+          contextFiles,
+          versions: 2,
         }),
       )
     }
@@ -660,6 +706,74 @@ function NewDocumentInner() {
                 <span className="block mt-1">{t(content.keywordExtractFromText)}</span>
               )}
             </p>
+          </div>
+
+          {/* Context (recommended) */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <Label htmlFor="context" className="text-base">
+                {t(content.context)}
+              </Label>
+              <Badge variant="secondary" className="font-normal">
+                {t(content.contextRecommended)}
+              </Badge>
+            </div>
+            <p className="text-sm text-muted-foreground">{t(content.contextDescription)}</p>
+            <Textarea
+              id="context"
+              placeholder={t(content.contextPlaceholder)}
+              rows={4}
+              value={additionalContext}
+              onChange={(e) => setAdditionalContext(e.target.value)}
+            />
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="application/pdf"
+              multiple
+              className="hidden"
+              onChange={(e) => {
+                const names = Array.from(e.target.files ?? []).map((f) => f.name)
+                setContextFiles((prev) => [...prev, ...names].slice(0, 3))
+                if (fileInputRef.current) fileInputRef.current.value = ""
+              }}
+            />
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={contextFiles.length >= 3}
+              >
+                <Paperclip className="mr-2 size-4" />
+                {t(content.contextAddFiles)}
+              </Button>
+              <span className="text-xs text-muted-foreground">{t(content.contextFilesHint)}</span>
+            </div>
+            {contextFiles.length > 0 && (
+              <ul className="space-y-1.5">
+                {contextFiles.map((name, i) => (
+                  <li
+                    key={`${name}-${i}`}
+                    className="flex items-center justify-between gap-2 rounded-md border border-border bg-muted/40 px-3 py-1.5 text-sm"
+                  >
+                    <span className="flex min-w-0 items-center gap-2">
+                      <FileText className="size-4 shrink-0 text-muted-foreground" />
+                      <span className="truncate">{name}</span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setContextFiles((prev) => prev.filter((_, idx) => idx !== i))}
+                      className="shrink-0 text-muted-foreground hover:text-foreground"
+                      aria-label={t(content.removeFile)}
+                    >
+                      <X className="size-4" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           {/* SERP Location & Language */}
@@ -915,6 +1029,24 @@ function NewDocumentInner() {
                   </p>
                 </div>
               )}
+
+              <div className="border-t pt-4">
+                <p className="text-xs text-muted-foreground uppercase tracking-wider">
+                  {t(content.contextSummary)}
+                </p>
+                {additionalContext.trim() || contextFiles.length ? (
+                  <div className="mt-1 space-y-1">
+                    {additionalContext.trim() && (
+                      <p className="line-clamp-2 text-sm text-muted-foreground">
+                        {additionalContext.trim()}
+                      </p>
+                    )}
+                    {contextFiles.length > 0 && <p className="text-sm">{contextFiles.length} PDF</p>}
+                  </div>
+                ) : (
+                  <p className="mt-1 text-sm text-muted-foreground">{t(content.noContext)}</p>
+                )}
+              </div>
             </CardContent>
           </Card>
 
@@ -939,6 +1071,19 @@ function NewDocumentInner() {
               </div>
             </CardContent>
           </Card>
+
+          {!additionalContext.trim() && contextFiles.length === 0 && (
+            <div className="flex items-start gap-3 rounded-lg border border-status-warning/30 bg-status-warning/10 p-4">
+              <TriangleAlert className="size-5 shrink-0 text-status-warning" />
+              <div className="flex-1">
+                <p className="text-sm font-medium">{t(content.contextEmptyWarnTitle)}</p>
+                <p className="mt-0.5 text-sm text-muted-foreground">{t(content.contextEmptyWarnBody)}</p>
+              </div>
+              <Button variant="outline" size="sm" onClick={() => setStep(2)}>
+                {t(content.addContext)}
+              </Button>
+            </div>
+          )}
 
           <div className="flex justify-between pt-4">
             <Button variant="outline" onClick={() => setStep(2)}>
