@@ -179,12 +179,14 @@ const sidebarProjects = {
     { id: "2", name: "Landing Pages" },
     { id: "3", name: "E-commerce" },
     { id: "4", name: "Guide Tecniche" },
+    { id: "5", name: "Bonfiglioli · Sito IT" },
   ],
   en: [
     { id: "1", name: "Corporate Blog" },
     { id: "2", name: "Landing Pages" },
     { id: "3", name: "E-commerce" },
     { id: "4", name: "Technical Guides" },
+    { id: "5", name: "Bonfiglioli · IT website" },
   ],
 }
 

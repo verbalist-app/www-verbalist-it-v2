@@ -26,6 +26,8 @@ import {
   ChevronDown,
   Check,
   GitCompare,
+  Layers,
+  FileSpreadsheet,
 } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -70,7 +72,7 @@ import {
 import { useDashboardLocale } from "../../../_lib/dashboard-locale"
 
 // Mock data
-const document = {
+const blogDocument = {
   id: "1",
   title: "Guida completa al SEO nel 2025: strategie, tecniche e best practice",
   keyword: "seo 2025",
@@ -144,6 +146,61 @@ Gli URL devono essere:
 
 Il SEO nel 2025 richiede un approccio olistico che combina contenuti eccellenti, ottimizzazione tecnica e una solida strategia di link building. Seguendo le best practice descritte in questa guida, potrai migliorare significativamente il posizionamento del tuo sito.
   `.trim(),
+}
+
+// Documento generato da un lotto (Bonfiglioli, foglio Biogas): testo e FAQ dal file del cliente.
+const bonfiglioliDocument = {
+  id: "lotto-1",
+  title: "Riduttori e azionamenti per impianti biogas",
+  keyword: "riduttori epicicloidali per biogas",
+  type: "product_page",
+  status: "completed",
+  project: "Bonfiglioli · Sito IT",
+  projectId: "5",
+  batchId: "b1",
+  batchName: "RevisioneNUR",
+  createdAt: "15 Settembre 2026, 09:52",
+  wordCount: 486,
+  readingTime: "2 min",
+  content: `
+# Riduttori e azionamenti per impianti biogas
+
+Il biogas è una fonte di energia rinnovabile ed ecologica. Viene prodotto dalla scomposizione di materiale organico, come rifiuti alimentari o animali, da parte di microrganismi in assenza di ossigeno, in un processo chiamato digestione anaerobica. Il biogas può crearsi naturalmente o in seguito ad un processo industriale per ottenere combustibile, e viene usato per sostituire in tutto o in parte il combustibile fossile.
+
+Bonfiglioli ha progettato soluzioni specifiche per questo tipo di installazione, soggette a requisiti rigorosi in termini di affidabilità e qualità dei componenti alla base del trasporto per la produzione di biogas.
+
+## Le soluzioni Bonfiglioli per la produzione di biogas
+
+Bonfiglioli fornisce soluzioni complete per il trasporto delle lame di agitazione e riscaldamento a biomassa e delle attrezzature per impianti di produzione di biogas, con una gamma completa di riduttori e accessori per la trasmissione della potenza necessaria al funzionamento degli impianti. I riduttori epicicloidali della Serie 300M garantiscono capacità di carico di picco e continuità operativa h24, mentre gli inverter della serie Agile regolano portata e velocità in base alla densità della biomassa.
+
+## Domande frequenti
+
+### Qual è il ruolo delle soluzioni Bonfiglioli negli impianti di biogas?
+
+Forniamo soluzioni complete per la trasmissione della potenza necessaria al funzionamento degli impianti, con un focus specifico sull'azionamento delle lame di agitazione e dei sistemi di riscaldamento della biomassa durante la digestione anaerobica.
+
+### In che modo Bonfiglioli garantisce l'efficienza della digestione anaerobica?
+
+Attraverso riduttori ad alta efficienza e accessori progettati su misura, assicuriamo che il trasporto e la miscelazione del materiale organico avvengano con precisione, favorendo la produzione ottimale di energia pulita.
+
+### Le vostre tecnologie sono resistenti alle condizioni gravose degli impianti di biomassa?
+
+Certamente. Tutti i nostri componenti per il settore biogas sono progettati per resistere alle sollecitazioni meccaniche e chimiche tipiche dei digestori, garantendo una lunga vita utile anche con cicli di lavoro ininterrotti.
+
+### Bonfiglioli offre supporto nella scelta della trasmissione di potenza corretta?
+
+Sì, mettiamo a disposizione la nostra esperienza di oltre 60 anni per affiancare i partner nella scelta della combinazione ideale di riduttori e accessori, dimensionando il sistema in base alla portata e alla densità della biomassa trattata.
+
+### Quali tipi di macchinari per il biogas copre la gamma Bonfiglioli?
+
+La nostra gamma copre l'intera filiera del trasporto e trattamento della biomassa, inclusi i sistemi di carico, gli agitatori interni al digestore e le attrezzature per il riscaldamento del materiale organico.
+`,
+}
+
+type DocumentRecord = typeof blogDocument & { batchId?: string; batchName?: string }
+
+function getDocument(id: string): DocumentRecord {
+  return id.startsWith("lotto-") ? bonfiglioliDocument : blogDocument
 }
 
 const analysisData = {
@@ -341,6 +398,11 @@ const translations = {
     exportMd: "Scarica .md",
     exportHtml: "Scarica .html",
     exportTxt: "Scarica .txt",
+    exportDocx: "Scarica .docx",
+    exportXlsx: "Scarica .xlsx",
+    exportStarted: (format: string) => `Export ${format} avviato`,
+    exportStartedDesc: "Ti avvisiamo appena il file è pronto da scaricare.",
+    batch: "Lotto",
     exportMenuLabel: "Opzioni esportazione",
     edit: "Modifica",
     save: "Salva",
@@ -410,6 +472,11 @@ const translations = {
     exportMd: "Download .md",
     exportHtml: "Download .html",
     exportTxt: "Download .txt",
+    exportDocx: "Download .docx",
+    exportXlsx: "Download .xlsx",
+    exportStarted: (format: string) => `${format} export started`,
+    exportStartedDesc: "We'll let you know as soon as the file is ready to download.",
+    batch: "Batch",
     exportMenuLabel: "Export options",
     edit: "Edit",
     save: "Save",
@@ -465,6 +532,8 @@ function DocumentDetailInner({
   const labels = t(translations)
   const searchParams = useSearchParams()
   const isNew = searchParams.get("new") === "true"
+  const document = getDocument(params.id)
+  const isBatchDocument = Boolean(document.batchId)
   const [isProcessing, setIsProcessing] = React.useState(isNew)
   const [copied, setCopied] = React.useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = React.useState(false)
@@ -495,7 +564,7 @@ function DocumentDetailInner({
   // A/B: due versioni generate; finché non se ne sceglie una si mostra il confronto.
   const versionA = document.content
   const versionB = documentContentB
-  const [chosen, setChosen] = React.useState<"A" | "B" | null>(isNew ? null : "A")
+  const [chosen, setChosen] = React.useState<"A" | "B" | null>(isNew && !isBatchDocument ? null : "A")
   const handleChooseVersion = (v: "A" | "B") => {
     const picked = v === "A" ? versionA : versionB
     setChosen(v)
@@ -579,6 +648,15 @@ function DocumentDetailInner({
     downloadBlob(`${slugFor(title)}.txt`, markdownToPlainText(content), "text/plain;charset=utf-8")
   }
 
+  // Word ed Excel strutturati (title, meta description, H1, H2, paragrafi): generati dal backend.
+  const handleExportDocx = () => {
+    toast.success(labels.exportStarted("Word"), { description: labels.exportStartedDesc })
+  }
+
+  const handleExportXlsx = () => {
+    toast.success(labels.exportStarted("Excel"), { description: labels.exportStartedDesc })
+  }
+
   // Simulate processing completion
   React.useEffect(() => {
     if (isNew) {
@@ -620,6 +698,18 @@ function DocumentDetailInner({
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
+          {document.batchId && (
+            <>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link href={`/dashboard/batches/${document.batchId}`}>
+                    {labels.batch} · {document.batchName}
+                  </Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+            </>
+          )}
           <BreadcrumbItem>
             <BreadcrumbPage title={systemName}>
               {systemName.length > 40
@@ -684,6 +774,18 @@ function DocumentDetailInner({
               <code className="bg-muted px-1.5 py-0.5 rounded text-xs">
                 {document.keyword}
               </code>
+              {document.batchId && (
+                <>
+                  <span>·</span>
+                  <Link
+                    href={`/dashboard/batches/${document.batchId}`}
+                    className="inline-flex items-center gap-1 hover:text-foreground"
+                  >
+                    <Layers className="size-3.5" />
+                    {labels.batch} · {document.batchName}
+                  </Link>
+                </>
+              )}
               {!isProcessing && (
                 <>
                   <span>·</span>
@@ -760,6 +862,15 @@ function DocumentDetailInner({
                     <DropdownMenuItem onClick={handleExportTxt}>
                       <FileType2 className="mr-2 size-4" />
                       {labels.exportTxt}
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleExportDocx}>
+                      <FileText className="mr-2 size-4" />
+                      {labels.exportDocx}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleExportXlsx}>
+                      <FileSpreadsheet className="mr-2 size-4" />
+                      {labels.exportXlsx}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

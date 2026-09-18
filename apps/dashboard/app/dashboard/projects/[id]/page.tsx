@@ -5,10 +5,11 @@ export const metadata: Metadata = {
   title: "Progetto",
 }
 
-export default function ProjectDetailPage({
+export default async function ProjectDetailPage({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) {
-  return <ProjectDetailContent params={params} />
+  const { id } = await params
+  return <ProjectDetailContent params={{ id }} />
 }

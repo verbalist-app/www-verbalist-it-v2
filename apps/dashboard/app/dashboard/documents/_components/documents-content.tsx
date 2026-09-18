@@ -18,6 +18,7 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  Layers,
 } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -64,7 +65,60 @@ import { MoveDocumentDialog } from "@/components/dashboard/move-document-dialog"
 import { useDashboardLocale } from "../../_lib/dashboard-locale"
 
 // Mock data
-const allDocuments = [
+type DocumentRow = {
+  id: string
+  title: { it: string; en: string }
+  keyword: string
+  type: string
+  project: { it: string; en: string }
+  projectId: string
+  status: string
+  wordCount: number
+  createdAt: string
+  batchId?: string
+  batchName?: string
+}
+
+const allDocuments: DocumentRow[] = [
+  {
+    id: "lotto-1",
+    title: { it: "Biogas · Introduzione del settore", en: "Biogas · Industry introduction" },
+    keyword: "riduttori epicicloidali per biogas",
+    type: "product_page",
+    project: { it: "Bonfiglioli · Sito IT", en: "Bonfiglioli · IT website" },
+    projectId: "5",
+    status: "completed",
+    wordCount: 486,
+    createdAt: "2026-09-15",
+    batchId: "b1",
+    batchName: "RevisioneNUR",
+  },
+  {
+    id: "lotto-2",
+    title: { it: "Biogas · Disimballaggio e recupero", en: "Biogas · Unpacking and recovery" },
+    keyword: "riduttori epicicloidali per biogas",
+    type: "product_page",
+    project: { it: "Bonfiglioli · Sito IT", en: "Bonfiglioli · IT website" },
+    projectId: "5",
+    status: "completed",
+    wordCount: 512,
+    createdAt: "2026-09-15",
+    batchId: "b1",
+    batchName: "RevisioneNUR",
+  },
+  {
+    id: "lotto-3",
+    title: { it: "Biogas · Digestore anaerobico", en: "Biogas · Anaerobic digester" },
+    keyword: "riduttori per agitatori biogas",
+    type: "product_page",
+    project: { it: "Bonfiglioli · Sito IT", en: "Bonfiglioli · IT website" },
+    projectId: "5",
+    status: "completed",
+    wordCount: 498,
+    createdAt: "2026-09-15",
+    batchId: "b1",
+    batchName: "RevisioneNUR",
+  },
   {
     id: "1",
     title: { it: "Guida completa al SEO nel 2025", en: "Complete SEO Guide for 2025" },
@@ -176,6 +230,11 @@ const content = {
     landingPages: "Landing Pages",
     ecommerce: "E-commerce",
     guideTecniche: "Guide Tecniche",
+    bonfiglioli: "Bonfiglioli · Sito IT",
+    allOrigins: "Tutte le origini",
+    fromBatch: "Da lotto",
+    singleDocs: "Singoli",
+    batchChip: "Lotto",
     clearFilters: "Rimuovi filtri",
     documentsSelected: "documenti selezionati",
     move: "Sposta",
@@ -230,6 +289,11 @@ const content = {
     landingPages: "Landing Pages",
     ecommerce: "E-commerce",
     guideTecniche: "Technical Guides",
+    bonfiglioli: "Bonfiglioli · IT website",
+    allOrigins: "All origins",
+    fromBatch: "From batch",
+    singleDocs: "Single",
+    batchChip: "Batch",
     clearFilters: "Clear filters",
     documentsSelected: "documents selected",
     move: "Move",
@@ -297,6 +361,7 @@ export function DocumentsContent() {
     { value: "2", label: c.landingPages },
     { value: "3", label: c.ecommerce },
     { value: "4", label: c.guideTecniche },
+    { value: "5", label: c.bonfiglioli },
   ]
 
   const typeLabels: Record<string, string> = {
@@ -310,6 +375,7 @@ export function DocumentsContent() {
   const [statusFilter, setStatusFilter] = React.useState("all")
   const [typeFilter, setTypeFilter] = React.useState("all")
   const [projectFilter, setProjectFilter] = React.useState("all")
+  const [originFilter, setOriginFilter] = React.useState("all")
   const [selectedIds, setSelectedIds] = React.useState<string[]>([])
   const [sortField, setSortField] = React.useState<SortField>("createdAt")
   const [sortDirection, setSortDirection] = React.useState<SortDirection>("desc")
@@ -339,7 +405,9 @@ export function DocumentsContent() {
       const matchesStatus = statusFilter === "all" || doc.status === statusFilter
       const matchesType = typeFilter === "all" || doc.type === typeFilter
       const matchesProject = projectFilter === "all" || docProjectId === projectFilter
-      return matchesSearch && matchesStatus && matchesType && matchesProject
+      const matchesOrigin =
+        originFilter === "all" || (originFilter === "batch" ? Boolean(doc.batchId) : !doc.batchId)
+      return matchesSearch && matchesStatus && matchesType && matchesProject && matchesOrigin
     })
 
     // Sort
@@ -356,7 +424,7 @@ export function DocumentsContent() {
     })
 
     return result
-  }, [search, statusFilter, typeFilter, projectFilter, sortField, sortDirection, getDocTitle, projectOverrides])
+  }, [search, statusFilter, typeFilter, projectFilter, originFilter, sortField, sortDirection, getDocTitle, projectOverrides])
 
   // Pagination
   const totalPages = Math.ceil(filteredDocuments.length / ITEMS_PER_PAGE)
@@ -368,7 +436,7 @@ export function DocumentsContent() {
   // Reset page when filters change
   React.useEffect(() => {
     setCurrentPage(1)
-  }, [search, statusFilter, typeFilter, projectFilter])
+  }, [search, statusFilter, typeFilter, projectFilter, originFilter])
 
   const toggleSort = (field: SortField) => {
     if (sortField === field) {
@@ -423,9 +491,10 @@ export function DocumentsContent() {
     setStatusFilter("all")
     setTypeFilter("all")
     setProjectFilter("all")
+    setOriginFilter("all")
   }
 
-  const hasActiveFilters = search !== "" || statusFilter !== "all" || typeFilter !== "all" || projectFilter !== "all"
+  const hasActiveFilters = search !== "" || statusFilter !== "all" || typeFilter !== "all" || projectFilter !== "all" || originFilter !== "all"
 
   const SortIcon = ({ field }: { field: SortField }) => {
     if (sortField !== field) return <ArrowUpDown className="ml-2 size-4" />
@@ -476,6 +545,16 @@ export function DocumentsContent() {
                       {option.label}
                     </SelectItem>
                   ))}
+                </SelectContent>
+              </Select>
+              <Select value={originFilter} onValueChange={setOriginFilter}>
+                <SelectTrigger className="w-full sm:w-[160px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{c.allOrigins}</SelectItem>
+                  <SelectItem value="batch">{c.fromBatch}</SelectItem>
+                  <SelectItem value="single">{c.singleDocs}</SelectItem>
                 </SelectContent>
               </Select>
 
@@ -622,9 +701,18 @@ export function DocumentsContent() {
                       >
                         {getDocTitle(doc)}
                       </Link>
-                      <p className="text-xs text-muted-foreground mt-0.5">
+                      <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
                         <code className="bg-muted px-1 py-0.5 rounded">{doc.keyword}</code>
-                      </p>
+                        {doc.batchId && (
+                          <Link
+                            href={`/dashboard/batches/${doc.batchId}`}
+                            className="inline-flex items-center gap-1 rounded-full border border-border px-2 py-0.5 text-[11px] hover:text-foreground"
+                          >
+                            <Layers className="size-3" />
+                            {c.batchChip} · {doc.batchName}
+                          </Link>
+                        )}
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell className="hidden md:table-cell">

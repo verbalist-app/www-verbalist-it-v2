@@ -53,6 +53,7 @@ const translations = {
       { name: "Landing Pages", description: "Pagine di atterraggio per campagne", lastUpdated: "1 giorno fa" },
       { name: "E-commerce", description: "Descrizioni prodotti e categorie", lastUpdated: "3 giorni fa" },
       { name: "Guide Tecniche", description: "Tutorial e documentazione", lastUpdated: "1 settimana fa" },
+      { name: "Bonfiglioli · Sito IT", description: "Revisione dei testi di settori e applicazioni in ottica SEO e GEO", lastUpdated: "oggi" },
     ],
   },
   en: {
@@ -74,6 +75,7 @@ const translations = {
       { name: "Landing Pages", description: "Landing pages for campaigns", lastUpdated: "1 day ago" },
       { name: "E-commerce", description: "Product descriptions and categories", lastUpdated: "3 days ago" },
       { name: "Technical Guides", description: "Tutorials and documentation", lastUpdated: "1 week ago" },
+      { name: "Bonfiglioli · IT website", description: "SEO and GEO rewrite of industry and application pages", lastUpdated: "today" },
     ],
   },
 }
@@ -84,6 +86,7 @@ const projectsBase = [
   { id: "2", documentsCount: 8 },
   { id: "3", documentsCount: 24 },
   { id: "4", documentsCount: 6 },
+  { id: "5", documentsCount: 3 },
 ]
 
 export function ProjectsContent() {

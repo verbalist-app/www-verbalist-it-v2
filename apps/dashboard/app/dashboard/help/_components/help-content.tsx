@@ -13,6 +13,8 @@ import {
   Newspaper,
   Zap,
   Image as ImageIcon,
+  Download,
+  Layers,
 } from "lucide-react"
 import { useDashboardLocale } from "../../_lib/dashboard-locale"
 import { Button } from "@/components/ui/button"
@@ -84,6 +86,17 @@ export function HelpContent() {
         infographicDesc: "L'infografica con il flusso completo, passo per passo.",
         infographicComingTitle: "Infografica in lavorazione",
         infographicComingDesc: "Sarà disponibile a breve.",
+        bulkTitle: "Elaborare più contenuti da un file",
+        bulkDesc: "Un Excel con una riga per contenuto, un lotto, tutti i documenti pronti insieme.",
+        bulkSteps: [
+          "Compila il profilo brand del progetto: tono, glossario e regole valgono per tutte le righe.",
+          "Scarica il template e inserisci una riga per sezione: pagina, sezione, testo e keyword.",
+          "In Nuovo documento scegli Più contenuti da file, carica l'Excel e controlla l'anteprima delle righe.",
+          "Avvia il lotto e segui l'avanzamento. Alla fine esporti tutto in Excel o Word.",
+        ],
+        bulkTemplateOptimize: "Template testi da ottimizzare",
+        bulkTemplateGenerate: "Template keyword da generare",
+        bulkLimit: "Fino a 50 righe per file. Il lotto usa 20 crediti per riga.",
       },
       support: {
         contactTitle: "Contatta il supporto",
@@ -100,7 +113,11 @@ export function HelpContent() {
           },
           {
             q: "In quali formati posso esportare?",
-            a: "Puoi copiare il testo o scaricare il documento in Markdown, HTML o testo semplice direttamente dall'editor.",
+            a: "Puoi copiare il testo o scaricare il documento in Markdown, HTML, testo semplice, Word o Excel direttamente dall'editor. Word ed Excel tengono separati title, meta description, H1, H2 e paragrafi.",
+          },
+          {
+            q: "Posso elaborare più contenuti alla volta?",
+            a: "Sì: in Nuovo documento scegli Più contenuti da file e carica un Excel creato dal template, fino a 50 righe. Le righe entrano in coda come lotto e puoi seguirle dalla pagina del lotto.",
           },
           {
             q: "Come cambio piano?",
@@ -134,6 +151,17 @@ export function HelpContent() {
         infographicDesc: "The infographic with the full step-by-step flow.",
         infographicComingTitle: "Infographic in progress",
         infographicComingDesc: "It will be available soon.",
+        bulkTitle: "Process multiple contents from a file",
+        bulkDesc: "One Excel with one row per content, one batch, every document ready together.",
+        bulkSteps: [
+          "Fill in the project brand profile: tone, glossary and rules apply to every row.",
+          "Download the template and add one row per section: page, section, text and keyword.",
+          "In New document pick Multiple contents from file, upload the Excel and check the row preview.",
+          "Start the batch and follow its progress. At the end export everything to Excel or Word.",
+        ],
+        bulkTemplateOptimize: "Template for texts to optimize",
+        bulkTemplateGenerate: "Template for keywords to generate",
+        bulkLimit: "Up to 50 rows per file. A batch uses 20 credits per row.",
       },
       support: {
         contactTitle: "Contact support",
@@ -150,7 +178,11 @@ export function HelpContent() {
           },
           {
             q: "Which formats can I export to?",
-            a: "You can copy the text or download the document as Markdown, HTML, or plain text directly from the editor.",
+            a: "You can copy the text or download the document as Markdown, HTML, plain text, Word or Excel directly from the editor. Word and Excel keep title, meta description, H1, H2 and paragraphs separate.",
+          },
+          {
+            q: "Can I process multiple contents at once?",
+            a: "Yes: in New document pick Multiple contents from file and upload an Excel created from the template, up to 50 rows. Rows enter the queue as a batch and you can follow them from the batch page.",
           },
           {
             q: "How do I change plan?",
@@ -234,6 +266,38 @@ export function HelpContent() {
               </CardContent>
             </Card>
           </div>
+
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <Layers className="size-4 text-muted-foreground" />
+                <CardTitle className="text-base">{text.guide.bulkTitle}</CardTitle>
+              </div>
+              <CardDescription>{text.guide.bulkDesc}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <ol className="list-decimal space-y-1.5 pl-5 text-sm text-muted-foreground">
+                {text.guide.bulkSteps.map((step) => (
+                  <li key={step}>{step}</li>
+                ))}
+              </ol>
+              <div className="flex flex-wrap items-center gap-2">
+                <Button asChild variant="outline" size="sm">
+                  <a href="/templates/verbalist-template-ottimizzazione.xlsx" download>
+                    <Download className="mr-2 size-4" />
+                    {text.guide.bulkTemplateOptimize}
+                  </a>
+                </Button>
+                <Button asChild variant="outline" size="sm">
+                  <a href="/templates/verbalist-template-generazione.xlsx" download>
+                    <Download className="mr-2 size-4" />
+                    {text.guide.bulkTemplateGenerate}
+                  </a>
+                </Button>
+                <span className="text-xs text-muted-foreground">{text.guide.bulkLimit}</span>
+              </div>
+            </CardContent>
+          </Card>
 
           <Card>
             <CardHeader>

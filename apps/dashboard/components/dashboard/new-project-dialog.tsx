@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import {
@@ -27,6 +28,8 @@ const text = {
     cancel: "Annulla",
     create: "Crea progetto",
     created: (name: string) => `Progetto "${name}" creato`,
+    createdDesc: "Compila il profilo brand: vale per tutti i contenuti del progetto.",
+    setupBrand: "Profilo brand",
   },
   en: {
     title: "Create new project",
@@ -38,6 +41,8 @@ const text = {
     cancel: "Cancel",
     create: "Create project",
     created: (name: string) => `Project "${name}" created`,
+    createdDesc: "Fill in the brand profile: it applies to every content in the project.",
+    setupBrand: "Brand profile",
   },
 }
 
@@ -52,6 +57,7 @@ export function NewProjectDialog({
 }) {
   const { t } = useDashboardLocale()
   const labels = t(text)
+  const router = useRouter()
   const [name, setName] = React.useState("")
   const [description, setDescription] = React.useState("")
 
@@ -67,7 +73,13 @@ export function NewProjectDialog({
     if (!trimmedName) return
     const id = `new-${Date.now().toString(36)}`
     onCreate?.({ id, name: trimmedName, description: description.trim() })
-    toast.success(labels.created(trimmedName))
+    toast.success(labels.created(trimmedName), {
+      description: labels.createdDesc,
+      action: {
+        label: labels.setupBrand,
+        onClick: () => router.push(`/dashboard/projects/${id}?tab=brand`),
+      },
+    })
     onOpenChange(false)
   }
 
