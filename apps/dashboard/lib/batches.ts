@@ -163,8 +163,8 @@ export function rowHasWarnings(row: ParsedRow): boolean {
   return row.issues.some((i) => i.level === "warning")
 }
 
-/** Testi del file "RevisioneNUR.xlsx" (Bonfiglioli, fogli Biogas e Construction). */
-const bonfiglioliRows: Omit<ParsedRow, "id" | "issues">[] = [
+/** Righe d'esempio: testi del file "RevisioneNUR.xlsx" (Bonfiglioli, fogli Biogas e Construction). */
+export const sampleRows: Omit<ParsedRow, "id" | "issues">[] = [
   {
     page: "Biogas",
     section: "Introduzione del settore biogas",
@@ -223,17 +223,10 @@ const bonfiglioliRows: Omit<ParsedRow, "id" | "issues">[] = [
   },
 ]
 
-/**
- * Lettura simulata del file caricato: nella demo restituisce sempre le righe del
- * file Bonfiglioli. L'implementazione reale legge il foglio "Contenuti" del template.
- */
-export function parseWorkbookMock(pipeline: BatchPipeline): ParsedRow[] {
-  const rows = bonfiglioliRows.map((row, i) => ({ ...row, id: `row-${i + 1}`, issues: [] as RowIssue[] }))
+/** Le righe d'esempio già validate, per provare il flusso senza un file. */
+export function sampleWorkbookRows(pipeline: BatchPipeline): ParsedRow[] {
+  const rows = sampleRows.map((row, i) => ({ ...row, id: `sample-${i + 1}`, issues: [] as RowIssue[] }))
   return validateRows(rows, pipeline)
-}
-
-export function getRowText(section: string): string {
-  return bonfiglioliRows.find((r) => r.section === section)?.text ?? ""
 }
 
 // ── Lotto mock ──────────────────────────────────────────────────────────────

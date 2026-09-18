@@ -37,6 +37,8 @@ App **Next.js** indipendente per l'area applicativa post-login. Parla direttamen
 
 ---
 
+- Consegna della demo lotti + profilo brand (pilot Bonfiglioli): `apps/dashboard/docs/lotti-e-profilo-brand.md`.
+
 ## Monorepo layout
 
 | Area | Path |

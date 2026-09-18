@@ -76,15 +76,17 @@ import {
   BATCH_MAX_ITEMS,
   LAST_BATCH_STORAGE_KEY,
   estimateBatchCredits,
-  parseWorkbookMock,
   rowHasErrors,
   rowHasWarnings,
+  sampleWorkbookRows,
   validateRows,
   type BatchPipeline,
   type ParsedRow,
   type PendingBatch,
   type RowIssue,
 } from "@/lib/batches"
+import { readWorkbookFile } from "@/lib/xlsx-reader"
+import { importWorkbook, type WorkbookLayout } from "@/lib/workbook-mapping"
 import { useDashboardLocale } from "../../../_lib/dashboard-locale"
 
 const DRAFT_STORAGE_KEY = "verbalist:new-document-draft"
@@ -103,8 +105,13 @@ type DocumentDraft = {
   contextFiles: string[]
   pipeline: BatchPipeline
   bulkFileName: string
+  bulkRows: ParsedRow[]
+  bulkLayout: BulkLayout
+  bulkSheets: string[]
   step: number
 }
+
+type BulkLayout = WorkbookLayout | "sample" | null
 import { googleLanguages, getLanguageByCode } from "../../../_lib/google-languages"
 import { googleLocations, getLocationByCode } from "../../../_lib/google-locations"
 
@@ -373,9 +380,30 @@ function NewDocumentInner() {
     downloadTemplate: { it: "Scarica il template", en: "Download the template" },
     dropTitle: { it: "Trascina qui il file o scegli dal computer", en: "Drop the file here or pick it from your computer" },
     dropHint: {
-      it: (max: number) => `Excel .xlsx · fino a ${max} righe · una riga per contenuto`,
-      en: (max: number) => `Excel .xlsx · up to ${max} rows · one row per content`,
+      it: (max: number) => `Excel .xlsx o .csv · fino a ${max} righe · una riga per contenuto`,
+      en: (max: number) => `Excel .xlsx or .csv · up to ${max} rows · one row per content`,
     },
+    useSample: {
+      it: "Oppure prova con le righe d'esempio del file Bonfiglioli",
+      en: "Or try the sample rows from the Bonfiglioli file",
+    },
+    layoutTemplate: { it: "Letto come template Verbalist", en: "Read as the Verbalist template" },
+    layoutClient: {
+      it: "Letto come file del cliente: un foglio per pagina, sezioni in colonna A",
+      en: "Read as a client file: one sheet per page, sections in column A",
+    },
+    layoutSample: { it: "Righe d'esempio, non un file caricato", en: "Sample rows, not an uploaded file" },
+    sheetsRead: { it: "Fogli letti", en: "Sheets read" },
+    sheetsSkipped: { it: "ignorato", en: "skipped" },
+    readError: {
+      it: "Non riesco a leggere il file. Usa un .xlsx salvato da Excel o creato dal template.",
+      en: "The file can't be read. Use an .xlsx saved by Excel or created from the template.",
+    },
+    layoutError: {
+      it: "Colonne non riconosciute. Usa il template, oppure un foglio per pagina con la sezione in colonna A, il testo in una colonna \"Proposta\" e le keyword in una colonna \"Keywords\".",
+      en: "Columns not recognized. Use the template, or one sheet per page with the section in column A, the text in a \"Proposta\" column and the keywords in a \"Keywords\" column.",
+    },
+    noRows: { it: "Il file non contiene righe da elaborare.", en: "The file has no rows to process." },
     reading: { it: "Lettura del file...", en: "Reading the file..." },
     replaceFile: { it: "Sostituisci", en: "Replace" },
     removeBulkFile: { it: "Rimuovi file", en: "Remove file" },
@@ -417,8 +445,8 @@ function NewDocumentInner() {
       en: (n: number, max: number) => `The file has ${n} rows, the maximum is ${max}. Split the file and upload one part at a time.`,
     },
     unsupportedFile: {
-      it: "Formato non supportato. Carica un file .xlsx creato dal template.",
-      en: "Unsupported format. Upload an .xlsx file created from the template.",
+      it: "Formato non supportato. Carica un file .xlsx o .csv.",
+      en: "Unsupported format. Upload an .xlsx or .csv file.",
     },
     contentsByPage: { it: "Contenuti", en: "Items" },
     draftRestored: {
@@ -527,6 +555,10 @@ function NewDocumentInner() {
   const [bulkFileName, setBulkFileName] = React.useState("")
   const [rawRows, setRawRows] = React.useState<ParsedRow[]>([])
   const [bulkReading, setBulkReading] = React.useState(false)
+  const [bulkLayout, setBulkLayout] = React.useState<BulkLayout>(null)
+  const [bulkSheets, setBulkSheets] = React.useState<string[]>([])
+  const [bulkSkipped, setBulkSkipped] = React.useState<string[]>([])
+  const [bulkError, setBulkError] = React.useState<string | null>(null)
   const [dragOver, setDragOver] = React.useState(false)
   const bulkInputRef = React.useRef<HTMLInputElement>(null)
 
@@ -592,6 +624,10 @@ function NewDocumentInner() {
     setPipeline("optimize")
     setBulkFileName("")
     setRawRows([])
+    setBulkLayout(null)
+    setBulkSheets([])
+    setBulkSkipped([])
+    setBulkError(null)
     setStep(1)
   }
 
@@ -628,7 +664,9 @@ function NewDocumentInner() {
       if (draft.pipeline === "optimize" || draft.pipeline === "generate") setPipeline(draft.pipeline)
       if (draft.bulkFileName) {
         setBulkFileName(draft.bulkFileName)
-        setRawRows(parseWorkbookMock(draft.pipeline ?? "optimize"))
+        if (Array.isArray(draft.bulkRows)) setRawRows(draft.bulkRows)
+        if (draft.bulkLayout) setBulkLayout(draft.bulkLayout)
+        if (Array.isArray(draft.bulkSheets)) setBulkSheets(draft.bulkSheets)
       }
       if (typeof draft.step === "number" && draft.step >= 1 && draft.step <= 3) {
         setStep(draft.step)
@@ -679,6 +717,9 @@ function NewDocumentInner() {
       contextFiles,
       pipeline,
       bulkFileName,
+      bulkRows: rawRows,
+      bulkLayout,
+      bulkSheets,
       step,
     }
     window.sessionStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draft))
@@ -698,6 +739,9 @@ function NewDocumentInner() {
     contextFiles,
     pipeline,
     bulkFileName,
+    rawRows,
+    bulkLayout,
+    bulkSheets,
     step,
   ])
 
@@ -733,30 +777,63 @@ function NewDocumentInner() {
     return kw ? `${typeLabel} — ${dateStr} — ${kw}` : `${typeLabel} — ${dateStr}`
   }
 
-  // ── Bulk: lettura del file (simulata nella demo) ──────────────────────────
-  const handleBulkFile = (file: File | null | undefined) => {
+  // ── Bulk: lettura del file nel browser (xlsx o csv) ───────────────────────
+  const resetBulk = () => {
+    setRawRows([])
+    setBulkLayout(null)
+    setBulkSheets([])
+    setBulkSkipped([])
+    setBulkError(null)
+  }
+
+  const handleBulkFile = async (file: File | null | undefined) => {
     if (!file) return
-    const name = file.name
-    const ok = /\.(xlsx|xls|csv)$/i.test(name)
-    if (!ok) {
+    if (!/\.(xlsx|csv)$/i.test(file.name)) {
       toast.error(t(content.unsupportedFile))
       return
     }
-    setBulkFileName(name)
-    setRawRows([])
+    setBulkFileName(file.name)
+    resetBulk()
     setBulkReading(true)
-    window.setTimeout(() => {
-      setRawRows(parseWorkbookMock(pipeline))
+    try {
+      const sheets = await readWorkbookFile(file)
+      const result = importWorkbook(sheets, pipeline)
+      setRawRows(result.rows)
+      setBulkLayout(result.layout)
+      setBulkSheets(result.sheetsUsed)
+      setBulkSkipped(result.sheetsSkipped)
+      if (!result.layout) setBulkError(t(content.layoutError))
+      else if (result.rows.length === 0) setBulkError(t(content.noRows))
+    } catch {
+      setBulkError(t(content.readError))
+    } finally {
       setBulkReading(false)
-    }, 900)
-    if (bulkInputRef.current) bulkInputRef.current.value = ""
+      if (bulkInputRef.current) bulkInputRef.current.value = ""
+    }
+  }
+
+  const useSampleRows = () => {
+    setBulkFileName("RevisioneNUR.xlsx")
+    resetBulk()
+    setRawRows(sampleWorkbookRows(pipeline))
+    setBulkLayout("sample")
+    setBulkSheets(["Biogas", "Construction"])
   }
 
   const clearBulkFile = () => {
     setBulkFileName("")
-    setRawRows([])
+    resetBulk()
     setBulkReading(false)
   }
+
+  const layoutLabel =
+    bulkLayout === "template"
+      ? t(content.layoutTemplate)
+      : bulkLayout === "client"
+        ? t(content.layoutClient)
+        : bulkLayout === "sample"
+          ? t(content.layoutSample)
+          : null
 
   const excludeRow = (id: string) => {
     setRawRows((prev) => prev.filter((r) => r.id !== id))
@@ -1085,7 +1162,7 @@ function NewDocumentInner() {
               <input
                 ref={bulkInputRef}
                 type="file"
-                accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv"
                 className="hidden"
                 onChange={(e) => handleBulkFile(e.target.files?.[0])}
               />
@@ -1117,7 +1194,13 @@ function NewDocumentInner() {
                   <p className="text-sm font-medium">{t(content.dropTitle)}</p>
                   <p className="text-xs text-muted-foreground">{content.dropHint[locale](BATCH_MAX_ITEMS)}</p>
                 </button>
-              ) : (
+              ) : null}
+              {!bulkFileName && (
+                <Button variant="link" size="sm" className="h-auto px-0 text-muted-foreground" onClick={useSampleRows}>
+                  {t(content.useSample)}
+                </Button>
+              )}
+              {bulkFileName && (
                 <Card>
                   <CardContent className="p-4 space-y-4">
                     <div className="flex items-start justify-between gap-3">
@@ -1174,6 +1257,31 @@ function NewDocumentInner() {
                         </Button>
                       </div>
                     </div>
+
+                    {!bulkReading && layoutLabel && (
+                      <p className="text-xs text-muted-foreground">
+                        {layoutLabel}
+                        {bulkSheets.length > 0 && (
+                          <>
+                            {" · "}
+                            {t(content.sheetsRead)}: {bulkSheets.join(", ")}
+                            {bulkSkipped.length > 0 && ` (${bulkSkipped.join(", ")} ${t(content.sheetsSkipped)})`}
+                          </>
+                        )}
+                      </p>
+                    )}
+
+                    {!bulkReading && bulkError && (
+                      <Alert variant="destructive">
+                        <CircleAlert className="size-4" />
+                        <AlertDescription className="flex flex-col gap-2">
+                          <span>{bulkError}</span>
+                          <a href={TEMPLATE_HREF[pipeline]} download className="w-fit underline underline-offset-2">
+                            {t(content.downloadTemplate)}
+                          </a>
+                        </AlertDescription>
+                      </Alert>
+                    )}
 
                     {overLimit && !bulkReading && (
                       <Alert variant="destructive">
